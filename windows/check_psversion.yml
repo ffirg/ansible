@@ -1,0 +1,10 @@
+---
+# This playbook uses various Windows modules to test their functionality
+
+- name: Use raw module to get config details
+  hosts: all
+  tasks:
+    - name: check Powershell version
+      raw: "PowerShell -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command write-host $PSVersionTable.PSVersion"
+      register: psversion
+    - debug: var=psversion.stdout_lines

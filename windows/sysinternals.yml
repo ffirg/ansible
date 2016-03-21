@@ -1,0 +1,9 @@
+- name: test raw module
+  hosts: all
+  tasks:
+    - name: Download Sysinternals Utilities
+      win_get_url:
+        dest="c:\Users\Administrator\Downloads\SysinternalsSuite.zip"
+        url="https://download.sysinternals.com/files/SysinternalsSuite.zip"
+      register: out
+    - debug: var=out

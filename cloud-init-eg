@@ -1,0 +1,8 @@
+#cloud-config
+
+users:
+  - name: cloud-user
+    ssh-authorized-keys:
+      - ssh-rsa <REPLACE WITH YOUR PUBLIC KEY>
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+

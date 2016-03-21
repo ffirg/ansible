@@ -1,0 +1,9 @@
+---
+- name: Ping
+  hosts: windows
+  gather_facts: false
+  remote_user: vagrant
+
+  tasks:
+  - name: ping
+    win_ping:

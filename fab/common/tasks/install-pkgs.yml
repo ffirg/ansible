@@ -1,0 +1,14 @@
+---
+
+
+- hosts: all
+  sudo: True
+
+  tasks:
+  - name: install some packages we'll need
+    yum: name={{ item }} state=latest
+    with_items:
+    - lsof
+    - bind-utils
+    - wget
+    - net-tools

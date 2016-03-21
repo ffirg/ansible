@@ -1,0 +1,119 @@
+#
+# Description: This method is used to process tasks immediately after the VM has been provisioned
+#
+
+# Yes, this is embarassing, but RHEV doesn't return an IP address right away for the VM. 
+# With proper IPAM this goes away.
+sleep 240
+
+prov = $evm.root["miq_provision"]
+
+require "net/http"
+require "net/https"
+require "uri"
+require "json"
+require "pp"
+require 'rexml/document'
+
+
+include REXML
+
+myipaddr = ""
+
+$evm.log("info", "Provisioning ID:<#{prov.id}> Provision Request ID:<#{prov.miq_provision_request.id}> Provision Type: <#{prov.provision_type}>")
+
+def log(level, msg, update_message=false)
+  $evm.log(level, "#{msg}")
+  $evm.root['miq_provision'].message = "#{msg}" if $evm.root['miq_provision'] && update_message
+end
+
+$evm.log(:info, "STARTING MYEXAMPLE POSTPROVISION")
+
+
+prov.attributes.sort.each { |k, v| log(:info, "\t Attribute: #{k} = #{v}")}
+
+vm_target_hostname = prov.get_option(:vm_target_hostname)
+
+$evm.log(:info, "MYEXAMPLE #{vm_target_hostname}")
+
+uri = URI.parse("https://10.19.1.103/api/vms?search=name="+vm_target_hostname)
+
+http = Net::HTTP.new(uri.host, uri.port)
+http.use_ssl = true
+http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+request = Net::HTTP::Get.new(uri.request_uri)
+request.basic_auth("yourusername", "yourpassword")
+response = http.request(request)
+
+doc = Document.new(response.body)
+
+doc.elements.each("vms/vm/guest_info/ips/ip") { |element| myipaddr = element.attributes["address"] }
+
+$evm.log(:info, "MYEXAMPLE myipaddr = #{myipaddr}")
+
+$evm.log(:info, "MYEXAMPLE adding host to Inventory in Ansible Tower")
+
+uri = URI.parse("http://10.19.1.107/api/v1/hosts/")
+
+http = Net::HTTP.new(uri.host, uri.port)
+
+request = Net::HTTP::Post.new(uri.request_uri)
+
+request.set_form_data({"name" => myipaddr, "inventory" => 2})
+
+request.basic_auth("yourusername", "yourpassword")
+
+response = http.request(request)
+
+$evm.log(:info, "MYEXAMPLE myipaddr = #{myipaddr}")
+
+$evm.log(:info, "MYEXAMPLE Completed adding host to Inventory in Ansible Tower")
+
+$evm.log(:info, "MYEXAMPLE Creating and starting job in Ansible Tower")
+
+uri = URI.parse("https://10.19.1.107/api/v1/jobs/")
+http = Net::HTTP.new(uri.host, uri.port)
+request = Net::HTTP::Post.new(uri.request_uri)
+
+http = Net::HTTP.new(uri.host, uri.port)
+http.use_ssl = true
+http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+request.set_form_data name: 'installApache', description: 'yessir3', project: "6", playbook: "webserver.yml", inventory: "2", job_type: "run", credential: "3"
+request.basic_auth("yourusername", "yourpassword")
+response = http.request(request)
+
+# This is useful for troubleshooting
+#puts response.body
+#print "\n\n"
+
+# Make the response JSON and pull the hash value where key is equal to "id"
+newhash = JSON.parse(response.body)
+myjobid = newhash["id"].to_s
+
+# Now let's start the job we created
+uri = URI.parse("https://10.19.1.107/api/v1/jobs/"+myjobid+"/start/")
+http = Net::HTTP.new(uri.host, uri.port)
+
+request = Net::HTTP::Post.new(uri.request_uri)
+
+http = Net::HTTP.new(uri.host, uri.port)
+http.use_ssl = true
+http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+request.set_form_data forks: '0'
+request.basic_auth("yourusername", "yourpassword")
+response = http.request(request)
+
+
+$evm.log(:info, "MYEXAMPLE Completed Creating and starting job in Ansible Tower")
+
+
+$evm.log(:info, "ENDING MYEXAMPLE POSTPROVISION")
+
+
+
+
+#$evm.log(:info, $evm.root['miq_provision'])
+

@@ -1,0 +1,16 @@
+---
+- hosts: dns
+  remote_user: pgriffit
+  sudo: yes
+  tasks:
+
+  - group:
+      name: devops
+      state: present
+
+  - name: create devops user 
+    user:
+      name: devops
+      uid: 2001
+      group: devops
+

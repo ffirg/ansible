@@ -1,0 +1,16 @@
+---
+- name: Install Win32 OpenSSH (Test Release)
+  hosts: windows
+  gather_facts: false
+  remote_user: vagrant
+
+  tasks:
+  - name: Download latest build
+  - name: Extract contents
+  - name: Start Powershell
+   -name: cd into build directory
+   -name: Setup SSH Keys
+   -name: Add firewall rule for SSH
+   -name: Install key-auth package for key based authentication (needs restart)
+   -name: Setup and start SSHD
+   -name: Check SSH server port is open and accepting connections

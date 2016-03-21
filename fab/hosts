@@ -1,0 +1,5 @@
+#The hosts list for my FAB servers
+
+# My Jenkins and CICD related servers
+[fab-cicd]
+10.33.11.155 ansible_connection=ssh ansible_user=pgriffit ansible_become_user=root

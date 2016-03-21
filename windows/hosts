@@ -1,0 +1,10 @@
+[windows]
+192.168.133.104
+
+[windows:vars]
+ansible_user=vagrant
+ansible_ssh_pass=vagrant
+ansible_port=5986
+ansible_connection=winrm
+# The following is necessary for Python 2.7.9+ when using default WinRM self-signed certificates:
+ansible_winrm_server_cert_validation=ignore

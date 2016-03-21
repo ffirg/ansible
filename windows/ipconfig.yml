@@ -1,0 +1,10 @@
+---
+- name: test raw module
+  hosts: windows
+  remote_user: vagrant
+
+  tasks:
+  - name: run ipconfig
+    raw: ipconfig
+    register: ipconfig
+  - debug: var=ipconfig
