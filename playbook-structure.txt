@@ -25,5 +25,4 @@ roles/						<--- use roles when your playbook is getting big!
             …
             …
 
-	
-# ansible-playbook -i hosts site.yml
+	# ansible-playbook -i hosts site.yml
