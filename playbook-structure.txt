@@ -1,28 +1,25 @@
-site.yml					<--- master YAML playbook
-hosts						<--- hosts Inventory file
-group_vars/					<--- common host grouping variables
+site.yml					             <--- master YAML playbook
+hosts						               <--- hosts Inventory file
+group_vars/					           <--- common host grouping variables
       group1
       group2
-host_vars/					<--- common host specific variables
+host_vars/					           <--- common host specific variables
       hostname1
       hostname2
-roles/						<--- use roles when your playbook is getting big!
+roles/						             <--- use roles when your playbook is getting big!
       common/
-            files/				<--- what's to be copied over without modification
-            templates/				<--- like files but allow modification
-            tasks/				<--- what performs the actions
-            handlers/				<--- called when 'notify' is used, triggers changes
-            vars/				<--- same as defaults but higher priority
-            defaults/				<--- default variables for the role
-            meta/				<--- dependencies, attributes etc
+            files/			       <--- what's to be copied over without modification
+            templates/				 <--- like files but allow modification
+            tasks/				     <--- what performs the actions
+            handlers/				   <--- called when 'notify' is used, triggers changes
+            vars/				       <--- same as defaults but higher priority
+            defaults/				   <--- default variables for the role
+            meta/				       <--- dependencies, attributes etc
       webservers/
-            …
             …
       applicationservers/
             …
-            …
       databaseservers/
             …
-            …
 
-	# ansible-playbook -i hosts site.yml
+# ansible-playbook -i hosts site.yml
