@@ -1,0 +1,28 @@
+---
+- hosts: amazon
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+
+  tasks:
+    - name: install Apache web server
+      yum: 
+        name:httpd
+        state:latest
+      notify:
+        - restart Apache
+
+    - name: add user accounts
+      #user: name={{ item.name }} state=present groups={{ item.groups }}
+      user:
+        name:{{ item.name }}
+        state:present
+        groups:{{ item.groups }}
+        with_items:
+          - {name: 'pgriffit', groups: 'wheel' }
+
+  handlers:
+    - name: restart Apache
+      service:
+        name:httpd
+        state:restarted

@@ -1,0 +1,47 @@
+---
+- hosts: north
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  gather_facts: false
+
+  tasks:
+    - name: update packages
+      #yum:name=wget state=latest
+      yum:
+        name: wget
+        state: latest
+
+    - name: add user accounts
+      user: name={{ item.name }} state=present groups={{ item.groups }}
+      with_items:
+        - {name: 'pgriffit', groups: 'wheel' }
+        - {name: 'fred', groups: 'wheel' }
+
+    - local_action: command /usr/bin/say -v {{ voice }} "{{ banter }}"
+      become: no
+
+
+- hosts: south
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  #gather_facts: false
+
+  tasks:
+    - name: Update MOTD
+      copy:
+        src: /tmp/foo
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: 0444
+
+    - name: add user accounts
+      user: name={{ item.name }} state=present groups={{ item.groups }}
+      with_items:
+        - {name: 'pgriffit', groups: 'wheel' }
+        - {name: 'wilma', groups: 'wheel' }
+
+    - local_action: command /usr/bin/say -v {{ voice }} "{{ banter }}"
+      become: no

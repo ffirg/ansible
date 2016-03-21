@@ -1,0 +1,36 @@
+Install openSSH win32 server
+
+Download https://github.com/PowerShell/Win32-OpenSSH/releases/download/3_19_2016/OpenSSH-Win64.zip
+
+- or better - Powershell - copy to template and copy to dest?
+$url = 'https://github.com/PowerShell/Win32-OpenSSH/releases/latest/'
+$request = [System.Net.WebRequest]::Create($url)
+$request.AllowAutoRedirect=$false
+$response=$request.GetResponse()
+$([String]$response.GetResponseHeader("Location")).Replace('tag','download') + '/OpenSSH-Win64.zip'
+$([String]$response.GetResponseHeader("Location")).Replace('tag','download') + '/OpenSSH-Win32.zip'
+
+Extract contents to C:\Program Files\OpenSSH-Win32 - use expand???
+
+Start Powershell as Administrator
+cd 'C:\Program Files\OpenSSH-Win32'
+
+Setup SSH host keys (this will generate all the 'host' keys that sshd expects when its starts)
+.\ssh-keygen.exe -A
+
+Open Firewall - if server - check ansible_fact?
+New-NetFirewallRule -Protocol TCP -LocalPort 22 -Direction Inbound -Action Allow -DisplayName SSH
+If you're on a workstation try:
+netsh advfirewall firewall add rule name='SSH Port' dir=in action=allow protocol=TCP localport=22
+
+If you need key-based authentication, run the following to setup the key-auth package
+powershell.exe .\install-sshlsa.ps1
+
+Restart-Computer
+
+Install and run daemon as NT Service running as Local System
+.\sshd.exe install
+
+Start-Service sshd
+
+Make the service start on boot (PowerShell): Set-Service sshd -StartupType Automatic
