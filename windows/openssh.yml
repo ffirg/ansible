@@ -1,16 +1,106 @@
 ---
-- name: Install Win32 OpenSSH (Test Release)
+- name: Install Win32 OpenSSH Server
   hosts: windows
-  gather_facts: false
+  gather_facts: true
   remote_user: vagrant
+  vars:
+    sshd_port: 22
+    key_auth: y
+    zip_file: OpenSSH-Win64.zip
+    tmp_dir: 'C:\Temp'
 
   tasks:
-  - name: Download latest build
-  - name: Extract contents
-  - name: Start Powershell
-   -name: cd into build directory
-   -name: Setup SSH Keys
-   -name: Add firewall rule for SSH
-   -name: Install key-auth package for key based authentication (needs restart)
-   -name: Setup and start SSHD
-   -name: Check SSH server port is open and accepting connections
+
+#
+# You could run a script to download the code on each server, using something like this:
+#
+    - name: Copy over powershell script for download
+      template: src=templates/download-openssh.j2 dest='{{ tmp_dir }}\download-openssh.ps1'
+      #win_copy:
+      #  src: 'templates/download-openssh.j2'
+      #  dest: '{{ tmp_dir }}\download-openssh.ps1'
+      #  owner: vagrant
+
+    #- name: Download latest build
+    #  script: C:\Temp\download-openssh.ps1
+    #  register: download
+    #- debug: var=download
+
+#
+# But why not make use of the delegate_to feature?
+# Download only once to the localhost and copy over appropriate release to clients
+#
+    - name: Download latest build
+      get_url:
+        url: https://github.com/PowerShell/Win32-OpenSSH/releases/download/3_19_2016/{{ zip_file }}
+        dest: /tmp
+      delegate_to: localhost
+
+    - name: Create {{ tmp_dir }} on client
+      win_file: path='{{ tmp_dir }}' state=directory
+
+    - name: Copy over package if 64-bit architecture discovered
+      win_copy:
+        src: '/tmp/{{ zip_file }}'
+        dest: '{{ tmp_dir }}\{{ zip_file }}'
+        owner: vagrant
+      when: ansible_architecture == "64-bit"
+
+    - name: Extract contents
+      win_unzip:
+        src: 'C:\temp\{{ zip_file }}'
+        dest: 'C:\Program Files'
+
+    - name: Setup SSH Keys
+      raw: cmd /c 'cd C:\"Program Files"\OpenSSH-Win64 && .\ssh-keygen.exe -A'
+      register: keygen
+    - debug: var=keygen
+
+    - name: Add firewall rule for SSH
+      action: win_firewall_rule
+      args:
+        name: SSH
+        description: 'OpenSSH Service'
+        enabled: yes
+        state: present
+        direction: in
+        localport: '{{ sshd_port }}'
+        action: allow
+        protocol: TCP
+
+    #- name: Install key_auth package for key based authentication
+    #  vars_prompt:
+    #    - name: key_auth
+    #      prompt: "Do you want key based authentication? (needs reboot) [y/n, default=yes]"
+    #      private: no
+    #      pause:
+    #        seconds: 5
+
+    - name: Run Powershell stuff
+      raw: powershell -File 'C:\Program Files\OpenSSH-Win64\install-sshlsa.ps1'
+
+    #- name: This is Windows so we need a reboot (yawn)...
+    #  raw: Restart-Computer
+
+    - name: Uninstall SSHD service first as it may cause errors
+      raw: cmd /c 'C:\"Program Files"\OpenSSH-Win64\sshd.exe uninstall'
+      register: uninstall
+    - debug: var=uninstall
+
+    - name: Install SSHD service
+      raw: cmd /c 'C:\"Program Files"\OpenSSH-Win64\sshd.exe install'
+      register: install
+    - debug: var=install
+
+    - name: Auto start SSH Server
+      #win_service:
+      #  name: sshd
+      #  start_mode: auto
+      #  state: started
+      win_chocolatey: name=nssm
+
+    - win_nssm:
+        name: sshd
+        application: 'C:\"Program Files"\OpenSSH-Win64\sshd.exe'
+        stdout_file: 'C:\"Program Files"\OpenSSH-Win64\sshd.log'
+        stderr_file: 'C:\"Program Files"\OpenSSH-Win64\sshd.log'

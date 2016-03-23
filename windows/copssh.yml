@@ -1,0 +1,31 @@
+---
+- name:  Extra Copssh on Windows Server
+  hosts: windows
+  gather_facts: true
+  remote_user: vagrant
+  vars:
+    tmp_dir: 'C:\Temp'
+    zip_file: 'Copssh_5.4.2_x86_Free_Installer.zip'
+
+  tasks:
+
+    - name: Create {{ tmp_dir }} on client
+      win_file: path='{{ tmp_dir }}' state=directory
+
+    - name: Download latest build
+      win_get_url:
+        url: 'https://www.itefix.net/dl/{{ zip_file }}'
+        dest: '{{ tmp_dir }}\{{ zip_file }}'
+        force: yes
+        skip_certificate_validation:
+
+    - name: Extract contents
+      win_unzip:
+        src: '{{ tmp_dir }}\{{ zip_file }}'
+        dest: '{{ tmp_dir }}\CopSSH'
+
+    - name: Install CopSSH
+      win_msi: path='{{ tmp_dir }}\CopSSH\Copssh_5.4.2_x86_Free_Installer.exe /u=vagrant /p=vagrant /S'
+      #raw: cmd /c '{{ tmp_dir }}\CopSSH\Copssh_5.4.2_x86_Free_Installer.exe /u=vagrant /p=vagrant /S'
+      register: install
+    - debug: var=install

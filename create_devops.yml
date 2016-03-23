@@ -8,9 +8,8 @@
       name: devops
       state: present
 
-  - name: create devops user 
+  - name: create devops user
     user:
       name: devops
       uid: 2001
       group: devops
-

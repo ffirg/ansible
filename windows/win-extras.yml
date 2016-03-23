@@ -1,0 +1,15 @@
+---
+- name:  Extra Windows Server Stuff
+  hosts: windows
+  gather_facts: true
+  remote_user: vagrant
+  vars:
+
+  tasks:
+    - name: Install Applications
+      win_chocolatey:
+        name={{ item }}
+      with_items:
+          - nssm
+          - git
+          - notepadplusplus.install
