@@ -1,8 +1,8 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
 
-import winrm 
+import winrm
 
-s = winrm.Session('192.168.133.103', auth=('vagrant', 'vagrant'))
+s = winrm.Session('192.168.133.104', auth=('vagrant', 'vagrant'))
 r = s.run_cmd('ipconfig', ['/all'])
 print r.status_code
 print r.std_out

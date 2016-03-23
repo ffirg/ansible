@@ -1,5 +1,7 @@
-- name: test raw module
+- name: Deploy Admin Tools
   hosts: all
+  gather_facts: false
+  
   tasks:
     - name: Download Sysinternals Utilities
       win_get_url:

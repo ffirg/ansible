@@ -1,5 +1,5 @@
 ---
-- name: test raw module
+- name: Get Server Memory
   hosts: all
   tasks:
     - name: run a powershell script
