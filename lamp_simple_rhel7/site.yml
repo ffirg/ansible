@@ -1,5 +1,5 @@
 ---
-# This playbook deploys the whole application stack in this site.  
+# This playbook deploys the whole application stack in this site.
 
 - name: apply common configuration to all nodes
   hosts: all
@@ -15,6 +15,7 @@
   remote_user: vagrant
   become: yes
   become_method: sudo
+#  ignore_errors: yes
 
   roles:
     - web

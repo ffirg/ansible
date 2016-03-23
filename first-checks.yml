@@ -1,10 +1,32 @@
 ---
-- hosts: all
+- hosts: beckton
   remote_user: vagrant
   become: yes
   become_method: sudo
-  gather_facts: false
+  gather_facts: true
 
   tasks:
     - name: Test connection
       ping:
+
+    - debug: msg="Server {{ inventory_hostname }} has gateway {{ ansible_default_ipv4.gateway }}"
+      when: ansible_default_ipv4.gateway is defined
+
+#    - hostname:
+#        name: beckton 
+
+#    - firewalld: port={{ item }} permanent=true state=enabled
+#      with_items:
+#        - 80/tcp
+#        - 8080/tcp
+#        - 443/tcp
+#        - 22/tcp
+
+#      notify:
+#        - restart firewalld
+
+  handlers:
+    - name: restart firewalld
+      service:
+        name: firewalld
+        state: restarted
