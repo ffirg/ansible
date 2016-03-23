@@ -6,12 +6,8 @@
 192.168.133.100
 
 [mansfield]
-host2
-host3
 
 [westbrom]
-host1
-host2
 
 [north:children]
 barnsley
@@ -26,10 +22,8 @@ voice="Moira"
 192.168.133.101
 
 [croydon]
-host2
 
 [luton]
-host1
 
 [south:children]
 beckton
