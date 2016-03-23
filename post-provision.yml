@@ -11,15 +11,21 @@
       yum:
         name: wget
         state: latest
+      tags:
+        - packages
 
     - name: add user accounts
       user: name={{ item.name }} state=present groups={{ item.groups }}
       with_items:
         - {name: 'pgriffit', groups: 'wheel' }
         - {name: 'fred', groups: 'wheel' }
+      tags:
+          - users
 
     - local_action: command /usr/bin/say -v {{ voice }} "{{ banter }}"
       become: no
+      tags:
+        - notify
 
 
 - hosts: south
@@ -36,12 +42,18 @@
         owner: root
         group: root
         mode: 0444
+      tags:
+        - configuration
 
     - name: add user accounts
       user: name={{ item.name }} state=present groups={{ item.groups }}
       with_items:
         - {name: 'pgriffit', groups: 'wheel' }
         - {name: 'wilma', groups: 'wheel' }
+      tags:
+        - users
 
     - local_action: command /usr/bin/say -v {{ voice }} "{{ banter }}"
       become: no
+      tags:
+        - notify
