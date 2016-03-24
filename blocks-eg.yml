@@ -1,0 +1,23 @@
+---
+- hosts: beckton
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  gather_facts: true
+
+  tasks:
+    - block:
+      - ping:
+      - command: echo "Hello there"
+      - command: /bin/false
+
+      rescue:
+        - debug: msg='Caught an error in this block'
+        - local_action: command /usr/bin/say "Oops! Houston we have a problem, let's roll back"
+        - pause: seconds=2
+
+      always:
+        - local_action: command /usr/bin/say "We're done here."
+
+      when: ansible_distribution == 'RedHat'
+      become: no
