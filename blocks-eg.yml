@@ -6,6 +6,7 @@
   gather_facts: true
 
   tasks:
+
     - block:
       - ping:
       - command: echo "Hello there"
