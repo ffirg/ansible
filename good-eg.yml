@@ -1,34 +1,61 @@
 ---
-- hosts: all
+- hosts: beckton
 
   vars:
     http_port: 80
     max_clients: 200
-  remote_user: root
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  gather_facts: false
+
+  vars_prompt:
+    - name: "continue"
+      prompt: "Danger Will Robinson, do you wish to continue? "
+      default: "y"
 
   tasks:
 
+  - fail: msg="Chicken!"
+    when: continue != "y"
+
+  - name: Copy over RHN script
+    copy:
+      src: ./rhsm.sh
+      dest: /tmp
+      owner: root
+      group: wheel
+      mode: 0550
+      backup: yes
+
   - name: register on RHN
-    command: ./rhsm.sh
+    command: /tmp/rhsm.sh
+    register: RHN
+  - debug: var=RHN
 
   - name: ensure apache is at the latest version
     yum: pkg=httpd state=latest
 
   - name: write the apache config file
     template: src=/srv/httpd.j2 dest=/etc/httpd/conf/httpd.conf
+    ignore_errors: true
     notify:
     - restart apache
 
   - name: ensure apache is running (and enable it at boot)
     service: name=httpd state=started enabled=yes
-    
+
+  - shell: httpd -v | grep version | awk '{print $3}'|cut -f2 -d'/'
+    register: result
+
+  - set_fact: apache_version={{ result.stdout }}
+
+  - debug: var=apache_version
+    when: apache_version is defined
+
+  - fail: msg="Apache version '{{apache_version}}' just isn't good enough :("
+    when: apache_version == "2.4.6"
+
   handlers:
     - name: restart apache
       service: name=httpd state=restarted
-
-- name: Run powershell script
-  hosts: windows
-  gather_facts: false
-  tasks:
-    - name: Run powershell script
-      script: files/helloworld.ps1
