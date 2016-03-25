@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: all !cloud
   remote_user: vagrant
   become: yes
   become_method: sudo
