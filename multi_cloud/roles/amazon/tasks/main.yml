@@ -1,0 +1,4 @@
+---
+# This playbook will configure Amazon hosts
+
+- include: amazon.yml

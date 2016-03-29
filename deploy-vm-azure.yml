@@ -1,0 +1,29 @@
+---
+- name: Setup an Azure instance
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Create Azure VM
+      azure:
+        name: my-azure-vm
+        role_size: Small
+        image: b39f285__Ubuntu_DAILY_BUILD-precise-12_04_3-LTS-amd6
+        location: 'West Europe'
+        user: pgriffit
+        ssh_cert_path: /path/to/azure_x509_cert.pem
+        storage_account: abc123.blob.core.windows.net
+        wait: yes
+      register: newmachines
+
+    - name: Wait for SSH to start
+      wait_for:
+        host: "{{ newmachines.instances[0].public_ip }}"
+        port: 22
+        timeout: 300
+      delegate_to: localhost
+
+    - name: Add the machine to the inventory
+      add_host:
+        hostname: "{{ newmachines.instances[0].public_ip }}"
+        groupname: azure
+

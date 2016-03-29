@@ -1,0 +1,4 @@
+---
+# This playbook will configure Azure hosts
+
+- include: azure.yml

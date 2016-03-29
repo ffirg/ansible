@@ -1,0 +1,26 @@
+---
+# This playbook configures VMs across multiple cloud providers
+
+- name: apply common configuration to all nodes
+  hosts: all
+
+  roles:
+    - common
+
+- name: configure in Amazon AWS EC2
+  hosts: amazon
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+
+  roles:
+    - amazon
+
+- name: configure in Microsoft Azure
+  hosts: azure
+  remote_user: pgriffit
+  become: yes
+  become_method: sudo
+
+  roles:
+    - azure

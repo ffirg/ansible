@@ -1,0 +1,27 @@
+---
+- name: Setup an EC2 instance
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Create an EC2 machine
+      ec2:
+        key_name: ec2-user-keypair
+        instance_type: t2.micro
+        image: ami-b66ed3de
+        wait: yes
+        group: amazon
+        vpc_subnet_id: subnet-59483
+        assign_public_ip: yes
+      register: newmachines
+
+    - name: Wait for SSH to start
+      wait_for:
+        host: "{{ newmachines.instances[0].public_ip }}"
+        port: 22
+        timeout: 300
+      delegate_to: localhost
+
+    - name: Add the machine to the inventory
+      add_host:
+        hostname: "{{ newmachines.instances[0].public_ip }}"
+        groupname: amazon

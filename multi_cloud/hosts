@@ -1,0 +1,11 @@
+[amazon]
+#ec2-52-50-107-129.eu-west-1.compute.amazonaws.com
+52.50.107.129
+
+[azure]
+#ubuntu-azure-1.westeurope.cloudapp.azure.com
+40.118.108.249
+
+[cloud:children]
+amazon
+azure

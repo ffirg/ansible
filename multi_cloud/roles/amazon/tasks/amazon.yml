@@ -1,0 +1,20 @@
+---
+
+  tasks:
+    - name: install Apache web server
+      yum:
+        name: httpd
+        state: latest
+      notify:
+        - restart Apache
+
+    - name: add user accounts
+      user: name={{ item.name }} state=present groups={{ item.groups }}
+      with_items:
+        - {name: 'foo', groups: 'wheel' }
+
+  handlers:
+    - name: restart Apache
+      service:
+        name: httpd
+        state: restarted
