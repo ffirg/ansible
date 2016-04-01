@@ -4,8 +4,8 @@
 - name: restart ntp
   service: name=ntpd state=restarted
 
-- name: restart httpd
+- name: restart web server
   service: name=httpd state=restarted
-  
+
 - name: restart firewall
   service: name=firewalld state=restarted
