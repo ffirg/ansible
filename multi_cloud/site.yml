@@ -3,15 +3,14 @@
 
 - name: apply common configuration to all nodes
   hosts: all
+  become: yes
+  become_method: sudo
 
   roles:
     - common
 
 - name: configure in Amazon AWS EC2
   hosts: amazon
-  remote_user: ec2-user
-  become: yes
-  become_method: sudo
 
   roles:
     - amazon

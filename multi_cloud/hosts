@@ -1,10 +1,13 @@
 [amazon]
 #ec2-52-50-107-129.eu-west-1.compute.amazonaws.com
-52.50.107.129
+52.50.168.234
+
+[amazon:vars]
+ansible_ssh_user=ec2-user
 
 [azure]
 #ubuntu-azure-1.westeurope.cloudapp.azure.com
-40.118.108.249
+40.68.28.118
 
 [cloud:children]
 amazon
