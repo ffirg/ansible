@@ -1,44 +1,6 @@
-[barnsley]
-192.168.133.100
-
-[mansfield]
-
-[westbrom]
-
-[north:children]
-barnsley
-#mansfield
-#westbrom
-
-[north:vars]
-banter="It's not grim up north!"
-voice="Moira"
-
-[beckton]
-192.168.133.101
-
-[croydon]
-
-[luton]
-
-[south:children]
-beckton
-croydon
-luton
-
-[south:vars]
-banter="It's all good down south!"
-voice="Daniel"
-
-[switchsites:children]
-north
-south
-
 [amazon]
 #ec2-52-50-107-129.eu-west-1.compute.amazonaws.com
-#52.50.107.129
-#52.50.58.27
-52.17.233.91
+52.50.160.18
 
 [amazon:vars]
 ansible_ssh_user=ec2-user
@@ -46,7 +8,8 @@ ansible_ssh_user=ec2-user
 [azure]
 #ubuntu-azure-1.westeurope.cloudapp.azure.com
 #40.118.108.249
-13.94.206.138
+#13.94.206.138
+my-azure-vm.cloudapp.net
 
 [cloud:children]
 amazon

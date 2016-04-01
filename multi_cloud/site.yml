@@ -2,9 +2,7 @@
 # This playbook configures VMs across multiple cloud providers
 
 - name: apply common configuration to all nodes
-  hosts: cloud 
-  become: yes
-  become_method: sudo
+  hosts: cloud
 
   roles:
     - common
@@ -18,8 +16,6 @@
 - name: configure in Microsoft Azure
   hosts: azure
   remote_user: pgriffit
-  become: yes
-  become_method: sudo
 
   roles:
     - azure

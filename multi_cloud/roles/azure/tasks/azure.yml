@@ -1,20 +1,28 @@
 ---
 
-- name: Install Packages If Non Red Hat
-  apt: name={{item}} state=latest
-  with_items:
-    - apache2
-    - ntp
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- block:
 
-- name: Install Packages if Red Hat Based
-  yum: name={{item}} state=latest
-  with_items:
-    - httpd
-    - ntp
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  - name: Install Packages If Non Red Hat
+    apt: name={{item}} state=latest
+    with_items:
+      - apache2
+      - ntp
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+    tags: packages
 
-- name: Create Some Users
-  user: name={{ item.name }} state=present groups={{ item.groups }}
-  with_items:
-    - {name: 'foo', groups: 'root' }
+  - name: Install Packages if Red Hat Based
+    yum: name={{item}} state=latest
+    with_items:
+      - httpd
+      - ntp
+    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+    tags: packages
+
+  - name: Create Some Users
+    user: name={{ item.name }} state=present groups={{ item.groups }}
+    with_items:
+      - {name: 'foo', groups: 'root' }
+    tags: users
+
+  ignore_errors: yes
+  become: yes
