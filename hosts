@@ -23,8 +23,8 @@ voice="Moira"
 
 [south:children]
 beckton
-#croydon
-#luton
+croydon
+luton
 
 [south:vars]
 banter="It's all good down south!"
