@@ -2,3 +2,4 @@
 # Variables listed here are applicable to all host groups
 
 ntpserver: pool.ntp.org
+httpd_port: 80

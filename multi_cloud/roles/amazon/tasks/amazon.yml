@@ -1,13 +1,5 @@
 ---
 
-- name: install Apache web server
-  ignore_errors: yes
-  yum:
-    name: httpd
-    state: latest
-  notify:
-    - restart httpd
-
 - name: add user accounts
   user: name={{ item.name }} state=present groups={{ item.groups }}
   with_items:
