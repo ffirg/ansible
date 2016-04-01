@@ -2,7 +2,7 @@
 # This playbook configures VMs across multiple cloud providers
 
 - name: apply common configuration to all nodes
-  hosts: all
+  hosts: cloud 
   become: yes
   become_method: sudo
 

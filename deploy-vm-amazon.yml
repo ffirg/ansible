@@ -5,13 +5,18 @@
   tasks:
     - name: Create an EC2 machine
       ec2:
-        key_name: ec2-user-keypair
+        key_name: pgriffit@redhat-mac
+        region: eu-west-1
+        zone: eu-west-1b
         instance_type: t2.micro
-        image: ami-b66ed3de
+        image: ami-8b8c57f8
         wait: yes
-        group: amazon
-        vpc_subnet_id: subnet-59483
+        group: launch-wizard-1
+        vpc_subnet_id: subnet-0f120178
         assign_public_ip: yes
+        monitoring: no
+        count: 1
+        state: present
       register: newmachines
 
     - name: Wait for SSH to start

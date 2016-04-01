@@ -4,3 +4,5 @@
   user: name={{ item.name }} state=present groups={{ item.groups }}
   with_items:
     - {name: 'foo', groups: 'wheel' }
+  become: yes
+  become_method: sudo
