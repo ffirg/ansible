@@ -1,0 +1,33 @@
+---
+- hosts: beckton
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  gather_facts: false
+
+  tasks:
+    #- name: Upgrade all packages
+    #  yum: name=* state=latest
+
+    - name: Checking if we need a reboot
+      # NOTE: this string check is wrong so always comes back as "yes"
+      shell: if [ $(rpm -q kernel | sort -Vr | head -n 1) != kernel-$(uname -r) ]; then echo "yes"; fi
+      ignore_errors: true
+      register: reboot
+
+    - name: Reboot required
+      command: shutdown -r now "Ansible kernel update applied"
+      async: 1
+      poll: 0
+      ignore_errors: true
+      when: reboot.changed
+
+    - name: Waiting for server to come back up
+      local_action:
+        wait_for
+        host="{{ inventory_hostname }}"
+        port=22
+        delay=10
+        timeout=60
+      become: false
+      when: reboot.changed
