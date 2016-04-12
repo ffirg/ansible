@@ -12,7 +12,7 @@ cd ansible
 ```
 
 ### Facts
-facts.all contains all the facts as dicovered by gather_facts for a typical Linux host
+facts.all contains all the facts as discovered by the gather_facts module for a typical Linux host
 
 #### Inventory hosts file
 
@@ -54,3 +54,14 @@ To show how tagging works:
 ansible-playbook -i hosts post-provision.yml --tags "users, packages"
 ansible-playbook -i hosts post-provision.yml --skip-tags "notify"
 ```
+
+#### reboot.yml 
+```
+ansible-playbook -i hosts reboot.yml
+```
+
+CAUTION!! This will probably always reboot a host so make sure you want to do that!
+Forces a reboot, based on kernel revision mismatch, and waits for SSH port 22 to be up again
+
+Shows: shell, command, local_action modules. Storing a variable and acting upon it (register/reboot)
+
