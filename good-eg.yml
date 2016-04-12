@@ -19,20 +19,6 @@
   - fail: msg="Chicken!"
     when: continue != "y"
 
-  - name: Copy over RHN script
-    copy:
-      src: ./rhsm.sh
-      dest: /tmp
-      owner: root
-      group: wheel
-      mode: 0550
-      backup: yes
-
-  - name: register on RHN
-    command: /tmp/rhsm.sh
-    register: RHN
-  - debug: var=RHN
-
   - name: ensure apache is at the latest version
     yum: pkg=httpd state=latest
 
