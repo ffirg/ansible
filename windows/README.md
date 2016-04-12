@@ -61,5 +61,23 @@ Installs various applications using win_chocolately and a for loop.
 
 Shows: win_chocolately module, for loop.
 
+#### sysinternals.yml
+```
+ansible-playbook -i hosts sysinternals.yml
+```
 
+Downloads sysinternals.zip to Administrators Downloads folder.
+
+Shows: win_get_url module, debug output.
+
+#### openssh.yml
+```
+ansible-playbook -i hosts openssh.yml
+```
+
+Attempts to download, install and configure openSSH Server port for Windows.
+Almost works apart from service starting at the end of the playbook. Failure seems to be to do with SSH key placements :(
+
+Shows: win_copy, get_url, win_file, win_copy, win_unzip, raw, win_firewall_rule, win_chocolatey, win_nssm modules
+Local playbook variables, delegation to localhost (get_url) to save downloading to each and every Windows host.
 
