@@ -6,6 +6,13 @@ Some example playbooks which can be used with ansible core or via tower for Wind
 
 I've used a Windows 2012 Server host in these examples.
 
+#### Facts
+windows_facts.eg contains all the facts as discovered by the gather_facts module for a typical Windows host.
+
+#### Inventory hosts file
+
+I use a local hosts file for the Windows hosts and setting generic connection variables to use WinRM.
+
 #### enable_iis.yml
 ```
 ansible-playbook -i hosts enable_iis.yml
