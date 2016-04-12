@@ -21,6 +21,9 @@ ansible-galaxy install danvarga.redhat-access-insights-client
 vi /etc/ansible/roles/danvarga.redhat-access-insights-client/templates/insights-client.conf.j2
 ```
 
+Edit the username= and password= parameters, and proxy= if necessary.
+[You would ideally want to 'ansible-vault' this file after to encrypt sensitive details]
+
 ```
 ansible-playbook -i hosts redhat-insights.yml
 ```
