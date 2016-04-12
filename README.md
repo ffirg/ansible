@@ -1,4 +1,4 @@
-# ansible
+# Ansible Playbooks
 
 Some example playbooks which can be used with ansible core or via tower
 
@@ -12,7 +12,10 @@ cd ansible
 ```
 
 ### Facts
-facts.all contains all the facts as discovered by the gather_facts module for a typical Linux host
+facts.all contains all the facts as discovered by the gather_facts module for a typical Linux host.
+
+### directory-structure.txt
+Describes the structure of a role based playbook.
 
 #### Inventory hosts file
 
