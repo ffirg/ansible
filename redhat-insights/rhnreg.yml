@@ -1,9 +1,6 @@
 ---
 - hosts: all
 
-  vars:
-    http_port: 80
-    max_clients: 200
   remote_user: vagrant
   become: yes
   become_method: sudo
@@ -32,4 +29,3 @@
     command: /tmp/rhsm.sh
     register: RHN
   - debug: var=RHN
-
