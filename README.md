@@ -65,3 +65,22 @@ Forces a reboot, based on kernel revision mismatch, and waits for SSH port 22 to
 
 Shows: shell, command, local_action modules. Storing a variable and acting upon it (register/reboot)
 
+#### deploy-vm-amazon.yml 
+```
+ansible-playbook -i hosts deploy-vm-amazon.yml 
+```
+
+Creates a VM instance in AWS EC2. You will need to change to reflect your needs and own account.
+
+Shows: How to run from your local client, ec2, wait_for, add_host modules. Delegation (to localhost) and waiting for port readiness.
+
+#### deploy-vm-azure.yml 
+```
+ansible-playbook -i hosts deploy-vm-azure.yml 
+```
+
+Creates a VM instance in Microsoft Azure Cloud. You will need to change to reflect your needs and own account.
+
+Shows: How to run from your local client, azure, wait_for, add_host modules. Delegation (to localhost) and waiting for port readiness.
+NOTE: currently broken. There is a missing 'instance' setting in the module causing a failure :(
+
