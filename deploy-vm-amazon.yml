@@ -26,7 +26,8 @@
         timeout: 300
       delegate_to: localhost
 
-    - name: Add the machine to the inventory
+    - name: Add the machine to in memory inventory
       add_host:
         hostname: "{{ newmachines.instances[0].public_ip }}"
-        groupname: amazon
+        groups: amazon
+        

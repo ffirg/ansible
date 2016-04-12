@@ -2,6 +2,7 @@
 - name: Setup an Azure instance
   hosts: localhost
   connection: local
+  gather_facts: false
   tasks:
     - name: Create Azure VM
       azure:
