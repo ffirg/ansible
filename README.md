@@ -24,7 +24,15 @@ For a particular host, try it ping it, get the default IP gateway if set, set th
 
 Shows: ping, hostname firewall modules, tagging, event notify handler
 
+#### blocks-eg.yml 
+```
+ansible-playbook -i hosts blocks-eg.yml
+```
 
+An example of how to use the Ansible 2.x blocks feature.
+Sets conditions around a code block (distribution= RedHat) and how to do generic error handling within it (rescue/always)
+
+Shows: ping, command, local_action modules, blocks with error handling
 
 
 
