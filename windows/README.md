@@ -24,3 +24,13 @@ ansible-playbook -i hosts deploy_web_site.yml
 After setting up IIS, use this playbook to deploy a new simple web site under wwwroot.
 
 Shows: win_get_url module
+
+#### getmem.yml
+```
+ansible-playbook -i hosts getmem.yml
+```
+
+Rather silly example, as this is discovered by facts, but shows how to run a Powershell script.
+
+Shows: script module, verbose 'debug' output
+
