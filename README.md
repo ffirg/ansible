@@ -84,3 +84,6 @@ Creates a VM instance in Microsoft Azure Cloud. You will need to change to refle
 Shows: How to run from your local client, azure, wait_for, add_host modules. Delegation (to localhost) and waiting for port readiness.
 NOTE: currently broken. There is a missing 'instance' setting in the module causing a failure :(
 
+### More Cloud Examples - see https://github.com/ffirg/ansible/multi_cloud/README.md
+
+### Windows examples - see https://github.com/ffirg/ansible/windows/README.md
