@@ -74,6 +74,14 @@ Creates a VM instance in AWS EC2. You will need to change to reflect your needs 
 
 Shows: How to run from your local client, ec2, wait_for, add_host modules. Delegation (to localhost) and waiting for port readiness.
 
+#### amazon.yml 
+```
+ansible-playbook -i hosts amazon.yml 
+```
+After creating a new VM instance, you can run this playbook to install a web server and add some user accounts.
+
+Shows: yum, user account modules, for loop and service handler restart
+
 #### deploy-vm-azure.yml 
 ```
 ansible-playbook -i hosts deploy-vm-azure.yml 
@@ -84,8 +92,15 @@ Creates a VM instance in Microsoft Azure Cloud. You will need to change to refle
 Shows: How to run from your local client, azure, wait_for, add_host modules. Delegation (to localhost) and waiting for port readiness.
 NOTE: currently broken. There is a missing 'instance' setting in the module causing a failure :(
 
-### More Cloud Examples
-See https://github.com/ffirg/ansible/blob/master/multi_cloud/README.md
+#### azure.yml 
+```
+ansible-playbook -i hosts azure.yml 
+```
+After creating a new classic VM, you can run this playbook to install a web server and NTP and add some user accounts.
+Calls the correct package manager installer and packages based on OS Distribution.
 
-### Windows Examples
-See https://github.com/ffirg/ansible/blob/master/windows/README.md
+Shows: yum, apt, user account modules, for loop based on Ansible discovered fact conditions (OS distribution)
+
+### More Cloud Examples - see https://github.com/ffirg/ansible/multi_cloud/README.md
+
+### Windows examples - see https://github.com/ffirg/ansible/windows/README.md
