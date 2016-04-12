@@ -30,6 +30,14 @@ For a particular host, try it ping it, get the default IP gateway if set, set th
 
 Shows: ping, hostname firewall modules, tagging, event notify handler
 
+#### extras.yml 
+```
+ansible-playbook -i hosts extras.yml
+```
+
+For all hosts apart from [cloud] ones, install the wget package
+Shows how to use the hosts: directive to be more specific against the playbook.
+
 #### blocks-eg.yml 
 ```
 ansible-playbook -i hosts blocks-eg.yml
