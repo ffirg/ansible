@@ -11,11 +11,11 @@ git clone https://github.com/ffirg/ansible.git
 cd ansible
 ```
 
-### Inventory hosts file
+#### Inventory hosts file
 
 I use a local hosts file to showcase how you can logically split hosts into [geographical] groups, and then from parent groups from other groups. I also set some group variables at this level to show how it can be done - used in the post-provision.yml for example.
 
-### first-checks.yml 
+#### first-checks.yml 
 ```
 ansible-playbook -i hosts first-checks.yml
 ```
