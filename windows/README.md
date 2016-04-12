@@ -11,7 +11,8 @@ I've used a Windows 2012 Server host in these examples.
 ansible-playbook -i hosts enable_iis.yml
 ```
 
-Install IIS and some sub features. By default, a Windows 2012 host comes with such software installed. This configures it for use.
+Install IIS and some sub features. 
+By default, a Windows 2012 host comes with such software installed. This configures it for use.
 
 Shows: win_feature module
 
