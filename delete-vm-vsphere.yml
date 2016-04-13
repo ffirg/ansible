@@ -1,0 +1,23 @@
+---
+- name: Delete a vsphere ESXI VM
+  hosts: localhost
+  connection: local
+
+  vars_prompt:
+    - name: "username"
+      prompt: "Enter vcenter username: "
+      private: yes
+    - name: "password"
+      prompt: "Enter vcenter password: "
+      private: yes
+
+  tasks:
+    - name: Delete an ESXi VM Guest
+      vsphere_guest:
+        vcenter_hostname: vcenter.gps.hst.ams2.redhat.com
+        # version 2.1 only -> validate_certs: no
+        username: '{{ username }}'
+        password: '{{ password }}'
+        guest: ansible_mynewvm01_template
+        state: absent
+        force: yes

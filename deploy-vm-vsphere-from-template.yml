@@ -1,0 +1,30 @@
+---
+- name: Setup an vsphere ESXI VM from a template
+  hosts: localhost
+  connection: local
+
+  vars_prompt:
+    - name: "username"
+      prompt: "Enter vcenter username: "
+      private: yes
+    - name: "password"
+      prompt: "Enter vcenter password: "
+      private: yes
+
+  tasks:
+    - name: Create an ESXi VM Guest From Template
+      vsphere_guest:
+        vcenter_hostname: vcenter.gps.hst.ams2.redhat.com
+        # version 2.1 only -> validate_certs: no
+        username: '{{ username }}'
+        password: '{{ password }}'
+        guest: ansible_mynewvm01_template
+        from_template: yes
+        template_src: tpl-rhel7-minimal
+        cluster: Demonstrations
+        #resource_pool: "/Resources"
+        #vm_extra_config:
+        #  folder: MyFolder
+        esxi:
+          datacenter: EMEA CloudLab
+          hostname: cloud12-acc.gps.hst.ams2.redhat.com
