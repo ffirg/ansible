@@ -112,6 +112,18 @@ Calls the correct package manager installer and packages based on OS Distributio
 
 Shows: yum, apt, user account modules, for loop based on Ansible discovered fact conditions (OS distribution)
 
+#### deploy-vm-vsphere-from-template.yml
+```
+ansible-playbook deploy-vm-vsphere-from-template.yml
+```
+Example of how easy it is to create a new vsphere VM within vcenter by cloning from an existing VM template. (Needs VPN and account login to vcenter)
+
+#### delete-vm-vsphere.yml
+```
+ansible-playbook delete-vm-vsphere.yml
+```
+Example of how to delete a vpshere VM within vcenter. (Needs VPN and account login to vcenter)
+
 ### More Cloud Examples - see https://github.com/ffirg/ansible/multi_cloud/README.md
 
 ### Windows examples - see https://github.com/ffirg/ansible/windows/README.md
