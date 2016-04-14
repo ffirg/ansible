@@ -1,0 +1,17 @@
+---
+# tasks file for OpenSCAP
+- hosts: all
+
+  tasks:
+    - name: install SCAP Security Guide
+      yum:
+        name: scap-security-guide
+        state: latest
+
+    - name: command to run oscap
+      command: oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_pci-dss --report /root/build_compliance_report.html /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml
+      ignore_errors: True
+
+    - wait_for: path=/root/build_compliance_report.html
+
+    - fetch: src=/root/build_compliance_report.html dest="/root/{{ ansible_hostname }}.html"
