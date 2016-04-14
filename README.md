@@ -124,5 +124,5 @@ ansible-playbook delete-vm-vsphere.yml
 ```
 Example of how to delete a vpshere VM within vcenter. (Needs VPN and account login to vcenter)
 
-### More Cloud Examples - see https://github.com/ffirg/ansible/blob/master/multi_cloud/README.md
-### Windows examples - see https://github.com/ffirg/ansible/blob/master/windows/README.md
+### More Cloud Examples - see https://github.com/ffirg/ansible/blob/master/multi_cloud
+### Windows examples - see https://github.com/ffirg/ansible/blob/master/windows
