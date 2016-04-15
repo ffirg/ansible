@@ -1,0 +1,24 @@
+---
+- name: Apple Quicktime Zero Day Vulnerabilities
+  hosts: all
+  tasks:
+    - name: Check for Apple Quicktime
+      script: scripts/get_sw.ps1
+      register: software
+    #- debug: var=software
+
+    - name: Installed software
+      raw: echo "{{ item  }}"
+      with_items: '{{ software.stdout_lines }}'
+
+    - name: Remove Apple Quicktime Software
+      win_chocolatey:
+        name: quicktime
+        state: absent
+      #raw: MsiExec.exe /I{111EE7DF-FC45-40C7-98A7-753AC46B12FB}. QuickTimePlayer.exe
+      #win_package:
+      #  name="Qucktime"
+      #  product_id="Quicktime 7"
+      #  path="c:\Users\Administrator\Downloads\QuickTimeInstaller.exe"
+      #  state="absent"
+      when: "'QuickTime' in software.stdout_lines"
