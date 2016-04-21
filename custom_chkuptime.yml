@@ -1,0 +1,11 @@
+---
+- hosts: beckton
+  remote_user: vagrant
+  gather_facts: false
+
+  tasks:
+    - name: Check uptime using custom bash module
+      action: chkuptime
+      register: uptime
+
+    - debug: var=uptime
