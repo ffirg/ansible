@@ -1,1 +1,43 @@
 ---
+
+   - block:
+     - name: 'Create Amazon VM Instance(s)'
+       ec2:
+         key_name: pgriffit@redhat-mac
+         region: eu-west-1
+         zone: eu-west-1b
+         instance_type: t2.micro
+         image: ami-8b8c57f8
+         wait: yes
+         group: launch-wizard-1
+         vpc_subnet_id: subnet-0f120178
+         assign_public_ip: yes
+         monitoring: no
+         count: '{{ vm_env_instances }}'
+         state: present
+       register: newmachines
+
+     - name: Wait for SSH to start
+       wait_for:
+         host: "{{ newmachines.instances[0].public_ip }}"
+         port: 22
+         timeout: 300
+       delegate_to: localhost
+
+     - name: Add the machine to in memory inventory
+       add_host:
+         hostname: "{{ newmachines.instances[0].public_ip }}"
+         groups: amazon
+
+     when: '"create" in vm_env_action'
+     become: no
+     ignore_errors: no
+
+
+   - block:
+     - name: 'Destroy Amazon VM instance(s)'
+       shell: /bin/true
+
+     when: '"destroy" in vm_env_action'
+     become: no
+
