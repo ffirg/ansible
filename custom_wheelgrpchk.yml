@@ -1,0 +1,11 @@
+---
+- hosts: beckton
+  remote_user: vagrant
+  gather_facts: false
+
+  tasks:
+    - name: Check number of users in wheel group
+      action: chkwheelgrp
+      register: wheel
+
+    - debug: var=wheel

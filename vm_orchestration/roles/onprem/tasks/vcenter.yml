@@ -1,0 +1,33 @@
+---
+
+    - block:
+      - name: Create an ESXi VM Guest From Template
+        vsphere_guest:
+          vcenter_hostname: '{{ vcenter }}'
+          username: '{{ username }}'
+          password: '{{ password }}'
+          guest: '{{ vm_env_hostname }}'
+          from_template: yes
+          template_src: tpl-rhel7-minimal
+          cluster: Demonstrations
+          #resource_pool: "/Resources"
+          #vm_extra_config:
+          #  folder: MyFolder
+          esxi:
+            datacenter: EMEA CloudLab
+            hostname: cloud12-acc.gps.hst.ams2.redhat.com
+      when: '"create" in vm_env_action'
+      become: no
+      ignore_errors: yes
+
+    - block:
+      - name: Destroy ESXi VM Guest
+        vsphere_guest:
+          vcenter_hostname: '{{ vcenter }}'
+          username: '{{ username }}'
+          password: '{{ password }}'
+          guest: '{{ vm_env_hostname }}'
+          state: absent
+          force: yes
+      when: '"destroy" in vm_env_action'
+      become: no
