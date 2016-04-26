@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# The module checks the number of users in /etc/group wheel
+# It returns JSON output since an Ansible module requires that.
+
+GROUP="/etc/group"
+FIND="wheel"
+
+number="`grep $FIND $GROUP | awk -F: '{print $4}' | awk -F',' '{print NF}'`"
+
+echo -e "{\"wheel_users\":\""$number"\"}"
