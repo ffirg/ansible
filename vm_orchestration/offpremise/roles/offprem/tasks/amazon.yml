@@ -14,7 +14,6 @@
          vpc_subnet_id: subnet-0f120178
          assign_public_ip: yes
          monitoring: no
-         #count: '{{ vm_env_instances }}'
          count: 1
          state: present
        register: newmachines
