@@ -1,5 +1,5 @@
 ---
-# This playbook provides VM orchestration across on premise and cloud envs
+# This playbook provides VM orchestration on Amazon EC2
 
 - name: VM Orchestration
   hosts: all
