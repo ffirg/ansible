@@ -1,0 +1,20 @@
+---
+# This playbook provides VM orchestration across on premise and cloud envs
+
+- name: VM Orchestration
+  hosts: all
+  connection: local
+  gather_facts: no
+
+  pre_tasks:
+    - name: Log what we are doing
+      #debug: var=vm_env_provider
+      shell: /bin/logger 'Going to {{ vm_env_action }} VM {{ vm_env_hostname }} for provider(s) {{ vm_env_provider[0] }}'
+
+  roles:
+    - common
+    - { role: onprem, when: vm_env == 'OnPrem' }
+
+  post_tasks:
+    - name: Log what we have done
+      shell: /bin/logger '{{ vm_env_action }} VM {{ vm_env_hostname }} for provider(s) {{ vm_env_provider[0] }} complete'

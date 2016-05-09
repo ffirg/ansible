@@ -1,5 +1,5 @@
 ---
-- hosts: beckton
+- hosts: all
   remote_user: vagrant
   gather_facts: false
 

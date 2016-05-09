@@ -1,0 +1,11 @@
+---
+- hosts: all
+  remote_user: vagrant
+  gather_facts: false
+
+  tasks:
+    - name: Check if user exists
+      action: chkuser username="{{ username }}"
+      register: user
+
+    - debug: msg="{{ user.msg }}"

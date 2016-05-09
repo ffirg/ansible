@@ -1,0 +1,6 @@
+---
+# This playbook will configure cloud based hosts
+
+- name: Amazon Orchestration
+  include: amazon.yml
+  when: '"amazon" in vm_env_provider'
