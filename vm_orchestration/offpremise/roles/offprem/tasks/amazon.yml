@@ -30,6 +30,9 @@
          hostname: "{{ newmachines.instances[0].public_ip }}"
          groups: amazon
 
+     - name: Configure instance hostname
+       set_fact: hostname_to_use={{ vm_hostname }}
+
      when: '"create" in vm_env_action'
      become: no
      ignore_errors: no
