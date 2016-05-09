@@ -1,0 +1,38 @@
+# vim:ft=ansible:
+---
+- hosts: all
+  gather_facts: true
+  become: yes
+
+  vars:
+    profile: xccdf_org.ssgproject.content_profile_pci-dss
+    outdir: /tmp
+    outfile: "{{ inventory_hostname }}.html"
+    outdest: "{{ outdir }}/{{ inventory_hostname }}.html"
+    guide: /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml
+    wwwdir: /var/www/html/openscap
+
+  tasks:
+    - name: Install openSCAP package on each node
+      yum:
+        name: scap-security-guide
+        state: latest
+      when: ansible_distribution == 'RedHat'
+
+    - name: Run oscap security check using {{ profile }}
+      command: oscap xccdf eval --profile {{ profile }} --report {{ outdest }} {{ guide }}
+      ignore_errors: true
+
+    - name: Wait for report to finish
+      wait_for: path={{ outdest }}
+
+# THIS ISN'T WORKING AS EXPECTED FOR SOME REASON?!?!
+# DIRECTORY CREATED UPFRONT AS A WORKAROUND FOR NOW
+#    - block:
+#       - name: Create local reports directory
+#         file: path={{ wwwdir }} state=directory mode=0755
+#      delegate_to: localhost
+#      become: no
+
+    - name: Fetch report from host
+      fetch: src={{ outdest }} dest="{{ wwwdir }}/{{ outfile }}" flat=yes

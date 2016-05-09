@@ -1,5 +1,5 @@
 [barnsley]
-192.168.133.100
+192.168.133.103
 
 [mansfield]
 
@@ -7,8 +7,8 @@
 
 [north:children]
 barnsley
-#mansfield
-#westbrom
+mansfield
+westbrom
 
 [north:vars]
 banter="It's not grim up north!"

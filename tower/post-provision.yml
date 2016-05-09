@@ -3,15 +3,20 @@
   remote_user: vagrant
   become: yes
   become_method: sudo
-  gather_facts: false
+  gather_facts: true
 
   tasks:
+
+    - name: Configure hostname
+      hostname: 
+        name: "{{ inventory_hostname }}.philredhat.com"
+
     - name: add user accounts
       user: name={{ item.name }} state=present groups={{ item.groups }}
       with_items:
         - {name: 'pgriffit', groups: 'wheel' }
-        - {name: 'fred', groups: 'wheel' }
-        - {name: 'wilma', groups: 'wheel' }
+        - {name: 'fred', groups: 'games' }
+        - {name: 'wilma', groups: 'games' }
 
     - name: Update MOTD
       copy:
