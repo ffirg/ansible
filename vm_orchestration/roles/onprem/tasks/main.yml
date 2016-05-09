@@ -1,6 +1,0 @@
----
-# This playbook will configure on premise hosts
-
-- name: VMware Orchestration
-  include: vcenter.yml
-  when: '"vmware" in vm_env_provider'
