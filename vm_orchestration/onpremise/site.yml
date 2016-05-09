@@ -8,8 +8,7 @@
 
   pre_tasks:
     - name: Log what we are doing
-      #debug: var=vm_env_provider
-      shell: /bin/logger 'Going to {{ vm_env_action }} VM {{ vm_env_hostname }} for provider(s) {{ vm_env_provider[0] }}'
+      shell: /bin/logger 'Going to {{ vm_env_action }} VM {{ vm_hostname }} for provider {{ vm_env_provider }}'
 
   roles:
     - common
@@ -17,4 +16,4 @@
 
   post_tasks:
     - name: Log what we have done
-      shell: /bin/logger '{{ vm_env_action }} VM {{ vm_env_hostname }} for provider(s) {{ vm_env_provider[0] }} complete'
+      shell: /bin/logger '{{ vm_env_action }} VM {{ vm_hostname }} for provider {{ vm_env_provider }} complete'

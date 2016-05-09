@@ -3,10 +3,10 @@
     - block:
       - name: Create an ESXi VM Guest From Template
         vsphere_guest:
-          vcenter_hostname: '{{ vcenter }}'
+          vcenter_hostname: '{{ vcenter_hostname }}'
           username: '{{ username }}'
           password: '{{ password }}'
-          guest: '{{ vm_env_hostname }}'
+          guest: '{{ vm_hostname }}'
           from_template: yes
           template_src: tpl-rhel7-minimal
           cluster: Demonstrations
@@ -23,10 +23,10 @@
     - block:
       - name: Destroy ESXi VM Guest
         vsphere_guest:
-          vcenter_hostname: '{{ vcenter }}'
+          vcenter_hostname: '{{ vcenter_hostname }}'
           username: '{{ username }}'
           password: '{{ password }}'
-          guest: '{{ vm_env_hostname }}'
+          guest: '{{ vm_hostname }}'
           state: absent
           force: yes
       when: '"destroy" in vm_env_action'
