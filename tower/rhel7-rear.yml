@@ -9,7 +9,12 @@
     nfs_server: 192.168.133.103
     nfs_mountpoint: recovery
     # NOTE: root password is required and gets passed in via Tower survey
+
   tasks:
+
+    - name: Demonstrates RHEL7's Relax-and-Recover (ReaR) utility
+      command: /bin/echo "As per https://access.redhat.com/solutions/2115051"
+
     - name: Install packages required for creating ISO images
       yum: name={{ item }} state=installed
       with_items:
@@ -23,5 +28,6 @@
 
     - name: Create disaster recovery system and generate backup files
       command: rear -d -v mkbackup
-      ignore_errors: false
 
+    - name: Refer to documentation to use for recovery
+      command: /bin/echo "https://access.redhat.com/solutions/2115051"
