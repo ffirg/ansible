@@ -1,7 +1,4 @@
 ---
-# This playbook will configure Amazon hosts
-
----
 - hosts: webservers
 
   vars:
