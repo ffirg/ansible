@@ -1,12 +1,6 @@
 ---
 # This playbook configures haproxy and some web servers for a rolling upgrade demo
 
-- name: apply common configuration to all nodes
-  hosts: all
-
-  roles:
-    - common
-
 - name: Configure the haproxy server
   hosts: haproxy
 
