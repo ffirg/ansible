@@ -3,5 +3,4 @@
 
 - name: Install httpd
   yum: name=httpd state=present
-  notify:
-  - start httpd
+  service: name=httpd enabled=yes state=started
