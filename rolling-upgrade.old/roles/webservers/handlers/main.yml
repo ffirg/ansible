@@ -1,5 +1,0 @@
----
-# Handler to handle common notifications.
-
-- name: restart httpd
-  service: name=httpd state=restarted
