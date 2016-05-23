@@ -3,6 +3,7 @@
 
 - name: Install ntp
   yum: name=ntp state=present
+  ignore_errors: yes
   tags: ntp
 
 - name: Configure ntp file
