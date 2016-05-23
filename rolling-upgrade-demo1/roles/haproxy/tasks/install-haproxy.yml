@@ -1,0 +1,5 @@
+---
+# These tasks install http and the php modules.
+
+- name: Install haproxy
+  yum: name=haproxy state=present
