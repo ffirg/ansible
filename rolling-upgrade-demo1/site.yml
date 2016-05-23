@@ -2,7 +2,7 @@
 # This playbook deploys the haproxy and web services
 
 - name: apply common configuration to all nodes
-  hosts: all!Windows
+  hosts: haproxy webservers
   remote_user: vagrant
   become: yes
   become_method: sudo
