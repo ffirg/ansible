@@ -1,0 +1,5 @@
+---
+# These tasks install http
+
+- name: Install httpd
+  yum: name=httpd state=present
