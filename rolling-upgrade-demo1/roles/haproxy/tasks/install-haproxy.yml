@@ -2,4 +2,10 @@
 # These tasks install http and the php modules.
 
 - name: Install haproxy
-  yum: name=haproxy state=present
+  yum: name=haproxy state=latest
+
+- name: Deploy haproxy configuration file
+  template: src=haproxy.j2 dest=/etc/haproxy/haproxy.cfg
+
+  notify:
+  - restart haproxy
