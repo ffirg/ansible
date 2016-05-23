@@ -1,0 +1,19 @@
+---
+- hosts: webservers
+
+  vars:
+    http_port: 80
+    max_clients: 200
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  gather_facts: false
+
+  tasks:
+
+  - name: Make sure apache is installed
+    yum: pkg=httpd state=latest
+
+    notify:
+    - restart haproxy
+

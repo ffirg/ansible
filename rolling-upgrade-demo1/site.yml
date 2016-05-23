@@ -1,0 +1,29 @@
+---
+# This playbook deploys the haproxy and web services
+
+- name: apply common configuration to all nodes
+  hosts: all
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+
+  roles:
+    - common
+
+- name: install and configure the haproxy
+  hosts: haproxy
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+
+  roles:
+    - haproxy
+
+- name: install and configure the webservers
+  hosts: webservers
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+
+  roles:
+    - webservers

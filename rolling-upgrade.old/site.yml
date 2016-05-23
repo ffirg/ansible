@@ -1,0 +1,14 @@
+---
+# This playbook configures haproxy and some web servers for a rolling upgrade demo
+
+- name: Configure the haproxy server
+  hosts: haproxy
+
+  roles:
+    - haproxy
+
+- name: Configure the web servers sitting behind the haproxy
+  hosts: webservers
+
+  roles:
+    - webservers
