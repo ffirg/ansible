@@ -1,5 +1,0 @@
----
-# Handler to handle common notifications.
-
-- name: restart haproxy
-  service: name=haproxy state=restarted
