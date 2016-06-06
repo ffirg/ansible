@@ -1,0 +1,28 @@
+---
+- name: Setup an RHEV based VM
+  hosts: localhost
+  connection: local
+
+  vars_prompt:
+    - name: "username"
+      prompt: "Enter RHEV-M username: "
+      private: yes
+    - name: "password"
+      prompt: "Enter RHEV-M users password: "
+      private: yes
+
+  tasks:
+    - name: Create a RHEV VM Guest
+      ovirt:
+        url: https://rhevm.saleslab.fab.redhat.com
+        #url: https://10.39.164.20/ovirt-engine
+        user: '{{ username }}'
+        password: '{{ password }}'
+        image: pgriffit-rhel7-base-template
+        zone: Default
+        #image: rhel7-template
+        #zone: cluster_rhel7
+        resource_type: template
+        instance_name: pgriffit-ansible-test1
+        instance_type: server
+      
