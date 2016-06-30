@@ -1,0 +1,10 @@
+---
+- name: Test slack module
+  hosts: localhost
+
+  tasks:
+    - name: Send test slack notification
+      local_action:
+        module: slack
+        token: thetoken/generatedby/slack
+        msg: "A test Ansible slack playbook message!"

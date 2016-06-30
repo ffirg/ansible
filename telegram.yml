@@ -1,0 +1,14 @@
+---
+- name: Test telegram module
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Send test message
+      command: /usr/bin/say "Is it working?"
+      #telegram:
+      #  token: "223389204:AAFNqO5roRapKcr3T4RCN2wf3dJO2yeMrqA"
+      #  chat_id: philgriffiths
+      #  msg: "Ansible playbook calling"
+      tags:
+        - text
