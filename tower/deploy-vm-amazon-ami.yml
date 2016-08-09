@@ -7,7 +7,7 @@
       ec2:
         region: "{{ ec2_region }}"
         zone: "{{ ec2_zone }}"
-        key_name: pgriffit
+        key_name: pgriffit@redhat-mac
         instance_type: t2.micro
         image: ami-d21f74a1
         instance_tags:
@@ -40,8 +40,7 @@
 
 - name: Configure new instances
   hosts: freshman
-  remote_user: ec2_user
-  become: true
+  remote_user: root
   gather_facts: true
 
   tasks:
