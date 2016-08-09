@@ -40,7 +40,7 @@
 
 - name: Configure new instances
   hosts: freshman
-  remote_user: root
+  remote_user: ec2_user
   become: true
   gather_facts: true
 
