@@ -17,4 +17,4 @@
   post_tasks:
     - name: Log what we have done
       shell: /bin/logger '{{ vm_env_action }} VM(s) for provider {{ vm_env_provider }} complete'
-      when: vm_hostname
+      
