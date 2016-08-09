@@ -9,21 +9,25 @@
         zone: "{{ ec2_zone }}"
         instance_type: t2.micro
         image: ami-d21f74a1
+        instance_tags:
+          Service:  "{{ service_tag }}"
         wait: yes
+        wait_timeout: 500
         group: launch-wizard-1
         vpc_subnet_id: subnet-0f120178
         assign_public_ip: yes
-        monitoring: no
-        count: 1
+        monitoring: yes
+        count: "{{ vm_instances }}"
         state: present
       register: newmachines
 
     - name: Wait for SSH to start
       wait_for:
-        host: "{{ newmachines.instances[0].public_ip }}"
+        host: "{{ item.public_ip }}"
         port: 22
         timeout: 300
-      delegate_to: localhost
+      with_items: newmachines.instances
+      #delegate_to: localhost
 
     - name: Add the machine to in memory inventory
       add_host:
