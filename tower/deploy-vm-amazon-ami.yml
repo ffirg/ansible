@@ -21,6 +21,14 @@
         state: present
       register: newmachines
 
+    - debug: var=newmachines verbosity=2
+
+    - name: Add new instances to host group
+      add_host:
+        hostname: "{{ item.public_ip }}"
+        groups: freshman
+      with_items: newmachines.instances
+
     - name: Wait for SSH to start
       wait_for:
         host: "{{ item.public_ip }}"
@@ -29,7 +37,30 @@
       with_items: newmachines.instances
       #delegate_to: localhost
 
-    - name: Add the machine to in memory inventory
-      add_host:
-        hostname: "{{ newmachines.instances[0].public_ip }}"
-        groups: amazon
+- name: Configure new instances
+  hosts: freshman
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Configure hostname
+      hostname:
+        name: "{{ inventory_hostname }}.philredhat.com"
+      tags:
+        - baseconfig
+
+    - name: add user accounts
+      user: name={{ item.name }} state=present groups={{ item.groups }}
+      with_items:
+        - {name: 'pgriffit', groups: 'wheel' }
+        - {name: 'fred', groups: 'games' }
+        - {name: 'wilma', groups: 'games' }
+      tags:
+        - users
+
+    - name: update packages
+      yum:
+        name: wget
+        state: latest
+      tags:
+        - packages
