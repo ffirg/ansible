@@ -1,0 +1,6 @@
+lb_name: rollingAMI
+lc_name: rollingAMI-{{ lc_suffix }}
+load_balancers: 
+- rollingAMI
+asg_group_name: rollingAMI
+batch_size: 1

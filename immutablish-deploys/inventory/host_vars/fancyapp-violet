@@ -1,0 +1,4 @@
+relative: fancyapp-blue
+asg_group_name: fancyapp-violet
+lc_name: fancyapp-violet-{{ lc_suffix }}
+ 

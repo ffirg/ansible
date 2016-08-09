@@ -1,0 +1,33 @@
+---
+# tasks file for asg
+
+- name: create launch config
+  ec2_lc:
+    name: "{{ lc_name }}"
+    image_id: "{{ image_id }}"
+    key_name: "{{ key_name }}"
+    region: "{{ region }}"
+    security_groups: "{{ lc_security_groups }}"
+    instance_type: "{{ instance_type }}"
+    assign_public_ip: yes
+  tags: launch_config
+
+- name: create autoscale groups
+  ec2_asg:
+    name: "{{ asg_group_name }}"
+    health_check_period: 60
+    load_balancers: "{{ load_balancers }}"
+    health_check_type: ELB
+    availability_zones: "{{ availability_zones | join(',')}}"
+    launch_config_name: "{{ lc_name }}"
+    min_size: "{{ asg_min_size }}"
+    max_size: "{{ asg_max_size }}"
+    desired_capacity: "{{ asg_desired_capacity }}"
+    region: "{{ region }}"
+    replace_all_instances: yes
+    vpc_zone_identifier: "{{ asg_subnets | join(',') }}"
+  until: asg_result.viable_instances|int >= asg_desired_capacity|int
+  delay: 10
+  retries: 120
+  register: asg_result
+  tags: autoscale_group

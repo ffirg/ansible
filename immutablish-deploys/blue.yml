@@ -1,0 +1,6 @@
+- hosts: fancyapp-blue
+  vars_files:
+  - vars/settings.yml
+  roles:
+  - infra
+  - dual_asg

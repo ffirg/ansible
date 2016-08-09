@@ -1,0 +1,25 @@
+app_name: rollingAMI
+instance_type: t2.micro
+region: eu-west-1
+lc_security_groups:
+- "{{ app_security_group.group_id }}"
+- "{{ admin_access_group.group_id }}"
+asg_subnets:
+- "{{ vpc.subnets[0].id }}"
+- "{{ vpc.subnets[1].id }}"
+asg_desired_capacity: 5
+asg_min_size: 5
+asg_max_size: 10
+vpc_subnets:
+  - cidr: 172.31.0.0/16
+    resource_tags: { "Name":"{{ app_name }}-1" }
+    az: eu-west-1a
+  - cidr: 172.31.0.0/16
+    resource_tags: { "Name":"{{ app_name }}-2" }
+    az: eu-west-1b
+route_tables:
+  - subnets:
+      - 172.31.0.0/16
+    routes:
+      - dest: 0.0.0.0/0
+        gw: igw

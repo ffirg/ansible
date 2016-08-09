@@ -30,4 +30,3 @@
       add_host:
         hostname: "{{ newmachines.instances[0].public_ip }}"
         groups: amazon
-        
