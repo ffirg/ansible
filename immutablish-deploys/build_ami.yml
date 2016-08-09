@@ -1,4 +1,4 @@
-- hosts: localhost
+- hosts: all
   tasks:
   - name: launch temporary instance
     ec2:
@@ -29,7 +29,7 @@
   roles:
     - apache
 
-- hosts: localhost
+- hosts: all
   tasks:
 
   - name: bundle ami
