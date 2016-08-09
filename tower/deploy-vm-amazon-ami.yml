@@ -23,7 +23,7 @@
           Name: Demo
       register: newmachines
 
-    - debug: var=newmachines
+    #- debug: var=newmachines.instances
 
     - name: Add new instances to host group
       add_host:
