@@ -20,7 +20,6 @@
         exact_count: "{{ vm_instances }}"
         count_tag:
           Name: Demo
-        state: present
       register: newmachines
 
     - debug: var=newmachines verbosity=2
