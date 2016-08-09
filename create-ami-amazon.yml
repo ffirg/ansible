@@ -1,0 +1,27 @@
+---
+- name: Setup an EC2 instance
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Basic AMI Creation
+      ec2_ami:
+        region: eu-west-1
+        instance_id: i-123456
+        wait: yes
+        name: {{ ami_name }}
+        tags:
+          Name: amibuilder
+          Service: Build
+      register: newmachines
+
+    - name: Wait for SSH to start
+      wait_for:
+        host: "{{ newmachines.instances[0].public_ip }}"
+        port: 22
+        timeout: 300
+      delegate_to: localhost
+
+    - name: Add the machine to in memory inventory
+      add_host:
+        hostname: "{{ newmachines.instances[0].public_ip }}"
+        groups: amazon
