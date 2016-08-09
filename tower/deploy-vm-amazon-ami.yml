@@ -9,7 +9,7 @@
         zone: "{{ ec2_zone }}"
         key_name: pgriffit@redhat-mac
         instance_type: t2.micro
-        image: ami-d21f74a1
+        image: ami-6d147f1e
         instance_tags:
           Service:  "{{ service_tag }}"
         wait: yes
