@@ -4,7 +4,7 @@
    - block:
      - name: 'Create Amazon VM Instance(s)'
        ec2:
-         key_name: "pgriffit@redhat-mac"
+         key_name: "ansible-tower"
          #aws_access_key: "{{ AWS_ACCESS_KEY|default(lookup('env', 'AWS_ACCESS_KEY')) }}"
          #aws_secret_key: "{{ AWS_SECRET_KEY|default(lookup('env', 'AWS_SECRET_KEY')) }}"
          region: eu-west-1

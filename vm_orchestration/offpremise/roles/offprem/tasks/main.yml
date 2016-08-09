@@ -4,7 +4,3 @@
 - name: Amazon Orchestration
   include: amazon.yml
   when: '"Amazon" in vm_env_provider'
-
-- name: Google Orchestration
-  include: gcp.yml
-  when: '"Google" in vm_env_provider'
