@@ -17,7 +17,9 @@
         vpc_subnet_id: subnet-0f120178
         assign_public_ip: yes
         monitoring: yes
-        count: "{{ vm_instances }}"
+        exact_count: "{{ vm_instances }}"
+        count_tag:
+          Name: Demo
         state: present
       register: newmachines
 
