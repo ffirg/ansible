@@ -5,7 +5,7 @@
      - name: 'Create Amazon VM Instance(s)'
        ec2:
          #key_name: "pgriffit@redhat-mac"
-         key_name: "Phils AWS Account"
+         key_name: "aws-phil"
          region: eu-west-1
          zone: eu-west-1b
          instance_type: t2.micro
