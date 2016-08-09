@@ -6,9 +6,9 @@
     - name: Basic AMI Creation
       ec2_ami:
         region: eu-west-1
-        instance_id: i-256f85a8
+        instance_id: "{{ ec2_instance_id }}"
         wait: yes
-        name: "{{ ami_name }}"
+        name: "{{ ec2_ami_name }}"
         tags:
           Name: amibuilder
           Service: Build
