@@ -22,24 +22,24 @@
           Name: Demo
       register: newmachines
 
-    - debug: var=newmachines verbosity=2
+    - debug: var=newmachines
 
     - name: Add new instances to host group
       add_host:
         hostname: "{{ item.public_ip }}"
         groups: freshman
-      with_items: newmachines.instances
+      with_items: "{{ newmachines.instances }}"
 
     - name: Wait for SSH to start
       wait_for:
         host: "{{ item.public_ip }}"
         port: 22
         timeout: 300
-      with_items: newmachines.instances
-      #delegate_to: localhost
+      with_items: "{{ newmachines.instances }}"
 
 - name: Configure new instances
   hosts: freshman
+  remote_user: ec2_user
   become: true
   gather_facts: true
 
