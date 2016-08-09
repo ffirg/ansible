@@ -1,0 +1,31 @@
+---
+- name: Setup an EC2 instance
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Create an EC2 machine using our own AMI
+      ec2:
+        region: "{{ ec2_region }}"
+        zone: "{{ ec2_zone }}"
+        instance_type: t2.micro
+        image: ami-d21f74a1
+        wait: yes
+        group: launch-wizard-1
+        vpc_subnet_id: subnet-0f120178
+        assign_public_ip: yes
+        monitoring: no
+        count: 1
+        state: present
+      register: newmachines
+
+    - name: Wait for SSH to start
+      wait_for:
+        host: "{{ newmachines.instances[0].public_ip }}"
+        port: 22
+        timeout: 300
+      delegate_to: localhost
+
+    - name: Add the machine to in memory inventory
+      add_host:
+        hostname: "{{ newmachines.instances[0].public_ip }}"
+        groups: amazon
