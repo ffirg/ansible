@@ -40,7 +40,6 @@
 
 - name: Configure new instances
   hosts: freshman
-  remote_user: root
   gather_facts: true
 
   tasks:
