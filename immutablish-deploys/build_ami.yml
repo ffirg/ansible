@@ -4,7 +4,6 @@
     ec2:
       assign_public_ip: yes
       region: "{{ region }}"
-      key_name: "{{ key_name }}"
       group_id: "{{ group_id }}"
       instance_type: m1.small
       vpc_subnet_id: "{{ vpc_subnet_id }}"
