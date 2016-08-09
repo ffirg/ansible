@@ -9,6 +9,7 @@
   pre_tasks:
     - name: Log what we are doing
       shell: /bin/logger 'Going to {{ vm_env_action }} VM {{ vm_hostname }} for provider(s) {{ vm_env_provider }}'
+      when: vm_hostname
 
   roles:
     - common
@@ -17,3 +18,4 @@
   post_tasks:
     - name: Log what we have done
       shell: /bin/logger '{{ vm_env_action }} VM {{ vm_hostname }} for provider(s) {{ vm_env_provider }} complete'
+      when: vm_hostname
