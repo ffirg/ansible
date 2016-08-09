@@ -1,4 +1,4 @@
-- hosts: amibuilder
+- hosts: localhost
   tasks:
   - name: launch temporary instance
     ec2:
@@ -30,11 +30,11 @@
   roles:
     - apache
 
-- hosts: amibuilder
+- hosts: localhost
   tasks:
 
   - name: bundle ami
-    action: 
+    action:
       module: ec2_ami
       instance_id: "{{ ami_instance.tagged_instances.0.id }}"
       region: "{{ region }}"
