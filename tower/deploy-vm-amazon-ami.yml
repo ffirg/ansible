@@ -44,6 +44,6 @@
   become: true
   gather_facts: true
 
-roles:
-  - common
-  - fuse
+  roles:
+    - common
+    - fuse
