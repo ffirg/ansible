@@ -51,6 +51,13 @@
       tags:
         - baseconfig
 
+    - name: add groups
+      group:
+        name: fuse
+        state: present
+      tags:
+        - groups
+
     - name: add user accounts
       user: name={{ item.name }} state=present groups={{ item.groups }}
       with_items:
