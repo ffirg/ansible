@@ -44,6 +44,29 @@
   become: true
   gather_facts: true
 
-  roles:
-    - common
-    - fuse
+  tasks:
+    - name: Configure hostname
+      hostname:
+        name: "{{ inventory_hostname }}.philredhat.com"
+      tags:
+        - baseconfig
+
+    - name: add user accounts
+      user: name={{ item.name }} state=present groups={{ item.groups }}
+      with_items:
+        - {name: 'pgriffit', groups: 'wheel' }
+        - {name: 'fred', groups: 'games' }
+        - {name: 'wilma', groups: 'games' }
+        - {name: 'jboss', groups: 'fuse' }
+      tags:
+        - users
+
+    - name: Install Java 1.7 and some basic dependencies
+      yum: name={{item}} state=present
+      with_items:
+        - unzip
+        - java-1.7.0-openjdk
+        - libselinux-python
+        - libsemanage-python
+      tags:
+        - packages
