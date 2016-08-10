@@ -20,7 +20,7 @@
         monitoring: yes
         exact_count: "{{ vm_instances }}"
         count_tag:
-          Name: Demo
+          Service: "{{ service_tag }}"
       register: newmachines
 
     #- debug: var=newmachines.instances
