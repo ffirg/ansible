@@ -77,3 +77,6 @@
         - libsemanage-python
       tags:
         - packages
+
+    - include: roles/common/main.yml
+    #- include: roles/fuse/main.yml
