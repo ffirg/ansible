@@ -78,5 +78,5 @@
       tags:
         - packages
 
-    - include: roles/common/main.yml
-    #- include: roles/fuse/main.yml
+    - include: roles/common/tasks/main.yml
+    #- include: roles/fuse/tasks/main.yml
