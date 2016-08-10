@@ -60,13 +60,6 @@
       tags:
         - users
 
-    #- name: update packages
-    #  yum:
-    #    name: wget
-    #    state: latest
-    #  tags:
-    #    - packages
-
-    - name: Amazon Orchestration
-      include: install-fuse.yml
-      #include: deploy-fuse.yml
+  roles:
+    - install-fuse
+    - deploy-fuse
