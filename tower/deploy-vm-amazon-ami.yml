@@ -67,5 +67,6 @@
     #  tags:
     #    - packages
 
-    - include: install-fuse.yml
-    #- include: deploy-fuse.yml
+    - name: Amazon Orchestration
+      include: install-fuse.yml
+      #include: deploy-fuse.yml
