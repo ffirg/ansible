@@ -62,4 +62,4 @@
 
   roles:
     - install-fuse
-    - deploy-fuse
+    #- deploy-fuse
