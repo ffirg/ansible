@@ -4,5 +4,14 @@
 - name: "Common tasks go here..."
   shell: echo "This command was run on `/bin/date`"
 
-  #include: otherstuff.yml
-  
+- name: add user accounts
+  user: name={{ item.name }} state=present groups={{ item.groups }}
+  with_items:
+    - {name: 'pgriffit', groups: 'wheel' }
+    - {name: 'fred', groups: 'games' }
+    - {name: 'wilma', groups: 'games' }
+    - {name: 'jboss', groups: 'fuse' }
+  tags:
+    - users
+    
+include: packages.yml
