@@ -13,5 +13,8 @@
     - {name: 'jboss', groups: 'fuse' }
   tags:
     - users
-    
-include: packages.yml
+
+- name: Install extra OS packages
+  include: packages.yml
+  tags:
+    - packages
