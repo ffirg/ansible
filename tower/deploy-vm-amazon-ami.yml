@@ -57,9 +57,17 @@
         - {name: 'pgriffit', groups: 'wheel' }
         - {name: 'fred', groups: 'games' }
         - {name: 'wilma', groups: 'games' }
+        - {name: 'jboss', groups: 'fuse' }
       tags:
         - users
 
+    - name: Install Java 1.7 and some basic dependencies
+      yum: name={{item}} state=present
+      with_items:
+        - unzip
+        - java-1.7.0-openjdk
+        - libselinux-python
+        - libsemanage-python
+
   roles:
     - fuse
-    
