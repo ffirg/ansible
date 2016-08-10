@@ -46,4 +46,4 @@
 
 roles:
   - common
-  #- fuse
+  - fuse
