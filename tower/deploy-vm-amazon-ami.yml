@@ -61,5 +61,5 @@
         - users
 
   roles:
-    - install-fuse
-    #- deploy-fuse
+    - fuse
+    
