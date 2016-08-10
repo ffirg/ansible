@@ -68,6 +68,8 @@
         - java-1.7.0-openjdk
         - libselinux-python
         - libsemanage-python
+      tags:
+        - software
 
-  roles:
-    - fuse
+  #roles:
+  #  - fuse
