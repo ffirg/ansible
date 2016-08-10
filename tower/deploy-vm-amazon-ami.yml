@@ -1,9 +1,9 @@
 ---
-- name: Setup an EC2 instance
+- name: Setup an EC2 instances
   hosts: localhost
   connection: local
   tasks:
-    - name: Create an EC2 machine using our own AMI
+    - name: Create EC2 machines using our own AMI
       ec2:
         region: "{{ ec2_region }}"
         zone: "{{ ec2_zone }}"
@@ -71,5 +71,5 @@
       tags:
         - software
 
-  #roles:
-  #  - fuse
+      #roles:
+      #  - fuse
