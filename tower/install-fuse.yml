@@ -1,32 +1,34 @@
-vars:
-  jboss_fuse_jar_file: fuse-eap-installer-6.2.1.redhat-084.jar
-  # jboss_fuse_jar_file_url: ''
-  jboss_fuse_install_dir: /var/tmp
+---
 
-tasks:
+  vars:
+    jboss_fuse_jar_file: files/fuse-eap-installer-6.2.1.redhat-084.jar
+    # jboss_fuse_jar_file_url: ''
+    jboss_fuse_install_dir: /var/tmp
 
-  - name: Copy Fuse installer
-    copy:
-      src: "{{ jboss_fuse_jar_file }}"
-      dest: "{{ jboss_fuse_install_dir }}"
-    when: jboss_fuse_jar_file_url is not defined
-    tags:
-      - jboss_fuse
+  tasks:
 
-  - name: Download Fuse installer
-    get_url:
-      url: "{{ jboss_fuse_jar_file_url }}"
-      dest: "{{ jboss_fuse_install_dir }}"
-    when: jboss_fuse_jar_file_url is defined
-    tags:
-      - jboss_fuse
+    - name: Copy Fuse installer
+      copy:
+        src: "{{ jboss_fuse_jar_file }}"
+        dest: "{{ jboss_fuse_install_dir }}"
+      when: jboss_fuse_jar_file_url is not defined
+      tags:
+        - jboss_fuse
 
-  - name: Install Fuse
-    command: "java -jar {{ jboss_fuse_install_dir }}/{{ jboss_fuse_jar_file | basename }}"
-    become: yes
-    become_user: "{{ jboss_eap_user }}"
-    args:
-      creates: "{{ jboss_eap_jboss_home }}/fusepatch"
-      chdir: "{{ jboss_eap_jboss_home }}"
-    tags:
-      - jboss_fuse
+    - name: Download Fuse installer
+      get_url:
+        url: "{{ jboss_fuse_jar_file_url }}"
+        dest: "{{ jboss_fuse_install_dir }}"
+      when: jboss_fuse_jar_file_url is defined
+      tags:
+        - jboss_fuse
+
+    - name: Install Fuse
+      command: "java -jar {{ jboss_fuse_install_dir }}/{{ jboss_fuse_jar_file | basename }}"
+      become: yes
+      become_user: "{{ jboss_eap_user }}"
+      args:
+        creates: "{{ jboss_eap_jboss_home }}/fusepatch"
+        chdir: "{{ jboss_eap_jboss_home }}"
+      tags:
+        - jboss_fuse
