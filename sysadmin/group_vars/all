@@ -1,0 +1,5 @@
+---
+# Variables listed here are applicable to all host groups
+
+ntpserver1: 10.161.48.206
+ntpserver2: 10.52.32.206
