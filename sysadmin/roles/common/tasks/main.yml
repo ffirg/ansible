@@ -13,3 +13,14 @@
 - name: Start the ntp service
   service: name=ntpd state=started enabled=yes
   tags: ntp
+
+- name: Configure hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: add user accounts
+  user: name={{ item.name }} state=present groups={{ item.groups }}
+  with_items:
+    - {name: 'ansible', groups: 'wheel' }
+    - {name: 'matt', groups: 'wheel' }
+    - {name: 'paul', groups: 'wheel' }
