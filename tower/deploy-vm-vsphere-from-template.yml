@@ -48,7 +48,8 @@
     - debug: var=vm_facts
 
     - name: Perform vMotion of VM
-      vmware_vmotion:
+      local_action:
+        module: vmware_vmotion
         hostname: 10.39.164.21
         username: '{{ username }}'
         password: '{{ password }}'
