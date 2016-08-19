@@ -47,12 +47,13 @@
 
     - debug: var=vm_facts
 
-    - name: Perform vMotion of VM
-      local_action:
-        module: vmware_vmotion
-        hostname: 10.39.164.21
-        username: '{{ username }}'
-        password: '{{ password }}'
-        validate_certs: False
-        vm_name: '{{ vm_hostname }}'
-        destination_host: '{{ vmotion_host }}'
+    # This will be possible in ansible core version 2.2
+    #- name: Perform vMotion of VM
+    #  local_action:
+    #    module: vmware_vmotion
+    #    hostname: 10.39.164.21
+    #    username: '{{ username }}'
+    #    password: '{{ password }}'
+    #    validate_certs: False
+    #    vm_name: '{{ vm_hostname }}'
+    #    destination_host: '{{ vmotion_host }}'
