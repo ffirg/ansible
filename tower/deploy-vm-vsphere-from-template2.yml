@@ -9,7 +9,8 @@
         vcenter_hostname: '{{ VMWARE_HOST }}'
         username: '{{ VMWARE_USER }}'
         password: '{{ VMWARE_PASSWORD }}'
-        guest: '{{ tower-generated-vm }}'
+        guest: tower-generated-vm
+        #guest: '{{ tower-generated-vm }}'
         from_template: yes
         template_src: tpl-rhel7-minimal
         cluster: Demonstrations
