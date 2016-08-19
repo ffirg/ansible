@@ -22,11 +22,11 @@
 
     - name: Reconfigure VMware VM
       vsphere_guest:
-        guest: "{{ hostname }}"
+        guest: '{{ hostname }}'
         state: reconfigured
         force: true
         vm_extra_config:
           notes: VM Created Using Ansible Tower
         vm_hardware:
-          memory_mb: "{{ memory }}"
-          num_cpus: "{{ cpus }}"
+          memory_mb: '{{ memory }}'
+          num_cpus: '{{ cpus }}'
