@@ -1,6 +1,6 @@
 ---
 - name:  Extra Windows Server Stuff
-  hosts: windows
+  hosts: all
   gather_facts: true
   remote_user: vagrant
   vars:
