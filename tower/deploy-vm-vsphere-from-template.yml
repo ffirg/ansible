@@ -14,7 +14,6 @@
         template_src: tpl-rhel7-minimal
         cluster: Demonstrations
         vm_extra_config:
-          folder: ansible
           vcpu.hotadd: yes
           mem.hotadd:  yes
         esxi:
@@ -27,7 +26,7 @@
         state: reconfigured
         force: true
         vm_extra_config:
-          notes: VM Created Using Ansible Tower 
+          notes: VM Created Using Ansible Tower
         vm_hardware:
           memory_mb: "{{ memory }}"
           num_cpus: "{{ cpus }}"
