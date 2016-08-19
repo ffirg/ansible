@@ -40,3 +40,6 @@
         password: '{{ password }}'
         guest: '{{ vm_hostname }}'
         vmware_guest_facts: yes
+      register: vm_facts
+
+    - debug: var=vm_facts
