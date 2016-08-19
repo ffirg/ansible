@@ -32,3 +32,4 @@
         vm_hardware:
           memory_mb: '{{ vm_memory }}'
           num_cpus: '{{ vm_cpus }}'
+        vmware_guest_facts: yes
