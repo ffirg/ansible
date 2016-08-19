@@ -10,7 +10,7 @@
     - name: "password"
       prompt: "Enter vcenter password: "
       private: yes
-      
+
   tasks:
     - name: Create an ESXi VM Guest
       vsphere_guest:
@@ -25,32 +25,32 @@
           mem.hotadd:  yes
           notes: This is a test VM spun up using an Ansible playbook
           #folder: MyFolder
-          vm_disk:
-            disk1:
-              size_gb: 10
-              type: thin
-              datastore: ds-cloud12-localdisk
-              #folder: EMEA CloudLab/Individuals/pgriffit
-          vm_nic:
-            nic1:
-              type: vmxnet3
-              network: VM Network
-              network_type: standard
-            nic2:
-              type: vmxnet3
-              network: DPortGroup-Public
-              network_type: dvs
-          vm_hardware:
-            memory_mb: 2048
-            num_cpus: 2
-            osid: centos64Guest
-            scsi: paravirtual
+        vm_disk:
+          disk1:
+            size_gb: 10
+            type: thin
+            datastore: ds-cloud12-localdisk
+            #folder: EMEA CloudLab/Individuals/pgriffit
+        vm_nic:
+          nic1:
+            type: vmxnet3
+            network: VM Network
+            network_type: standard
+          nic2:
+            type: vmxnet3
+            network: DPortGroup-Public
+            network_type: dvs
+        vm_hardware:
+          memory_mb: 2048
+          num_cpus: 2
+          osid: centos64Guest
+          scsi: paravirtual
             #vm_cdrom:
             #  type: "iso"
             #  iso_path: "DatastoreName/cd-image.iso"
             #vm_floppy:
             #  type: "image"
             #  image_path: "DatastoreName/floppy-image.flp"
-          esxi:
-            datacenter: EMEA CloudLab
-            hostname: cloud12-acc.gps.hst.ams2.redhat.com
+        esxi:
+          datacenter: EMEA CloudLab
+          hostname: cloud12-acc.gps.hst.ams2.redhat.com
