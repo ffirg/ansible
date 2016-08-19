@@ -67,15 +67,15 @@
         name: "{{vm_hostname}}"
         groups: vm_just_added
 
-  - name: Configure new instances
-    hosts: vm_just_added
-    remote_user: root
-    become: false
-    gather_facts: true
+- name: Configure new instances
+  hosts: vm_just_added
+  remote_user: root
+  become: false
+  gather_facts: true
 
-    tasks:
-    - name: Configure hostname
-      hostname:
-        name: "{{ vm_hostname }}"
-      tags:
-        - baseconfig
+  tasks:
+  - name: Configure hostname
+    hostname:
+      name: "{{ vm_hostname }}"
+    tags:
+      - baseconfig
