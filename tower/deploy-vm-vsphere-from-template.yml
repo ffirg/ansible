@@ -9,7 +9,7 @@
         vcenter_hostname: 10.39.164.21
         username: '{{ username }}'
         password: '{{ password }}'
-        guest: '{{ hostname }}'
+        guest: '{{ vm_hostname }}'
         from_template: yes
         template_src: tpl-rhel7-minimal
         cluster: Demonstrations
@@ -22,11 +22,11 @@
 
     - name: Reconfigure VMware VM
       vsphere_guest:
-        guest: '{{ hostname }}'
+        guest: '{{ vm_hostname }}'
         state: reconfigured
         force: true
         vm_extra_config:
           notes: VM Created Using Ansible Tower
         vm_hardware:
-          memory_mb: '{{ memory }}'
-          num_cpus: '{{ cpus }}'
+          memory_mb: '{{ vm_memory }}'
+          num_cpus: '{{ vm_cpus }}'
