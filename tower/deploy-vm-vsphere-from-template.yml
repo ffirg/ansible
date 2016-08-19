@@ -16,6 +16,7 @@
         vm_extra_config:
           vcpu.hotadd: yes
           mem.hotadd:  yes
+          notes: "VM Created Using Ansible Tower"
         esxi:
           datacenter: EMEA CloudLab
           hostname: cloud12-acc.gps.hst.ams2.redhat.com
@@ -28,8 +29,6 @@
         guest: '{{ vm_hostname }}'
         state: reconfigured
         force: true
-        vm_extra_config:
-          notes: VM Created Using Ansible Tower
         vm_hardware:
           memory_mb: '{{ vm_memory }}'
           num_cpus: '{{ vm_cpus }}'
