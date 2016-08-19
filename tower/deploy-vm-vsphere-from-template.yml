@@ -20,3 +20,14 @@
         esxi:
           datacenter: EMEA CloudLab
           hostname: cloud12-acc.gps.hst.ams2.redhat.com
+
+    - name: Reconfigure VMware VM
+      vsphere_guest:
+        guest: "{{ hostname }}"
+        state: reconfigured
+        force: true
+        vm_extra_config:
+          notes: VM Created Using Ansible Tower 
+        vm_hardware:
+          memory_mb: "{{ memory }}"
+          num_cpus: "{{ cpus }}"
