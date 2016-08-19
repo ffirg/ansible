@@ -23,6 +23,8 @@
         esxi:
           datacenter: EMEA CloudLab
           hostname: cloud12-acc.gps.hst.ams2.redhat.com
+      tags:
+        vm-create
 
     - name: Reconfigure VMware VM (add CPU and RAM)
       vsphere_guest:
@@ -35,6 +37,8 @@
         vm_hardware:
           memory_mb: '{{ vm_memory }}'
           num_cpus: '{{ vm_cpus }}'
+      tags:
+        vm-config
 
     - name: Gather VM guest facts that could be acted upon
       vsphere_guest:
@@ -57,3 +61,22 @@
     #    validate_certs: False
     #    vm_name: '{{ vm_hostname }}'
     #    destination_host: '{{ vmotion_host }}'
+
+    - name: Register Host in Ansible Inventory
+      add_host:
+        name: "{{vm_hostname}}"
+        groups: vm_just_added
+
+    - name: Configure new instances
+      hosts: vm_just_added
+      remote_user: root
+      become: false
+      gather_facts: true
+
+      tasks:
+
+        - name: Configure hostname
+          hostname:
+            name: "{{ vm_hostname }}"
+          tags:
+            - baseconfig
