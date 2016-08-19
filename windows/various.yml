@@ -2,7 +2,7 @@
 # This playbook uses various Windows modules to test their functionality
 
 - name: test raw module
-  hosts: windows
+  hosts: all
   tasks:
     - name: run ipconfig
       raw: ipconfig
@@ -10,7 +10,7 @@
     - debug: var=ipconfig
 
 - name: test stat module
-  hosts: windows
+  hosts: all
   tasks:
     - name: test stat module on file
       win_stat: path="C:/Windows/win.ini"
