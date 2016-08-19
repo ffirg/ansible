@@ -1,6 +1,6 @@
 # vim:ft=ansible:
 ---
-- hosts: barnsley
+- hosts: OnPremise!barnsley
   remote_user: vagrant
   become: yes
   become_method: sudo
