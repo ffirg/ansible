@@ -17,6 +17,7 @@
 - name: Configure hostname
   hostname:
     name: "{{ inventory_hostname }}"
+  tags: config
 
 - name: add user accounts
   user: name={{ item.name }} state=present groups={{ item.groups }}
@@ -24,3 +25,4 @@
     - {name: 'ansible', groups: 'wheel' }
     - {name: 'matt', groups: 'wheel' }
     - {name: 'paul', groups: 'wheel' }
+  tags: users

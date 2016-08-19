@@ -1,0 +1,21 @@
+---
+- name: Setup an vsphere ESXI VM from a template
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Create an ESXi VM Guest From Template
+      vsphere_guest:
+        #vcenter_hostname: 10.39.164.21
+        #username: '{{ username }}'
+        #password: '{{ password }}'
+        guest: '{{ hostname }}'
+        from_template: yes
+        template_src: tpl-rhel7-minimal
+        cluster: Demonstrations
+        #resource_pool: "/Resources"
+        #vm_extra_config:
+        #  folder: MyFolder
+        esxi:
+          datacenter: EMEA CloudLab
+          hostname: cloud12-acc.gps.hst.ams2.redhat.com
