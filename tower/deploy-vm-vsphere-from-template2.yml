@@ -6,7 +6,7 @@
   tasks:
     - name: Create an ESXi VM Guest From Template
       vsphere_guest:
-        vcenter_hostname: '{{VMWARE_HOST}}'
+        vcenter_hostname: '{{ VMWARE_HOST }}'
         username: '{{ VMWARE_USER }}'
         password: '{{ VMWARE_PASSWORD }}'
         guest: '{{ tower-generated-vm }}'
