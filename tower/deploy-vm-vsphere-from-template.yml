@@ -32,4 +32,11 @@
         vm_hardware:
           memory_mb: '{{ vm_memory }}'
           num_cpus: '{{ vm_cpus }}'
+
+    - name: Gather and act on vmware guest facts
+      vsphere_guest:
+        vcenter_hostname: 10.39.164.21
+        username: '{{ username }}'
+        password: '{{ password }}'
+        guest: '{{ vm_hostname }}'
         vmware_guest_facts: yes
