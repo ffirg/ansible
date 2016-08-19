@@ -13,9 +13,10 @@
         from_template: yes
         template_src: tpl-rhel7-minimal
         cluster: Demonstrations
-        #resource_pool: "/Resources"
-        #vm_extra_config:
-        #  folder: MyFolder
+        vm_extra_config:
+          folder: ansible
+          vcpu.hotadd: yes
+          mem.hotadd:  yes
         esxi:
           datacenter: EMEA CloudLab
           hostname: cloud12-acc.gps.hst.ams2.redhat.com
