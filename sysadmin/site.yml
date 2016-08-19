@@ -9,4 +9,4 @@
 
   roles:
     - common
-    - web
+    - { role: web, when: "ansible_os_family == 'RedHat'" }
