@@ -73,10 +73,9 @@
       become: false
       gather_facts: true
 
-      tasks:
 
-        - name: Configure hostname
-          hostname:
-            name: "{{ vm_hostname }}"
-          tags:
-            - baseconfig
+    - name: Configure hostname
+      hostname:
+        name: "{{ vm_hostname }}"
+      tags:
+        - baseconfig
