@@ -4,6 +4,6 @@
 - name: Setup Windows IIS Service and Deploy Web Site
   hosts: all
   gather_facts: false
-  tasks:
-    - include: enable_iis.yml
-    - include: deploy_web_site.yml
+
+- include: enable_iis.yml
+- include: deploy_web_site.yml
