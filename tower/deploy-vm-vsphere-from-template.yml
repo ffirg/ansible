@@ -22,6 +22,9 @@
 
     - name: Reconfigure VMware VM
       vsphere_guest:
+        vcenter_hostname: 10.39.164.21
+        username: '{{ username }}'
+        password: '{{ password }}'
         guest: '{{ vm_hostname }}'
         state: reconfigured
         force: true
