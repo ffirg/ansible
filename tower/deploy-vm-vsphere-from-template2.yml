@@ -6,9 +6,9 @@
   tasks:
     - name: Create an ESXi VM Guest From Template
       vsphere_guest:
-        #vcenter_hostname: 10.39.164.21
-        #username: '{{ username }}'
-        #password: '{{ password }}'
+        vcenter_hostname: '{{VCENTER_HOSTNAME}}'
+        username: '{{ VCENTER_USER }}'
+        password: '{{ VCENTER_PASSWORD }}'
         guest: '{{ hostname }}'
         from_template: yes
         template_src: tpl-rhel7-minimal
