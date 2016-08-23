@@ -8,19 +8,25 @@
     profile: xccdf_org.ssgproject.content_profile_pci-dss
     outdir: /tmp
     outfile: "{{ inventory_hostname }}.html"
-    outdest: "{{ outdir }}/{{ inventory_hostname }}.html"
+    results: "{{ outdir }}/{{ inventory_hostname }}-results.xml"
+    outdest: "{{ outdir }}/{{ inventory_hostname }}-results.html"
     guide: /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml
     wwwdir: /var/www/html/openscap
 
   tasks:
-    - name: Install openSCAP package on each node
+
+    - name: Install openSCAP packages on each node
       yum:
-        name: scap-security-guide
+        name: {{ item }}
         state: latest
+      with_items:
+        - openscap
+        - openscap-utils
+        - scap-security-guide
       when: ansible_distribution == 'RedHat'
 
     - name: Run oscap security check using {{ profile }}
-      command: oscap xccdf eval --profile {{ profile }} --report {{ outdest }} {{ guide }}
+      command: oscap xccdf eval --profile {{ profile }} --results {{ results }} --report {{ outdest }} {{ guide }}
       ignore_errors: true
 
     - name: Wait for report to finish
