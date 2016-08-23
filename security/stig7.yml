@@ -5,7 +5,7 @@
 
   pre_tasks:
     - name: Performing Security Scan
-      when: '"Audit" in action'
+      debug: msg=foo
 
   roles:
     - { role: RHEL7-STIG,
