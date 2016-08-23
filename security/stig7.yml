@@ -1,6 +1,5 @@
 ---
-- name: RHEL7 STIG Compliancy
-  hosts: all
+- hosts: all
   become: yes
 
   tasks:
