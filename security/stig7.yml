@@ -4,6 +4,7 @@
   gather_facts: true
 
   roles:
+    
     - { role: RHEL7-STIG,
       rhel7stig_cat1_audit: yes,
       rhel7stig_cat2_audit: yes,
@@ -14,7 +15,6 @@
       when: '"Audit" in action'
       }
 
-  roles:
     - { role: RHEL7-STIG,
       rhel7stig_cat1_audit: no,
       rhel7stig_cat2_audit: no,
