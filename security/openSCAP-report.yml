@@ -15,7 +15,7 @@
 
   tasks:
 
-    - name: Install openSCAP packages on each node
+    - name: Install openSCAP packages
       yum: name={{ item }} state=latest
       with_items:
         - openscap
