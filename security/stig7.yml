@@ -4,9 +4,9 @@
   gather_facts: true
 
   pre_tasks:
-    - name: Log what we are doing
-      debug: msg="Security {{ action }} being run"
-      
+    - name: Performing Security Scan
+      when: '"Audit" in action'
+
   roles:
     - { role: RHEL7-STIG,
       rhel7stig_cat1_audit: yes,
