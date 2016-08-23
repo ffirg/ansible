@@ -3,24 +3,15 @@
   hosts: all
   become: yes
 
-  roles:
-    
-    - { role: RHEL7-STIG,
-      rhel7stig_cat1_audit: yes,
-      rhel7stig_cat2_audit: yes,
-      rhel7stig_cat3_audit: yes,
-      rhel7stig_cat1_patch: no,
-      rhel6stig_cat2_patch: no,
-      rhel6stig_cat3_patch: no
-      }
-  when: "{{ action }} == 'Audit'"
+  tasks:
 
-    - { role: RHEL7-STIG,
-        rhel7stig_cat1_audit: no,
-        rhel7stig_cat2_audit: no,
-        rhel7stig_cat3_audit: no,
-        rhel7stig_cat1_patch: yes,
-        rhel6stig_cat2_patch: no,
-        rhel6stig_cat3_patch: no
-      }
-  when: "{{ action }} == 'Fix'"
+    - name: Run STIG RHEL7 Audit
+        - { role: RHEL7-STIG,
+            rhel7stig_cat1_audit: yes,
+            rhel7stig_cat2_audit: yes,
+            rhel7stig_cat3_audit: yes,
+            rhel7stig_cat1_patch: no,
+            rhel6stig_cat2_patch: no,
+            rhel6stig_cat3_patch: no
+          }
+      when: "{{ action }} == 'Audit'"
