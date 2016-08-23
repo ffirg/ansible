@@ -6,7 +6,7 @@
 
   vars:
     profile: xccdf_org.ssgproject.content_profile_pci-dss
-    outdir: /tmp
+    outdir: /vagrant
     outfile: "{{ inventory_hostname }}.html"
     results: "{{ outdir }}/{{ inventory_hostname }}-results.xml"
     outdest: "{{ outdir }}/{{ inventory_hostname }}-results.html"
@@ -29,14 +29,3 @@
 
     - name: Wait for report to finish
       wait_for: path={{ outdest }}
-
-# THIS ISN'T WORKING AS EXPECTED FOR SOME REASON?!?!
-# DIRECTORY CREATED UPFRONT AS A WORKAROUND FOR NOW
-#    - block:
-#       - name: Create local reports directory
-#         file: path={{ wwwdir }} state=directory mode=0755
-#      delegate_to: localhost
-#      become: no
-
-    - name: Fetch report from host
-      fetch: src={{ outdest }} dest="{{ wwwdir }}/{{ outfile }}" flat=yes
