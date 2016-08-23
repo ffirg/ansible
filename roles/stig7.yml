@@ -1,5 +1,5 @@
 ---
-- name: Apply STIG
+- name: Apply RHEL7 STIG Compliance Fixes
   hosts: all
   become: yes
   roles:
