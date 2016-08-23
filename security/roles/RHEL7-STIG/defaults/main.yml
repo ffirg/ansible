@@ -1,6 +1,6 @@
-rhel7stig_cat1_patch: yes
+rhel7stig_cat1_patch: no
 rhel7stig_cat2_patch: no
-rhel7stig_cat3_patch: no
+rhel7stig_cat3_patch: yes
 
 # Whether or not to run tasks related to auditing/patching the desktop environment
 rhel7stig_gui: no
@@ -37,4 +37,3 @@ rhel7stig_boot_password_config:
 
       - regexp: ^password_pbkdf2 root
         line: password_pbkdf2 root {{ rhel7stig_bootloader_password | grub2_hash(salt='KeokpkECTJeoDhEA5XtiLQ') }}
-

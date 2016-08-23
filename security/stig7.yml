@@ -4,23 +4,5 @@
   gather_facts: true
 
   roles:
-    
-    - { role: RHEL7-STIG,
-      rhel7stig_cat1_audit: yes,
-      rhel7stig_cat2_audit: yes,
-      rhel7stig_cat3_audit: yes,
-      rhel7stig_cat1_patch: no,
-      rhel6stig_cat2_patch: no,
-      rhel6stig_cat3_patch: no,
-      when: '"Audit" in action'
-      }
 
-    - { role: RHEL7-STIG,
-      rhel7stig_cat1_audit: no,
-      rhel7stig_cat2_audit: no,
-      rhel7stig_cat3_audit: no,
-      rhel7stig_cat1_patch: no,
-      rhel6stig_cat2_patch: no,
-      rhel6stig_cat3_patch: yes,
-      when: '"Fix" in action'
-      }
+    - { role: RHEL7-STIG }
