@@ -1,5 +1,5 @@
 ---
-- name: Apply RHEL7 STIG Compliance Fixes
+- name: RHEL7 STIG Compliancy
   hosts: all
   become: yes
   roles:
@@ -9,9 +9,9 @@
       rhel7stig_cat3_audit: yes,
       rhel7stig_cat1_patch: no,
       rhel6stig_cat2_patch: no,
-      rhel6stig_cat3_patch: no,
-      when: "{{ action }} == 'Audit'"
+      rhel6stig_cat3_patch: no
       }
+      when: "{{ action }} == 'Audit'"
 
     - { role: RHEL7-STIG,
         rhel7stig_cat1_audit: no,
@@ -19,6 +19,6 @@
         rhel7stig_cat3_audit: no,
         rhel7stig_cat1_patch: yes,
         rhel6stig_cat2_patch: no,
-        rhel6stig_cat3_patch: no,
-        when: "{{ action }} == 'Fix'"
-        }
+        rhel6stig_cat3_patch: no
+      }
+      when: "{{ action }} == 'Fix'"
