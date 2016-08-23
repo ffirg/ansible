@@ -4,9 +4,11 @@
   gather_facts: true
 
 
-debug: var=action verbosity=2
+  tasks:
+  - name: Run Audit
+  - debug: var=action verbosity=2
 
-  roles:
+  roles:debug
     - { role: RHEL7-STIG,
       rhel7stig_cat1_audit: yes,
       rhel7stig_cat2_audit: yes,
