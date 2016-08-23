@@ -4,4 +4,4 @@
   gather_facts: false
   roles:
 #    - { role: RHEL7-STIG, rhel7stig_cat1_audit: yes, rhel7stig_cat2_audit: yes, rhel7stig_cat3_audit: yes, rhel7stig_cat1_patch: no, rhel6stig_cat2_patch: no, rhel6stig_cat3_patch: no, when: "'Audit' in {{ action }}" }
-    - { role: RHEL7-STIG, when: action == 'Audit' }
+    - { role: rhel7-stig, when: action == 'Audit' }
