@@ -3,7 +3,7 @@
 - hosts: all
   gather_facts: true
 
-- debug: var=action verbosity=2
+  debug: var=action verbosity=2
 
   roles:
     - { role: RHEL7-STIG,
