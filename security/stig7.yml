@@ -10,6 +10,6 @@
       rhel7stig_cat3_audit: yes,
       rhel7stig_cat1_patch: no,
       rhel6stig_cat2_patch: no,
-      rhel6stig_cat3_patch: no
+      rhel6stig_cat3_patch: no,
       when: '"Audit" in action'
       }
