@@ -3,7 +3,7 @@
 - hosts: all
   gather_facts: false
 
-- name: Run RHEL7-STIG Audit Check
+  name: Run RHEL7-STIG Audit Check
   roles:
     - { role: RHEL7-STIG,
       rhel7stig_cat1_audit: yes,
