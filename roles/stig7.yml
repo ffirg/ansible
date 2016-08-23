@@ -5,5 +5,5 @@
   roles:
     - role: RHEL7-STIG
       rhel7stig_cat1_patch: yes
-      rhel6stig_cat2: no
+      rhel6stig_cat2: yes
       rhel6stig_other: no
