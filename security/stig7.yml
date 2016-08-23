@@ -3,11 +3,10 @@
 - hosts: all
   gather_facts: true
 
-
-  tasks:
-  - name: Run Audit
-  - debug: var=action verbosity=2
-
+  pre_tasks:
+    - name: Log what we are doing
+      debug: msg="Security {{ action }} being run"
+      
   roles:
     - { role: RHEL7-STIG,
       rhel7stig_cat1_audit: yes,
