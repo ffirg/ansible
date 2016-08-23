@@ -3,10 +3,6 @@
 - hosts: all
   gather_facts: true
 
-  pre_tasks:
-    - name: Performing Security Scan
-      debug: msg=foo
-
   roles:
     - { role: RHEL7-STIG,
       rhel7stig_cat1_audit: yes,
@@ -16,4 +12,15 @@
       rhel6stig_cat2_patch: no,
       rhel6stig_cat3_patch: no,
       when: '"Audit" in action'
+      }
+
+  roles:
+    - { role: RHEL7-STIG,
+      rhel7stig_cat1_audit: no,
+      rhel7stig_cat2_audit: no,
+      rhel7stig_cat3_audit: no,
+      rhel7stig_cat1_patch: no,
+      rhel6stig_cat2_patch: no,
+      rhel6stig_cat3_patch: yes,
+      when: '"Fix" in action'
       }
