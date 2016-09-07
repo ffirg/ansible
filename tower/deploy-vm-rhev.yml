@@ -11,7 +11,7 @@
     - name: Create a VM called {{ hostname }}
       ovirt:
         url: https://rhevm.saleslab.fab.redhat.com
-        user: '{{ username }}'
+        user: '{{ username }}@internal'
         password: '{{ password }}'
         image: pgriffit-rhel7-base-template
         zone: Default
