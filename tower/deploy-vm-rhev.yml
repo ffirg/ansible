@@ -10,7 +10,7 @@
   tasks:
     - name: Create a VM called {{ hostname }}
       ovirt:
-        url: https://10.39.164.20
+        url: https://10.33.11.20 # rhevm.saleslab.fab.redhat.com
         user: '{{ username }}@internal'
         password: '{{ password }}'
         image: pgriffit-rhel7-base-template
