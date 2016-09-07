@@ -6,7 +6,7 @@
   vars:
     machine_type: n1-standard-1 # default
     image: debian-7
-    service_account_email: philgriffiths@redhat-examples.iam.gserviceaccount.com
+    #service_account_email: philgriffiths@redhat-examples.iam.gserviceaccount.com
     #credentials_file: /Users/pgriffit/GCP/RedHat-Examples-28359b0a0c4f.json
     project_id: redhat-examples
 
@@ -16,7 +16,7 @@
           instance_names: ansible-example-vm
           machine_type: '{{ machine_type }}'
           image: '{{ image }}'
-          service_account_email: '{{ service_account_email }}'
+          #service_account_email: '{{ service_account_email }}'
           #credentials_file: '{{ credentials_file }}'
           project_id: '{{ project_id }}'
           tags: webserver
