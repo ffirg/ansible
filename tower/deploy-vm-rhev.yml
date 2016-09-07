@@ -1,0 +1,20 @@
+---
+- name: Create a RHEV based VM
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    hostname: pgriffit-ansible-test1
+
+  tasks:
+    - name: Create a VM called {{ hostname }}
+      ovirt:
+        url: https://rhevm.saleslab.fab.redhat.com
+        user: '{{ username }}'
+        password: '{{ password }}'
+        image: pgriffit-rhel7-base-template
+        zone: Default
+        resource_type: template
+        instance_name: '{{ hostname }}'
+        instance_type: server
