@@ -9,7 +9,7 @@
         zone: "{{ ec2_zone }}"
         key_name: ansible-tower
         instance_type: t2.micro
-        image: ami-a1aadfd2
+        image: ami-801769f3
         instance_tags:
           Service:  "{{ service_tag }}"
         wait: yes
