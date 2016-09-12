@@ -4,33 +4,12 @@
   connection: local
   gather_facts: false
   tasks:
-    - name: Create Azure VM
-      azure:
+    - name: Create Azure VM with defaults
+      azure_rm_virtualmachine:
+        resource_group: rg1
         name: "my-azure-vm"
-        hostname: "ansible-azure-vm-01"
-        role_size: Small
-        image: 5112500ae3b842c8b9c604889f8753c3__OpenLogic-CentOS-72-20160308
-        #static_virtual_network_ip_address: none
-        location: 'West Europe'
-        user: pgriffit
-        os_type: linux
-        ssh_cert_path: /home/vagrant/azure/azure-cert.pem
-        management_cert_path: /home/vagrant/azure/azure-manage.cer
-        password: "Redhat01"
-        subscription_id: a62a781e-0b4d-48a4-9094-3aa422bb02e3
-        storage_account: abc123classic
-        state: present
-        wait: yes
-      register: newmachines
-
-    - name: Wait for SSH to start
-      wait_for:
-        host: "{{ newmachines.instances[0].public_ip }}"
-        port: 22
-        timeout: 300
-      delegate_to: localhost
-
-    - name: Add the machine to the inventory
-      add_host:
-        hostname: "{{ newmachines.instances[0].public_ip }}"
-        groupname: azure
+        image:
+          offer: CentOS
+          publisher: OpenLogic
+          sku: '7.1'
+          version: latest
