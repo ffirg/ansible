@@ -3,12 +3,13 @@
   hosts: localhost
   connection: local
   gather_facts: false
+
   tasks:
     - name: Create Azure VM with defaults
       azure_rm_virtualmachine:
         resource_group: rg1
         name: '{{vm_name}}'
-        vm_size: Standard_D4
+        vm_size: '{{machine_size}}'
         admin_username: '{{admin_username}}'
         admin_password: '{{admin_password}}'
         image:
