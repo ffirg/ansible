@@ -23,14 +23,14 @@
         wait: yes
       register: newmachines
 
-    - name: Wait for SSH to start
-      wait_for:
-        host: "{{ newmachines.instances[0].public_ip }}"
-        port: 22
-        timeout: 300
-      delegate_to: localhost
+    #- name: Wait for SSH to start
+    #  wait_for:
+    #    host: "{{ newmachines.instances[0].public_ip }}"
+    #    port: 22
+    #    timeout: 300
+    #  delegate_to: localhost
 
-    - name: Add the machine to the inventory
-      add_host:
-        hostname: "{{ newmachines.instances[0].public_ip }}"
-        groupname: azure
+    #- name: Add the machine to the inventory
+    #  add_host:
+    #    hostname: "{{ newmachines.instances[0].public_ip }}"
+    #    groupname: azure
