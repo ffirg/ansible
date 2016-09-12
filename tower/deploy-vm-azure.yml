@@ -7,7 +7,10 @@
     - name: Create Azure VM with defaults
       azure_rm_virtualmachine:
         resource_group: rg1
-        name: "my-azure-vm"
+        name: '{{vm_name}}'
+        vm_size: Standard_D4
+        admin_username: '{{admin_username}}'
+        admin_password: '{{admin_password}}'
         image:
           offer: CentOS
           publisher: OpenLogic
