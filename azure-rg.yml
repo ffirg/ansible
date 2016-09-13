@@ -1,0 +1,12 @@
+---
+- name: Manage Azure Resource Groups
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Create Azure resource group
+      azure_rm_resourcegroup:
+        name: "tower-testing-rg"
+        location: 'West Europe'
+        tags:
+          testing: tower-testing

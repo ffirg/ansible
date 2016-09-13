@@ -10,7 +10,7 @@
         hostname: "ansible-azure-vm-01"
         role_size: Small
         image: 5112500ae3b842c8b9c604889f8753c3__OpenLogic-CentOS-72-20160308
-        #static_virtual_network_ip_address: none
+        static_virtual_network_ip_address: none
         location: 'West Europe'
         user: pgriffit
         os_type: linux
