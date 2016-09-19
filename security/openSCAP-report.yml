@@ -16,7 +16,7 @@
   tasks:
 
     - name: Install openSCAP packages
-      yum: name={{ item }} state=latest
+      yum: name={{ item }} state=latest disablerepo="*" enablerepo="rhel-7-server-rpms"
       with_items:
         - openscap
         - openscap-utils
