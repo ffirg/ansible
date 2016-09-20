@@ -23,4 +23,5 @@
          
      when: '"create" in vm_env_action'
      become: yes
+     become_user: root
      ignore_errors: no
