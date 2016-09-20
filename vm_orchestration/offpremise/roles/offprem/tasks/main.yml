@@ -3,4 +3,5 @@
 
 - name: Amazon Orchestration
   include: amazon.yml
+  include: bootstrap.yml
   when: '"Amazon" in vm_env_provider'
