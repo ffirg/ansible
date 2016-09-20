@@ -1,0 +1,26 @@
+# vim:ft=ansible:
+---
+
+   - block:
+
+     - name: Pull bootstrap.py script
+       git: repo=https://github.com/Katello/katello-client-bootstrap.git dest=/tmp/bootstrap
+       tags:
+         - git
+
+     - name: Run bootstrap.py and attach to our satellite
+       command: >
+        /usr/bin/python /tmp/bootstrap/bootstrap.py
+        -l '{{ SAT6_USERNAME }}'
+        -p '{{ SAT6_PASSWORD }}'
+        -a '{{ ACTIVATION_KEY }}'
+        -o '{{ SAT6_ORG }}'
+        -g '{{ HOSTGROUP }}'
+        --location='{{ AWS_LOCATION }}'
+        --server='{{ SATELLITE_FQDN }}'
+       tags:
+         - git
+         
+     when: '"create" in vm_env_action'
+     become: yes
+     ignore_errors: no
