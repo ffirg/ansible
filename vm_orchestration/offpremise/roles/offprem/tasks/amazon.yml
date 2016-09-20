@@ -56,7 +56,7 @@
          - git
          
      when: '"create" in vm_env_action'
-     become: no
+     become: yes
      ignore_errors: no
 
 
