@@ -52,6 +52,8 @@
         -g '{{ HOSTGROUP }}'
         --location='{{ AWS_LOCATION }}'
         --server='{{ SATELLITE_FQDN }}'
+       become_method: su
+       become_user: root
        tags:
          - git
          
