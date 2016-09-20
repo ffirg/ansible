@@ -3,5 +3,8 @@
 
 - name: Amazon Orchestration
   include: amazon.yml
+  when: '"Amazon" in vm_env_provider'
+  
+- name: Satellite Register
   include: bootstrap.yml
   when: '"Amazon" in vm_env_provider'
