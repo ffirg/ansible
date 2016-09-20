@@ -1,0 +1,12 @@
+---
+- name: Setup an Azure instance
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Create virtual network
+      azure_rm_virtualnetwork:
+        resource_group: tower
+        name: testvn001
+        address_prefixes: "10.10.0.0/24"

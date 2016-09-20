@@ -1,0 +1,19 @@
+---
+- name: Setup an Azure instance
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Create Azure VM
+      azure_rm_virtualmachine:
+        resource_group: 'tower'
+        name: pjgtestvm1
+        vm_size: Standard_D1
+        ad_user: pgriffit@redhat.com
+        admin_username: root
+        admin_password: xxxxxx
+        image:
+          offer: CentOS
+          publisher: OpenLogic
+          sku: '7.1'
+          version: latest
