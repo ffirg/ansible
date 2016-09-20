@@ -35,6 +35,18 @@
      - name: Configure instance hostname
        set_fact: hostname_to_use={{ vm_hostname }}
 
+     - name: Pull bootstrap.py script
+       git: repo=https://github.com/Katello/katello-client-bootstrap.git dest=/tmp
+
+     - name: Run bootstrap.py and attach to our satellite
+       command: >
+        /usr/bin/python /tmp/bootstrap.py
+        -l {{ SAT6_USERNAME }}
+        -p {{ SAT6_PASSWORD }}
+        -a {{ ACTIVATION_KEY }}
+        --location={{ AWS_LOCATION }}
+        --server={{ SATELLITE_FQDN }}
+
      when: '"create" in vm_env_action'
      become: no
      ignore_errors: no
