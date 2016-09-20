@@ -10,7 +10,7 @@
          region: eu-west-1
          zone: eu-west-1b
          instance_type: t2.micro
-         image: ami-2bc3a858
+         image: ami-d39de6a0
          wait: yes
          group: launch-wizard-1
          vpc_subnet_id: subnet-0f120178
