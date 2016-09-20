@@ -52,7 +52,7 @@
         -g '{{ HOSTGROUP }}'
         --location='{{ AWS_LOCATION }}'
         --server='{{ SATELLITE_FQDN }}'
-        tags:
+       tags:
          - git
          
      when: '"create" in vm_env_action'
