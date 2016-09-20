@@ -56,8 +56,7 @@
          - git
          
      when: '"create" in vm_env_action'
-     become_method: sudo
-     become: yes
+     become: no
      ignore_errors: no
 
 
