@@ -49,6 +49,7 @@
         -p '{{ SAT6_PASSWORD }}'
         -a '{{ ACTIVATION_KEY }}'
         -o '{{ SAT6_ORG }}'
+        -g '{{ HOSTGROUP }}'
         --location='{{ AWS_LOCATION }}'
         --server='{{ SATELLITE_FQDN }}'
         tags:
