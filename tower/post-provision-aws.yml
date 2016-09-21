@@ -1,0 +1,20 @@
+---
+- hosts: all
+  gather_facts: true
+
+  tasks:
+
+    - name: add user accounts
+      user: name={{ item.name }} state=present groups={{ item.groups }}
+      with_items:
+        - {name: 'phil', groups: 'wheel' }
+        - {name: 'fred', groups: 'games' }
+        - {name: 'wilma', groups: 'games' }
+
+    - name: Update MOTD
+      copy:
+        src: ./motd
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: 0444
