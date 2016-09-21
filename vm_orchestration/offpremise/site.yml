@@ -5,6 +5,7 @@
   hosts: all
   connection: local
   gather_facts: no
+  remote_user: root
 
   pre_tasks:
     - name: Log what we are doing
