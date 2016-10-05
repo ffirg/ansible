@@ -7,7 +7,7 @@
   tasks:
     - name: Create Azure VM with defaults
       azure_rm_virtualmachine:
-        resource_group: rg1
+        resource_group: tower-testing-rg1
         name: '{{vm_name}}'
         vm_size: '{{vm_size}}'
         admin_username: '{{admin_username}}'
