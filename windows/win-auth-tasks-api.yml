@@ -26,13 +26,13 @@
           # until V2.2, we'll need to use the raw module. 2.2 has win_command!
           raw: '{{tmp_dir}}/{{script}}.ps1'
 
-    rescue:
-      - debug: msg='Caught an error in this block'
+      rescue:
+        - debug: msg='Caught an error in this block'
 
-    always:
-      - debug: msg='This bit always runs'
+      always:
+        - debug: msg='This bit always runs'
 
-    delegate_to: 10.0.0.178
-    ansible_connection: winrm
-    ansible_port: 5986
-    ansible_winrm_server_cert_validation: ignore
+      delegate_to: 10.0.0.178
+      ansible_connection: winrm
+      ansible_port: 5986
+      ansible_winrm_server_cert_validation: ignore
