@@ -1,11 +1,15 @@
 ---
-- name: Disable User Accounts and SSO
-  gather_facts: false
+# This playbook will disable a users AD Account and SSO
+
+- name: Disable Users AD Account and SSO
+  hosts: all
   vars:
     ansible_port: 5986
     ansible_connection: winrm
     ansible_winrm_server_cert_validation: ignore
 
   tasks:
-    - name: Bloody work will you -  users AD account
+    - name: Disable AD Account
       win_command: whoami
+      register: whoami_out
+    - debug: var=whoami_out
