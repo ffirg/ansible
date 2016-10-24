@@ -1,5 +1,6 @@
 ---
 - name: Disable Users AD Account and SSO
+  hosts: all
   gather_facts: false
 
   vars:
