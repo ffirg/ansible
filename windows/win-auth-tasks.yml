@@ -13,6 +13,7 @@
   tasks:
 
   - name: Disable Users AD Account
+    hosts: tag_Name_active_directory_server
     # until V2.2 we'll need to use script, 2.2 has win_command!
     script: scripts/disable_ad_account.ps1
     register: ad_result
@@ -24,3 +25,4 @@
       url: https://jsonplaceholder.typicode.com/posts
       method: POST
       #body: "{ 'user': 'disable' }"
+    delegate_to: localhost
