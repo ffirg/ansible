@@ -11,10 +11,10 @@
     ansible_winrm_server_cert_validation: ignore
 
   tasks:
-    - name: run whoami
-      win_command: whoami
-      register: whoami_out
-    - debug: var=whoami_out
+  - name: run whoami
+    win_command: whoami
+    register: whoami_out
+  - debug: var=whoami_out
 
 - name: Disable users SSO account
 # Run Octa SAML 2.0 API call would go here...
@@ -26,8 +26,8 @@
   ignore_errors: true
 
   tasks:
-    - name: test stat module on file
-      win_uri:
-        url: http://somethinghere.com/api
-        method: GET
-      register: api_callout
+  - name: test stat module on file
+    win_uri:
+      url: http://somethinghere.com/api
+      method: GET
+    register: api_callout
