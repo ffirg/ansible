@@ -1,4 +1,4 @@
 $strComputer = $Host
 Clear
 $User = fred
-@(Disable-ADAccount -Identity $User)
+Disable-ADAccount -Identity $User
