@@ -1,6 +1,5 @@
 ---
-- name: Disable User AD Account and SSO
-  hosts: all
+- name: Disable Users AD Account and SSO
   gather_facts: false
 
   vars:
@@ -9,5 +8,8 @@
     ansible_winrm_server_cert_validation: ignore
 
   tasks:
-  - name: ping
-    win_ping:
+  - name: Disable Users AD Account
+    win_command: whoami
+    register: whoami_out
+  - debug: var=whoami_out
+  
