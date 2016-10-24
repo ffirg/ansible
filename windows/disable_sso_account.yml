@@ -1,0 +1,14 @@
+---
+- name: Disable Users SSO
+  hosts: localhost
+  gather_facts: false
+  ignore_errors: true
+
+  tasks:
+
+  - name: Disable Octa SSO
+    # use uri to call a pretend octa SSO API
+    uri:
+      url: https://jsonplaceholder.typicode.com/posts
+      method: POST
+      #body: "{ 'user': 'disable' }"
