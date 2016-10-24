@@ -15,7 +15,3 @@
   - name: Disable Users AD Account
     # until V2.2 we'll need to use script, 2.2 has win_command!
     script: scripts/disable_ad_account.ps1
-    register: ad_result
-  - debug: var=ad_result
-
-- include: disable_sso_account.yml
