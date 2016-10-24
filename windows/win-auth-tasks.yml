@@ -4,6 +4,7 @@
   hosts: tag_Name_active_directory_server
   # we don't need any host facts, so disable to make run faster
   gather_facts: false
+  delegate_to: localhost
 
   vars:
     # where we'll put, and call, the disablement script
