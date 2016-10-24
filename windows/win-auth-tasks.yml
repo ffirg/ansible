@@ -21,6 +21,6 @@
   - name: Disable Octa SSO
     # use win_uri to call a pretend octa SSO API
     win_uri:
-      url: https://jsonplaceholder.typicode.com
+      url: https://jsonplaceholder.typicode.com/posts
       method: POST
-      body: "{ 'user': 'disable' }"
+      #body: "{ 'user': 'disable' }"
