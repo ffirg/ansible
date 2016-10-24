@@ -1,0 +1,27 @@
+---
+- hosts:  all
+
+  tasks:
+
+  - name: Check this is a RHEL7 system
+    fail: msg="This playbook will ony run on RHEL 7 systems"
+    when: ansible_distribution != "RedHat" or ansible_distribution_major_version != "7"
+
+  - name: Install the random number generator package
+    yum: name=rng-tools  state=latest
+
+  - name: Update the /usr/lib/systemd/system/rngd.service file
+    ini_file: dest=/usr/lib/systemd/system/rngd.service
+              section=service
+              option=ExecStart
+              value="/sbin/rngd -f -r /dev/urandom -o /dev/random"  backup=yes
+    notify:
+    - restart rngd
+
+  - name: ensure rngd is running (and enable it at boot)
+    service: name=httpd state=started enabled=yes
+
+
+  handlers:
+        - name: restart rngd
+          service: name=rngd state=restarted
