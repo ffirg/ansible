@@ -7,6 +7,9 @@
 
   vars:
     # where we'll put, and call, the disablement script
+    ansible_connection: winrm
+    ansible_port: 5986
+    ansible_winrm_server_cert_validation: ignore
     tmp_dir: 'C:\Temp'
     script: 'disable_ad_account'
 
@@ -33,6 +36,3 @@
         - debug: msg='This bit always runs'
 
       delegate_to: 10.0.0.178
-      ansible_connection: winrm
-      ansible_port: 5986
-      ansible_winrm_server_cert_validation: ignore
