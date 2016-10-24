@@ -7,6 +7,5 @@
     ansible_winrm_server_cert_validation: ignore
 
   tasks:
-  - name: Disable users AD account
-    win_command: whoami
-    
+    - name: Disable users AD account
+      win_command: whoami
