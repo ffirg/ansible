@@ -1,7 +1,4 @@
 ---
-
-# This playbook will disable an AD account and SSO details
-
 - name: Disable User Accounts and SSO
   vars:
     ansible_port: 5986
