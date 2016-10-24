@@ -2,7 +2,7 @@
 - name: Steps To Disable Users AD Account
   # we run this on the AD server to save messing with permissions
   #hosts: tag_Name_active_directory_server
-  hosts: ec2-52-210-94-75.eu-west-1.compute.amazonaws.com 
+  hosts: 52.210.94.75
   # we don't need any host facts so disable to make run faster
   gather_facts: false
 
