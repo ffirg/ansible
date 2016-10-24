@@ -1,18 +1,12 @@
 ---
 - name: Disable User Accounts and SSO
+  gather_facts: false
   vars:
     ansible_port: 5986
     ansible_connection: winrm
     ansible_winrm_server_cert_validation: ignore
 
   tasks:
-
-    - name: Disable users AD account
-      win_command: whoami
-      register: whoami_out
-
-    - name: Disable users SSO account
-      win_uri:
-        url: http://octa_apicall_.com/api
-        method: GET
-      register: api_callout
+  - name: Disable users AD account
+    win_command: whoami
+    
