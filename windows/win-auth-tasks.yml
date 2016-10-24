@@ -7,5 +7,5 @@
     ansible_winrm_server_cert_validation: ignore
 
   tasks:
-    - name: Disable users AD account
+    - name: Bloody work will you -  users AD account
       win_command: whoami
