@@ -1,9 +1,0 @@
----
-# This playbook will disable a users AD Account and SSO
-
-- name: Disable Users AD Account and SSO
-  hosts: all
-
-  tasks:
-    - name: Disable AD Account
-      win_command: whomai
