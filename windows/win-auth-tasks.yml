@@ -5,6 +5,7 @@
   ignore_errors: true
 
   vars:
+    # helps define how we'll connect to our Windows host
     ansible_port: 5986
     ansible_connection: winrm
     ansible_winrm_server_cert_validation: ignore
@@ -12,11 +13,13 @@
   tasks:
 
   - name: Disable Users AD Account
+    # until V2.2 we'll need to use script, 2.2 has win_command!
     script: scripts/mem.ps1
     register: mem
   - debug: var=mem
 
   - name: Disable Octa SSO
+    # use win_uri to call a pretend octa SSO API
     win_uri:
       url: http://octa_apicall/api
       method: POST
