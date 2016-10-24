@@ -1,6 +1,5 @@
 ---
 - name: Disable Users AD Account and SSO
-  hosts: all
   gather_facts: false
 
   vars:
@@ -10,4 +9,4 @@
 
   tasks:
   - name: Disable Users AD Account
-    win_command: whoami
+    win_ping:
