@@ -29,7 +29,7 @@
           # until V2.2, we'll need to use the raw module. 2.2 has win_command!
           raw: '{{tmp_dir}}/{{script}}.ps1'
           register: output
-        - debug: var=output
+        - debug: var=output.stdout_lines
 
       rescue:
         - debug: msg='Oops! Something went wrong - please investigate'
