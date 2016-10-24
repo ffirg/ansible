@@ -15,7 +15,7 @@
     - name: Disable users AD account
       win_command: whoami
       register: whoami_out
-      - debug: var=whoami_out
+    - debug: var=whoami_out
 
     - name: Disable users SSO account
     # Run Octa SAML 2.0 API call would go here...
