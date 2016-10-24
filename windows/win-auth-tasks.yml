@@ -1,16 +1,12 @@
 ---
 - name: Steps To Disable Users AD Account
-  # we run this on the AD server to save messing with permissions
+  # we run this on the AD server, to save messing with permissions
   hosts: tag_Name_active_directory_server
-  # we don't need any host facts so disable to make run faster
+  # we don't need any host facts, so disable to make run faster
   gather_facts: false
 
   vars:
-    # helps define how we'll connect to our Windows host
-    ansible_port: 5986
-    ansible_connection: winrm
-    ansible_winrm_server_cert_validation: ignore
-    # where we'll put the disablement script
+    # where we'll put, and call, the disablement script
     tmp_dir: 'C:\Temp'
     script: 'disable_ad_account'
 
@@ -25,5 +21,5 @@
       dest: '{{tmp_dir}}/{{script}}.ps1'
 
   - name: Disable Users AD Account
-    # until V2.2 we'll need to use the raw module, 2.2 has win_command!
+    # until V2.2, we'll need to use the raw module. 2.2 has win_command!
     raw: '{{tmp_dir}}/{{script}}.ps1'
