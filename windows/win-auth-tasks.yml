@@ -11,5 +11,5 @@
   tasks:
   - name: Disable Users AD Account
     script: scripts/mem.ps1
-
-    
+    register: mem
+  -debug: var=mem
