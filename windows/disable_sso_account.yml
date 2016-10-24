@@ -1,6 +1,6 @@
 ---
 - name: Disable Users SSO
-  hosts: localhost
+  hosts: 127.0.0.1
   gather_facts: false
   ignore_errors: true
 
