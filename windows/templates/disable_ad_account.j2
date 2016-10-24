@@ -1,3 +1,4 @@
 $Firstname = '{{ firstname }}'
 $Surname = '{{ surname }}'
 Get-ADUser -filter 'GivenName -eq $Firstname -and Surname -eq $Surname' | Disable-ADAccount
+Get-ADUser -filter 'GivenName -eq $Firstname -and Surname -eq $Surname' | findstr Enabled
