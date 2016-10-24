@@ -9,7 +9,8 @@
     ansible_winrm_server_cert_validation: ignore
 
   tasks:
+
   - name: Disable Users AD Account
     script: scripts/mem.ps1
     register: mem
-  -debug: var=mem
+  - debug: var=mem
