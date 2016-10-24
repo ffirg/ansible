@@ -11,13 +11,11 @@
   tasks:
 
     - name: Disable users AD account
-    # Run powershell command to disable AD account
       win_command: whoami
       register: whoami_out
     - debug: var=whoami_out
 
     - name: Disable users SSO account
-    # Run Octa SAML 2.0 API call would go here...
       win_uri:
         url: http://somethinghere.com/api
         method: GET
