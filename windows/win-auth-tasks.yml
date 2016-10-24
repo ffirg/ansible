@@ -1,0 +1,13 @@
+---
+- name: Disable User AD Account and SSO
+  hosts: all
+  gather_facts: false
+
+  vars:
+    ansible_port: 5986
+    ansible_connection: winrm
+    ansible_winrm_server_cert_validation: ignore
+
+  tasks:
+  - name: ping
+    win_ping:
