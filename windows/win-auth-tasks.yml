@@ -5,9 +5,10 @@
 - name: Disable users AD account
 # Run powershell command to disable AD account
   hosts: all
-  ansible_port: 5986
-  ansible_connection: winrm
-  ansible_winrm_server_cert_validation: ignore
+  vars:
+    ansible_port: 5986
+    ansible_connection: winrm
+    ansible_winrm_server_cert_validation: ignore
 
   tasks:
     - name: run whoami
@@ -18,9 +19,10 @@
 - name: Disable users SSO account
 # Run Octa SAML 2.0 API call would go here...
   hosts: all
-  ansible_port: 5986
-  ansible_connection: winrm
-  ansible_winrm_server_cert_validation: ignore
+  vars:
+    ansible_port: 5986
+    ansible_connection: winrm
+    ansible_winrm_server_cert_validation: ignore
   ignore_errors: true
 
   tasks:
