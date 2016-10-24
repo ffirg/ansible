@@ -1,5 +1,5 @@
 ---
-- name: Disable Users AD Account
+- name: Steps To Disable Users AD Account
   # we run this on the AD server to save messing with permissions
   hosts: tag_Name_active_directory_server
   # we don't need any host facts so disable to make run faster
@@ -16,10 +16,10 @@
 
   tasks:
 
-  - name: Create {{ tmp_dir }} on client if required
+  - name: Create {{ tmp_dir }} on server if required
     win_file: path='{{ tmp_dir }}' state=directory
 
-  - name: Create custom disablement script
+  - name: Create powershell disablement script
     win_template:
       src: 'templates/{{script}}.j2'
       dest: '{{tmp_dir}}/{{script}}.ps1'
