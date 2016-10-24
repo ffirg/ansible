@@ -14,13 +14,13 @@
 
   - name: Disable Users AD Account
     # until V2.2 we'll need to use script, 2.2 has win_command!
-    script: scripts/mem.ps1
-    register: mem
-  - debug: var=mem
+    script: scripts/disable_ad_account.ps1
+    register: ad_result
+  - debug: var=ad_result
 
   - name: Disable Octa SSO
     # use win_uri to call a pretend octa SSO API
     win_uri:
-      url: http://octa_apicall/api
+      url: https://jsonplaceholder.typicode.com
       method: POST
-      body: "{ 'some': 'json' }"
+      body: "{ 'user': 'disable' }"
