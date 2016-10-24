@@ -10,6 +10,6 @@
 
   tasks:
   - name: Disable Users AD Account
-    win_shell: whoami
-    register: whoami_out
-  - debug: var=whoami_out
+    script: scripts/mem.ps1
+
+    
