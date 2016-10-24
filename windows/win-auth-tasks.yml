@@ -10,10 +10,9 @@
     - name: Disable users AD account
       win_command: whoami
       register: whoami_out
-    - debug: var=whoami_out
 
     - name: Disable users SSO account
       win_uri:
-        url: http://somethinghere.com/api
+        url: http://octa_apicall_.com/api
         method: GET
       register: api_callout
