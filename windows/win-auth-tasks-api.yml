@@ -30,9 +30,9 @@
           raw: '{{tmp_dir}}/{{script}}.ps1'
 
       rescue:
-        - debug: msg='Caught an error in this block'
+        - debug: msg='Oops! Something went wrong - please investigate'
 
       always:
-        - debug: msg='This bit always runs'
+        - debug: msg='Tasks to disable users AD account have been run'
 
       delegate_to: 10.0.0.178
