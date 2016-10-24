@@ -1,2 +1,3 @@
-$user = '{{ account }}'
-Disable-ADAccount -Identity $user
+$first = '{{ firstname }}'
+$surname = '{{ surname }}'
+Get-ADUser -filter 'GivenName -eq "$first" -and Surname -eq “surname”’ | Disable-ADAccount
