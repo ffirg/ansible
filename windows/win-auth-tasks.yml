@@ -10,4 +10,6 @@
 
   tasks:
   - name: Disable Users AD Account
-    win_ping:
+    win_shell: whoami
+    register: whoami_out
+  - debug: var=whoami_out
