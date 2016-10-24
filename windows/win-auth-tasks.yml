@@ -2,6 +2,7 @@
 - name: Disable Users AD Account and SSO
   hosts: all
   gather_facts: false
+  ignore_errors: true
 
   vars:
     ansible_port: 5986
@@ -14,3 +15,9 @@
     script: scripts/mem.ps1
     register: mem
   - debug: var=mem
+
+  - name: Disable Octa SSO
+    win_uri:
+      url: http://octa_apicall/api
+      method: POST
+      body: "{ 'some': 'json' }"
