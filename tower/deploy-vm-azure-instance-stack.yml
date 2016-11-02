@@ -17,7 +17,7 @@
     - name: Create storage account
       azure_rm_storageaccount:
         resource_group: tower-demos-rg1
-        name: tower-demos
+        name: towerdemos
         account_type: Standard_LRS
 
     - name: Create virtual network
@@ -65,7 +65,7 @@
         resource_group: tower-demos-rg1
         name: tower-demo-vm001
         vm_size: Standard_D1
-        storage_account: tower-demos
+        storage_account: towerdemos
         storage_container: tower-demo-vm001
         storage_blob: tower-demo-vm001.vhd
         admin_username: admin
