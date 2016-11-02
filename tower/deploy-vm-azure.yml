@@ -10,6 +10,7 @@
         resource_group: tower-testing-rg1
         name: '{{vm_name}}'
         vm_size: '{{vm_size}}'
+        storage_account: ansibletower
         admin_username: '{{admin_username}}'
         admin_password: '{{admin_password}}'
         image:
