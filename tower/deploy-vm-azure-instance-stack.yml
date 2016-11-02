@@ -6,6 +6,14 @@
 
   tasks:
 
+    - name: Create a resource group
+      azure_rm_resourcegroup:
+        name: tower-demos-rg1
+        location: westeurope
+        tags:
+          demo: tower
+          type: standard
+
     - name: Create storage account
       azure_rm_storageaccount:
         resource_group: tower-demos-rg1
