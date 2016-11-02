@@ -1,5 +1,5 @@
 ---
-- name: Setup a complete Azure instance stack
+- name: Setup a complete Azure compute stack
   hosts: localhost
   connection: local
   gather_facts: false
