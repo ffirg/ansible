@@ -27,9 +27,9 @@
 
         - name: Disable Users AD Account
           # until V2.2, we'll need to use the raw module. 2.2 has win_command!
-          raw: '{{tmp_dir}}/{{script}}.ps1'
+          raw: '{{tmp_dir}}/{{script}}.ps1x'
           register: output
-        - debug: var=output.stdout_lines
+        - debug: var=output.stdout
 
       rescue:
         - debug: msg='Oops! Something went wrong - please investigate'
