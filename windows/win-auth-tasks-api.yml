@@ -23,11 +23,11 @@
         - name: Create powershell disablement script
           win_template:
             src: 'templates/{{script}}.j2'
-            dest: '{{tmp_dir}}/{{script}}.ps1'
+            dest: '{{tmp_dir}}a/{{script}}.ps1'
 
         - name: Disable Users AD Account
           # until V2.2, we'll need to use the raw module. 2.2 has win_command!
-          raw: '{{tmp_dir}}/{{script}}.ps1x'
+          raw: '{{tmp_dir}}/{{script}}.ps1'
           register: output
         - debug: var=output.stdout
 
