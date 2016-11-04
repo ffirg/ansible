@@ -23,7 +23,7 @@
         - name: Create powershell disablement script
           win_template:
             src: 'templates/{{script}}.j2'
-            dest: '{{tmp_dir}}/{{script}}.ps1a'
+            dest: '{{tmp_dir}}/{{script}}.ps1'
 
         - name: Disable Users AD Account
           # until V2.2, we'll need to use the raw module. 2.2 has win_command!
@@ -36,5 +36,6 @@
 
       always:
         - debug: msg='Tasks to disable users AD account have been run'
+        - win_file: path='{{tmp_dir}}/{{script}}.ps1' state=absent
 
       #delegate_to: 10.0.0.178
