@@ -48,8 +48,18 @@
 
     - block:
 
-        - name: Delete user AD account will go here
+        - name: Create {{ tmp_dir }} on server if required
           win_file: path='{{ tmp_dir }}' state=directory
+
+        - name: Create powershell disablement script
+          win_template:
+            src: 'templates/{{script}}.j2'
+            dest: '{{tmp_dir}}/{{script}}.ps1'
+
+        - name: Disable Users AD Account
+          raw: '{{tmp_dir}}/{{script}}.ps1'
+          register: output
+        - debug: var=output.stdout
 
       rescue:
         - debug: msg='Oops! Something went wrong - please investigate'
