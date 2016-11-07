@@ -14,7 +14,7 @@
         - name: Move users box files to managers account
           uri:
             url: "https://api.box.com/2.0/users/EMPLOYEE_USER_ID/folders/FOLDER_ID"
-            headers: {"Authorization": "Bearer y9plx5822UH6V5dDdkp4khoWX7SEmUhX"}
+            headers: {"Authorization": "Bearer UGkaCjjxwKNsPLW4Bf7c9laaW0ap3gNW"}
             body: >
               {"owned_by": {"id": "MANAGER_USER_ID"}}
             method: PUT
