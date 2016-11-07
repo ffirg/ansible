@@ -47,6 +47,9 @@
 
     - block:
 
+        vars:
+          script: 'delete_ad_account'
+
         - name: Delete user AD account will go here
           win_file: path='{{ tmp_dir }}' state=directory
 
