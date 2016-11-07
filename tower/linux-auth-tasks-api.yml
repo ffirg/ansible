@@ -10,7 +10,7 @@
     - block:
 
         - name: Disable local UNIX user account
-          user: name='{{firstname}}.{{surname}}' shell=/bin/false expires=0
+          user: name='{{ firstname|lower }}.{{ surname|lower }}' shell=/bin/false expires=0
           ignore_errors: true
 
       rescue:
@@ -25,7 +25,7 @@
     - block:
 
         - name: Delete local UNIX user account
-          user: name='{{firstname}}.{{surname}}' state=absent remove=yes
+          user: name='{{ firstname|lower }}.{{ surname|lower }}' state=absent remove=yes
           ignore_errors: true
 
       rescue:
