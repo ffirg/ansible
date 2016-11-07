@@ -30,7 +30,7 @@
           raw: '{{tmp_dir}}/{{script}}.ps1'
           register: output
           failed_when:
-            - "'False' in output.stdout"
+            - "'True' in output.stdout"
         - debug: var=output.stdout
 
       rescue:
