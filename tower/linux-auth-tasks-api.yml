@@ -25,7 +25,7 @@
     - block:
 
         - name: Delete local UNIX user account
-          user: name=name='{{firstname}}.{{surname}}' state=absent remove=yes
+          user: name='{{firstname}}.{{surname}}' state=absent remove=yes
           ignore_errors: true
 
       rescue:
