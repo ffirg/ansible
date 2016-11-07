@@ -18,13 +18,13 @@
 
         - name: Move users box files to managers account
           uri:
-            url: curl https://api.box.com/2.0/users/EMPLOYEE_USER_ID/folders/FOLDER_ID -H \"Authorization: Bearer ACCESS_TOKEN\" -d \'{\"owned_by\": {\"id\": \"MANAGER_USER_ID\"}}\' -X PUT
+            url: curl 'https://api.box.com/2.0/users/EMPLOYEE_USER_ID/folders/FOLDER_ID -H "Authorization: Bearer ACCESS_TOKEN" -d '{"owned_by": {"id": "MANAGER_USER_ID"}}' -X PUT'
           tags:
             - deactivate
 
         - name: Delete users box account
           uri:
-            url: curl https://api.box.com/2.0/users/USER_ID -H \"Authorization: Bearer ACCESS_TOKEN\" -X DELETE
+            url: curl 'https://api.box.com/2.0/users/USER_ID -H "Authorization: Bearer ACCESS_TOKEN" -X DELETE'
           tags:
             - delete
 
