@@ -42,5 +42,5 @@
 
       #delegate_to: 10.0.0.178
 
-    #- include: octa-api-calls.yml
-    - include: box-api-calls.yml
+      tags:
+        - deactivate
