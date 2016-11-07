@@ -11,7 +11,7 @@
     ansible_port: 5986
     ansible_winrm_server_cert_validation: ignore
     tmp_dir: 'C:\Temp'
-    script: 'disable_ad_account'
+    #script: 'disable_ad_account'
 
   tasks:
 
@@ -40,15 +40,13 @@
         - debug: msg='Tasks to disable users AD account have been run'
         - win_file: path='{{tmp_dir}}/{{script}}.ps1' state=absent
 
-      #delegate_to: 10.0.0.178
+      vars:
+        script: 'disable_ad_account'
 
       tags:
         - deactivate
 
     - block:
-
-        vars:
-          script: 'delete_ad_account'
 
         - name: Delete user AD account will go here
           win_file: path='{{ tmp_dir }}' state=directory
@@ -58,6 +56,9 @@
 
       always:
         - debug: msg='Tasks to delete users AD account have been run'
+
+      vars:
+        script: 'delete_ad_account'
 
       tags:
         - delete
