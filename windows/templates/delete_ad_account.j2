@@ -1,0 +1,4 @@
+$Firstname = '{{ firstname }}'
+$Surname = '{{ surname }}'
+Get-ADUser -filter 'GivenName -eq $Firstname -and Surname -eq $Surname' | Remove-ADUser -confirm:$false
+Get-ADUser -filter 'GivenName -eq $Firstname -and Surname -eq $Surname'
