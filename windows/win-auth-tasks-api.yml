@@ -6,12 +6,11 @@
   gather_facts: false
 
   vars:
-    # where we'll put, and call, the disablement script
+    # mainly connection stuff, also global playbook ones
     ansible_connection: winrm
     ansible_port: 5986
     ansible_winrm_server_cert_validation: ignore
     tmp_dir: 'C:\Temp'
-    #script: 'disable_ad_account'
 
   tasks:
 
@@ -66,6 +65,7 @@
 
       always:
         - debug: msg='Tasks to delete users AD account have been run'
+        - win_file: path='{{tmp_dir}}/{{script}}.ps1' state=absent
 
       vars:
         script: 'delete_ad_account'
