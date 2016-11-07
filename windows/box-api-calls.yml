@@ -5,12 +5,7 @@
   gather_facts: false
 
   vars:
-    # where we'll put, and call, the disablement script
-    ansible_connection: winrm
-    ansible_port: 5986
-    ansible_winrm_server_cert_validation: ignore
-    tmp_dir: 'C:\Temp'
-    script: 'disable_ad_account'
+    # where we define things we use here
 
   tasks:
 
