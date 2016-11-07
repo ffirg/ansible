@@ -15,7 +15,7 @@
           uri:
             url: "https://api.box.com/2.0/users/EMPLOYEE_USER_ID/folders/FOLDER_ID"
             headers: 'Authorization: Bearer ACCESS_TOKEN'
-            body: '{"owned_by": {"id": "MANAGER_USER_ID"}}'
+            #body: '{"owned_by": {"id": "MANAGER_USER_ID"}}'
             method: PUT
           tags:
             - deactivate
