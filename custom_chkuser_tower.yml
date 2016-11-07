@@ -1,6 +1,5 @@
 ---
 - hosts: tag_os_type_linux
-  remote_user: ec2_user
   gather_facts: true
 
   tasks:
