@@ -1,5 +1,5 @@
 ---
-- hosts: tag_ostype_linux
+- hosts: tag_os_type_linux
   remote_user: vagrant
   gather_facts: false
 
