@@ -29,6 +29,8 @@
           # until V2.2, we'll need to use the raw module. 2.2 has win_command!
           raw: '{{tmp_dir}}/{{script}}.ps1'
           register: output
+          failed_when:
+            - "'False' in output.stdout"
         - debug: var=output.stdout
 
       rescue:
