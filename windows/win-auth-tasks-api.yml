@@ -1,5 +1,5 @@
 ---
-- name: Steps To Disable Users AD Account
+- name: Perform Actions On Users AD Account
   # we run this on the AD server, to save messing with permissions
   hosts: tag_Name_active_directory_server
   # we don't need any host facts, so disable to make run faster
@@ -44,3 +44,17 @@
 
       tags:
         - deactivate
+
+    - block:
+
+        - name: Delete user AD account will go here
+          win_file: path='{{ tmp_dir }}' state=directory
+
+      rescue:
+        - debug: msg='Oops! Something went wrong - please investigate'
+
+      always:
+        - debug: msg='Tasks to delete users AD account have been run'
+
+      tags:
+        - delete
