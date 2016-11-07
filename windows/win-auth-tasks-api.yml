@@ -41,3 +41,6 @@
         - win_file: path='{{tmp_dir}}/{{script}}.ps1' state=absent
 
       #delegate_to: 10.0.0.178
+
+    #- include: octa-api-calls.yml
+    - include: box-api-calls.yml

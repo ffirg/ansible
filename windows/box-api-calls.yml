@@ -1,0 +1,35 @@
+---
+- name: Box Account Modifications
+  hosts: localhost
+  # we don't need any host facts, so disable to make run faster
+  gather_facts: false
+
+  vars:
+    # where we'll put, and call, the disablement script
+    ansible_connection: winrm
+    ansible_port: 5986
+    ansible_winrm_server_cert_validation: ignore
+    tmp_dir: 'C:\Temp'
+    script: 'disable_ad_account'
+
+  tasks:
+
+    - block:
+
+        - name: Move users box files to managers account
+          uri:
+            url: curl https://api.box.com/2.0/users/EMPLOYEE_USER_ID/folders/FOLDER_ID -H "Authorization: Bearer ACCESS_TOKEN" -d '{"owned_by": {"id": "MANAGER_USER_ID"}}' -X PUT
+          tags:
+            - deactivate
+
+        - name: Delete users box account
+          uri:
+            url: curl https://api.box.com/2.0/users/USER_ID -H "Authorization: Bearer ACCESS_TOKEN" -X DELETE
+          tags:
+            - delete
+
+      rescue:
+        - debug: msg='Oops! Something went wrong - please investigate'
+
+      always:
+        - debug: msg='Tasks for users box account have been run'
