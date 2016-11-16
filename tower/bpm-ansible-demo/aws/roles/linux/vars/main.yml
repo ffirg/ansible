@@ -1,10 +1,10 @@
 ---
-ec2_key_name: ansible-tower
-ec2_region: eu-west-1
-ec2_zone: eu-west-1c
-ec2_ami: ami-f8cc838b
-ec2_public_ip: yes
-ec2_group: bpm-ansible-demo
-ec2_subnet: subnet-bc69e8e4
+key_name: ansible-tower
+region: eu-west-1
+zone: eu-west-1c
+ami: ami-f8cc838b
+public_ip: yes
+group: bpm-ansible-demo
+subnet: subnet-bc69e8e4
 # we use this AWS tag to identify newly provisioned instances
-ec2_instance_tags: '{"type":"freshman"}'
+instance_tags: '{"type":"freshman"}'
