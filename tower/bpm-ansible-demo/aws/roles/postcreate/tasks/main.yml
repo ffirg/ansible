@@ -1,5 +1,7 @@
 ---
 # This playbook contains common plays that will be run on all nodes.
+hosts: tag_Name_just_created
+gather_facts: true
 
 - block:
     - shell: echo "This command was run on `/bin/date`"
