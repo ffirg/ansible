@@ -1,6 +1,6 @@
 ---
 
-- name: 'Create Amazon VM Instance(s)'
+- name: Create Amazon VM Instances
   ec2:
     # set in vars/main.yml, just for convenience
     key_name: "{{ ec2_key_name }}"
