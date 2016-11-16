@@ -4,3 +4,4 @@
 - block:
     - shell: echo "This command was run on `/bin/date`"
   when: ansible_distribution == 'RedHat'
+  

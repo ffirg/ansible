@@ -8,3 +8,7 @@ group: bpm-ansible-demo
 subnet: subnet-bc69e8e4
 # we use this AWS tag to identify newly provisioned instances
 instance_tags: '{"type":"demo-clients","Name":"just-created"}'
+# need these for facts discovery as setup tries to use ssh by default
+ansible_connection: winrm
+ansible_port: 5986
+ansible_winrm_server_cert_validation: ignore
