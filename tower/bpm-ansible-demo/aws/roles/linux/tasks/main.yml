@@ -7,7 +7,7 @@
     region: "{{ ec2_region }}"
     zone: "{{ ec2_zone }}"
     image: "{{ ec2_ami }}"
-    count: "{{ ec2_number }}"
+    count: 1
     instance_tags: "{{ ec2_instance_tags }}"
     assign_public_ip: "{{ ec2_public_ip }}"
     monitoring: "{{ ec2_monitor }}"
