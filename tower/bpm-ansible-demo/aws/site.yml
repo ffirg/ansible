@@ -1,21 +1,12 @@
 ---
 # This playbook provides VM orchestration on Amazon EC2
 
-- name: VM Orchestration
-  hosts: all
+- name: VM and Application Orchestration Demo
+  hosts: localhost
   connection: local
   gather_facts: no
-  remote_user: root
-
-  pre_tasks:
-    - name: Log what we are doing
-      shell: /bin/logger 'Going to {{ vm_env_action }} {{vm_env_instances}} VM(s) for provider {{ vm_env_provider }}'
 
   roles:
-    - common
-    - { role: offprem, when: vm_env == 'OffPrem' }
-
-  post_tasks:
-    - name: Log what we have done
-      shell: /bin/logger '{{ vm_env_action }} VM(s) for provider {{ vm_env_provider }} complete'
-      
+    - { role: linux, tags: ["instances", "linux"], when: ec2_os_type == 'linux' }
+    - { role: windows, tags: ["instances", "windows"], when: ec2_os_type == 'windows' }
+    - postcreate
