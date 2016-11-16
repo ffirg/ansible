@@ -12,6 +12,8 @@ vars:
     ec2_subnet: subnet-bc69e8e4
     ec2_wait: yes
     ec2_state: present
+    # we use this AWS tag to identify newly provisioned instances
+    ec2_instance_tags: '{"type":"freshman"}'
 
 - name: 'Create Amazon VM Instance(s)'
   ec2:
@@ -21,6 +23,7 @@ vars:
     zone: "{{ ec2_zone }}"
     image: "{{ ec2_ami }}"
     count: "{{ ec2_count }}"
+    instance_tags: "{{ ec2_instance_tags }}"
     assign_public_ip: "{{ ec2_public_ip }}"
     monitoring: "{{ ec2_monitor }}"
     group: "{{ ec2_group }}"
