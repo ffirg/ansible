@@ -3,8 +3,9 @@
 
   tasks:
 
-    - block: "Common tasks go here..."
-        - shell: echo "This command was run on `/bin/date`"
+    - block:
+      - name: "Common Linux tasks go here..."
+        shell: echo "This command was run on `/bin/date`"
       when: ansible_distribution == 'RedHat'
       gather_facts: true
       become: true
