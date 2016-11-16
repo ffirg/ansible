@@ -1,3 +1,7 @@
 ---
-# Variables listed here are common across the roles
-vm_env: OffPrem
+# Local variables if we need them
+# syntax is:
+# variable: value
+gather_facts: true
+#become: yes
+#become_method: sudo
