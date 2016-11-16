@@ -1,8 +1,6 @@
 ---
 # This playbook contains common plays that will be run on all nodes.
 
-- setup:
-  
 - block:
     - shell: echo "This command was run on `/bin/date`"
-  when: ansible_distribution == 'RedHat'
+  #when: ansible_distribution == 'RedHat'
