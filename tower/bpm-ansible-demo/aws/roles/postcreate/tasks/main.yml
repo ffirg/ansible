@@ -2,8 +2,8 @@
 # This playbook contains common plays that will be run on all nodes.
 gather_facts: true
 
-- block:
-    - shell: echo "This command was run on `/bin/date`"
-  when: ansible_distribution == 'RedHat'
-  #become: true
-  #become_method: sudo
+  - block:
+      - shell: echo "This command was run on `/bin/date`"
+    when: ansible_distribution == 'RedHat'
+    #become: true
+    #become_method: sudo
