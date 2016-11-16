@@ -1,12 +1,10 @@
 ---
 # This playbook contains common plays that will be run on all nodes.
 
-  tasks:
-
-    - block:
-      - name: "Common Linux tasks go here..."
-        shell: echo "This command was run on `/bin/date`"
-      when: ansible_distribution == 'RedHat'
-      gather_facts: true
-      become: true
-      become_method: sudo
+- block:
+  - name: "Common Linux tasks go here..."
+    shell: echo "This command was run on `/bin/date`"
+  when: ansible_distribution == 'RedHat'
+  gather_facts: true
+  become: true
+  become_method: sudo
