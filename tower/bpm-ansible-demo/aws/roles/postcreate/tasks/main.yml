@@ -4,6 +4,5 @@
 - block:
     - shell: echo "This command was run on `/bin/date`"
   when: ansible_distribution == 'RedHat'
-  gather_facts: true
-  become: true
-  become_method: sudo
+  #become: true
+  #become_method: sudo
