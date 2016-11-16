@@ -1,13 +1,13 @@
 ---
 
-- name: Create Amazon VM Instances
+- name: 'Create Amazon VM Instance(s)'
   ec2:
     # set in vars/main.yml, just for convenience
     key_name: "{{ ec2_key_name }}"
     region: "{{ ec2_region }}"
     zone: "{{ ec2_zone }}"
     image: "{{ ec2_ami }}"
-    count: "{{ ec2_count }}"
+    count: "{{ ec2_number }}"
     instance_tags: "{{ ec2_instance_tags }}"
     assign_public_ip: "{{ ec2_public_ip }}"
     monitoring: "{{ ec2_monitor }}"
