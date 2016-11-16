@@ -11,7 +11,7 @@
     - { role: windows, tags: ["instances", "windows"], when: ec2_os_type == 'windows' }
 
 - name: Configure common options across new instances
-  hosts: just-created
+  hosts: justcreated
   gather_facts: yes
 
   roles:

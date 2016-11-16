@@ -29,4 +29,4 @@
 - name: Add the machine to in memory inventory
   add_host:
     hostname: "{{ newmachines.instances[0].public_ip }}"
-    groups: just-created
+    groups: justcreated
