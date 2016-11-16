@@ -19,7 +19,7 @@
     instance_type: "{{ ec2_instance_type }}"
   register: newmachines
 
-- name: Wait for SSH to start
+- name: Wait for RDP to start
   wait_for:
     host: "{{ newmachines.instances[0].public_ip }}"
     port: 3389
