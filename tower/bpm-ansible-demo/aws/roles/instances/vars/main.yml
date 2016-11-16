@@ -1,0 +1,3 @@
+---
+# Variables listed here are for Amazon
+vm_env_provider: Amazon
