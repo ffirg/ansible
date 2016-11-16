@@ -1,12 +1,16 @@
 ---
 
+  vars:
+    ec2_region: eu-west-1
+    ec2_zone: eu-west-1b
+
    - block:
      - name: 'Create Amazon VM Instance(s)'
        ec2:
          key_name: "ansible-tower"
-         region: eu-west-1
-         zone: eu-west-1b
-         instance_type: t2.micro
+         region: "{{ ec2_region }}"
+         zone: "{{ ec2_zone }}"
+         instance_type: "{ ec2_instance_type }"
          image: ami-2bc3a858
          wait: yes
          group: launch-wizard-1
