@@ -2,6 +2,3 @@
 # Local variables if we need them
 # syntax is:
 # variable: value
-gather_facts: true
-#become: yes
-#become_method: sudo
