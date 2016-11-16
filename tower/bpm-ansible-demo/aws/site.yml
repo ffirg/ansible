@@ -4,9 +4,15 @@
 - name: VM and Application Orchestration Demo
   hosts: localhost
   connection: local
-  gather_facts: false
+  gather_facts: no
 
   roles:
     - { role: linux, tags: ["instances", "linux"], when: ec2_os_type == 'linux' }
     - { role: windows, tags: ["instances", "windows"], when: ec2_os_type == 'windows' }
+
+- name: Configure common options across new instances
+  hosts: just-created
+  gather_facts: yes
+
+  roles:
     - postcreate
