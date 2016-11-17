@@ -7,12 +7,12 @@
   gather_facts: no
 
   pre_tasks:
-    - name: Log what we are doing
+    - name: 'Pre-task: Log what we are doing'
       shell: /usr/bin/echo 'Foo'
 
   roles:
-    - { role: linux, tags: ["instances", "linux"], when: ec2_os_type == 'linux' }
-    - { role: windows, tags: ["instances", "windows"], when: ec2_os_type == 'windows' }
+    - { role: 'linux/provision', tags: ["instances", "linux"], when: ec2_os_type == 'linux' }
+    - { role: 'windows/provision', tags: ["instances", "windows"], when: ec2_os_type == 'windows' }
 
 - name: Configure common options across new Linux instances
   hosts: justcreatedlinux
@@ -25,9 +25,9 @@
   hosts: justcreatedwindows
   gather_facts: yes
 
-  #roles:
-  #  - postcreatewindows
+  roles:
+    - windows/postcreate
 
   post_tasks:
-    - name: Log what we are doing
+    - name: 'Post-task: Log what we are doing'
       shell: /usr/bin/echo 'Foo'
