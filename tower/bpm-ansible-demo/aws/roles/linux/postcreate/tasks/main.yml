@@ -2,6 +2,13 @@
 # This playbook contains common plays that will be run on all nodes.
 
 - block:
-    - shell: echo "This command was run on `/bin/date`"
-    - user: name=phil comment="Phil Griffiths" uid=1101 groups=wheel append=yes
+
+    - name: Add users
+      user: name=phil comment="Phil Griffiths" uid=1101 groups=wheel append=yes
+
+    - name: Install and configure NTP
+      yum: name=ntp state=latest
+      template: src=/templates/ntp.conf.j2 dest=/etc/ntp.conf
+      notify: restart ntp
+
   when: ansible_distribution == 'RedHat'
