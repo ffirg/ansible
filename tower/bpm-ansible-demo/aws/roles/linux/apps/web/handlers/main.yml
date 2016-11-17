@@ -1,9 +1,6 @@
 ---
 # Handler to handle common notifications.
 
-- name: restart ntp
-  service: name=ntpd state=restarted
-
 - name: restart web server
   service: name=httpd state=restarted
 
