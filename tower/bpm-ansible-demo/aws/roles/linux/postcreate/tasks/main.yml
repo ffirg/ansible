@@ -16,8 +16,7 @@
   service: name=ntpd state=started enabled=yes
 
 - name: Send out login details via email
-  local_action:
-    mail
+  mail:
     host='email-smtp.eu-west-1.amazonaws.com'
     port=587
     username=AKIAJP43DRPPY5HSIQIQ
