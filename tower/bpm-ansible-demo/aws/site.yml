@@ -26,7 +26,7 @@
 
 - name: Configure common options across new Windows instances
   hosts: justcreatedwindows
-  gather_facts: yes
+  gather_facts: no
 
   roles:
     - windows/postcreate
