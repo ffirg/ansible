@@ -25,8 +25,8 @@
   hosts: justcreatedwindows
   gather_facts: yes
 
-  roles:
-    - postcreatewindows
+  #roles:
+  #  - postcreatewindows
 
   post_tasks:
     - name: Log what we are doing
