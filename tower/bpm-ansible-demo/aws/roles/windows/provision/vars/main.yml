@@ -7,4 +7,4 @@ public_ip: yes
 group: bpm-ansible-demo
 subnet: subnet-bc69e8e4
 # we use this AWS tag to identify newly provisioned instances
-instance_tags: '{"type":"demo-clients","Name":"just-created"}'
+instance_tags: '{"type":"demo-clients","Name":"just-created-windows"}'

@@ -17,6 +17,8 @@
 - name: Configure common options across new Linux instances
   hosts: justcreatedlinux
   gather_facts: yes
+  become: yes
+  become_method: sudo
 
   roles:
     - linux/postcreate
