@@ -22,14 +22,14 @@
 
   roles:
     - linux/postcreate
-    #- { role: 'linux/apps/web', tags: ["apps", "linux"], when: ec2_instance_app == 'web' }
+    - { role: 'linux/apps/web', tags: ["apps", "linux"], when: ec2_instance_app == 'web' }
 
 - name: Configure common options across new Windows instances
   hosts: justcreatedwindows
   gather_facts: no
 
-  roles:
-    - windows/postcreate
+  #roles:
+  #  - windows/postcreate
 
   post_tasks:
     - name: 'Post-task: Log what we are doing'
