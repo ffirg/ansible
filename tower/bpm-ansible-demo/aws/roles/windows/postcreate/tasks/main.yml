@@ -1,2 +1,5 @@
 ---
-# This playbook contains common plays that will be run on all nodes.
+# This playbook contains post VM creation tasks that will be run on all Windows nodes.
+
+- name: Create user accounts
+  win_user: name=phil account_disabled=yes 
