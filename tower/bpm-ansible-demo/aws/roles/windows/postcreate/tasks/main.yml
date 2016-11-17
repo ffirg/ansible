@@ -7,7 +7,7 @@
     ansible_user: tower
     ansible_password: Redhat01
     ansible_connection: winrm
-    ansible_port: 5986
+    ansible_port: 5985
     ansible_winrm_server_cert_validation: ignore
 
   win_user: name=phil account_disabled=yes
