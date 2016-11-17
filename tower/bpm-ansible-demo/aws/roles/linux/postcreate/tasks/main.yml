@@ -6,5 +6,5 @@
 
 - name: Install and configure NTP
   yum: name=ntp state=latest
-  template: src=/templates/ntp.conf.j2 dest=/etc/ntp.conf
-  notify: restart ntp
+  #template: src=/templates/ntp.conf.j2 dest=/etc/ntp.conf
+  #notify: restart ntp
