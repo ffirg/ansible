@@ -6,13 +6,28 @@
   connection: local
   gather_facts: no
 
+  pre_tasks:
+    - name: Log what we are doing
+      shell: /usr/bin/echo 'Foo'
+
   roles:
     - { role: linux, tags: ["instances", "linux"], when: ec2_os_type == 'linux' }
     - { role: windows, tags: ["instances", "windows"], when: ec2_os_type == 'windows' }
 
-- name: Configure common options across new instances
-  hosts: justcreated
+- name: Configure common options across new Linux instances
+  hosts: justcreatedlinux
   gather_facts: yes
 
   roles:
-    - postcreate
+    - linux/postcreate
+
+- name: Configure common options across new Windows instances
+  hosts: justcreatedwindows
+  gather_facts: yes
+
+  roles:
+    - postcreatewindows
+
+  post_tasks:
+    - name: Log what we are doing
+      shell: /usr/bin/echo 'Foo'
