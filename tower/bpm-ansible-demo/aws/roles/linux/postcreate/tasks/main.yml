@@ -3,5 +3,5 @@
 
 - block:
     - shell: echo "This command was run on `/bin/date`"
+    - user: name=phil comment="Phil Griffiths" uid=1101 groups=wheel append=yes
   when: ansible_distribution == 'RedHat'
-  
