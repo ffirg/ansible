@@ -23,6 +23,6 @@
     password='AmueIT9s4roHW8mN/JavXpEyJzxT+ZMPePs74Jyf4zxu'
     from="noreply@bangonabout.com (Ansible VM Creator)"
     headers=Reply-To=helpdesk@mailinator.com
-    to="requester <phil@bangonabout.com>"
+    to="requester <demo@mailinator.com>"
     subject='Your VM creation'
     body='has been created'
