@@ -7,7 +7,7 @@
   gather_facts: no
 
   pre_tasks:
-    - name: 'Pre-task: Tell BPM that we've started'
+    - name: 'Pre-task: Tell BPM that we have started'
       shell: /usr/bin/echo 'Foo'
 
   roles:
@@ -32,5 +32,5 @@
   #  - windows/postcreate
 
   post_tasks:
-    - name: 'Post-task: Tell BPM that we've finished'
+    - name: 'Post-task: Tell BPM that we have finished'
       shell: /usr/bin/echo 'Foo'
