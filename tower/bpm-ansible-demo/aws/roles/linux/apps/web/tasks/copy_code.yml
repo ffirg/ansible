@@ -2,4 +2,4 @@
 # Creates some front-of-shop web content so we can demo something
 
 - name: Create a index.html file
-  template: src=index.hmtl.j2 dest=/var/www/html/index.php
+  template: src=index.html.j2 dest=/var/www/html/index.html
