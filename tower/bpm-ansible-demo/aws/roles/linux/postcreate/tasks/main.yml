@@ -25,4 +25,4 @@
     headers=Reply-To=helpdesk@mailinator.com
     to="requester <demo@mailinator.com>"
     subject='Your VM creation'
-    body='Your "{{ ec2_os_type }}" instance has been created - "{{ ec2_dns_name }}"'
+    body='Your "{{ ec2_os_type }}" instance has been created'
