@@ -23,6 +23,7 @@
   roles:
     - linux/postcreate
     - { role: 'linux/apps/web', tags: ["apps", "linux"], when: ec2_instance_app == 'web' }
+    # we can add more apps roles here if we wanted, or perhaps an array of apps would be better to loop through?
 
 - name: Configure common options across new Windows instances
   hosts: justcreatedwindows
