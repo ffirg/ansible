@@ -1,12 +1,16 @@
 ---
 # This playbook contains post VM creation tasks that will be run on all Windows nodes.
 
-  vars:
-    ansible_user: tower
-    ansible_password: Redhat01
-    ansible_connection: winrm
-    ansible_port: 5986
-    ansible_winrm_server_cert_validation: ignore
+-name: post provision tasks
 
-- name: Create user accounts
-  win_user: name=phil account_disabled=yes
+vars:
+  ansible_user: tower
+  ansible_password: Redhat01
+  ansible_connection: winrm
+  ansible_port: 5986
+  ansible_winrm_server_cert_validation: ignore
+
+tasks:
+
+  - name: Create user accounts
+    win_user: name=phil account_disabled=yes
