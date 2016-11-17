@@ -1,14 +1,10 @@
 ---
-# This playbook contains common plays that will be run on all nodes.
+# This playbook contains post VM creation tasks that will be run on all Linux nodes.
 
-- block:
+- name: Create user accounts
+  user: name=phil comment="Phil Griffiths" uid=1101 groups=wheel append=yes
 
-      # create common user accounts
-      user: name=phil comment="Phil Griffiths" uid=1101 groups=wheel append=yes
-
-      # install and configure NTP
-      yum: name=ntp state=latest
-      template: src=/templates/ntp.conf.j2 dest=/etc/ntp.conf
-      notify: restart ntp
-
-  when: ansible_distribution == 'RedHat'
+- name: Install and configure NTP
+  yum: name=ntp state=latest
+  template: src=/templates/ntp.conf.j2 dest=/etc/ntp.conf
+  notify: restart ntp
