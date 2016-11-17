@@ -14,3 +14,17 @@
 
 - name: Ensure NTP is started at boot
   service: name=ntpd state=started enabled=yes
+
+- name: Send out login details via email
+  local_action:
+    mail
+    host='email-smtp.eu-west-1.amazonaws.com'
+    port=587
+    username=AKIAJP43DRPPY5HSIQIQ
+    password='AmueIT9s4roHW8mN/JavXpEyJzxT+ZMPePs74Jyf4zxu'
+    from="noreply@bangonabout.com (Ansible VM Creator)"
+    cc="Auditor <auditor@mailinator.com>"
+    headers=Reply-To=helpdesk@mailinator.com
+    to="requester <requester@mailinator.com>"
+    subject='Your VM creation'
+    body='has been created'
