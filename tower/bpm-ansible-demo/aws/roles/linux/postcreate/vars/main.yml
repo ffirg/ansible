@@ -1,4 +1,4 @@
 ---
 # Local variables if we need them
-# syntax is:
-# variable: value
+ntpserver1: 0.rhel.pool.ntp.org
+ntpserver2: 127.127.1.0
