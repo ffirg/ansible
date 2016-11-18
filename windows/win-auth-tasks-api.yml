@@ -75,7 +75,7 @@
 
 - name: Inform BPM of updates to process flow
   # we run this on the Tower server, as win_uri doesn't have auth yet
-  hosts: 127.0.0.1
+  hosts: localhost
   # we don't need any host facts, so disable to make run faster
   gather_facts: false
 
