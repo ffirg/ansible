@@ -2,6 +2,7 @@
 - name: Perform Actions On Users AD Account
   # we run this on the AD server, to save messing with permissions
   hosts: tag_Name_active_directory_server
+  connection: winrm
   # we don't need any host facts, so disable to make run faster
   gather_facts: false
 
