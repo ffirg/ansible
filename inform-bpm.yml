@@ -1,0 +1,15 @@
+---
+- name: Inform BPM of updates to process flow
+  # we run this on the Tower server, as win_uri doesn't have auth yet
+  hosts: localhost
+  # we don't need any host facts, so disable to make run faster
+  gather_facts: false
+
+  tasks:
+
+    - name: Callback to BPM using pid
+      uri:
+        method: POST
+        user: bpmsAdmin
+        password: redhat1!
+        url: "http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/12/signal?signal={stopRef}"

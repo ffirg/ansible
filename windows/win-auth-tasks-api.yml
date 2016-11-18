@@ -81,7 +81,7 @@
 
   tasks:
 
-    - name: Callback to BPM
+    - name: Callback to BPM using pid 
       uri:
         method: POST
         user: bpmsAdmin
