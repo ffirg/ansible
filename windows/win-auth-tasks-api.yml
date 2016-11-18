@@ -38,7 +38,7 @@
       always:
         - debug: msg='Tasks to disable users AD account have been run'
         - win_file: path='{{tmp_dir}}/{{script}}.ps1' state=absent
-        - uri:
+        - win_uri:
             method: POST
             user: bpmsAdmin
             password: "redhat1!"
