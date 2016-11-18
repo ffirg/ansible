@@ -38,11 +38,11 @@
       always:
         - debug: msg='Tasks to disable users AD account have been run'
         - win_file: path='{{tmp_dir}}/{{script}}.ps1' state=absent
-        - win_uri:
-            method: POST
-            user: bpmsAdmin
-            password: redhat1!
-            url: http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/12/signal?signal={startRef|stopRef}
+        #- win_uri:
+        #    method: POST
+        #    user: bpmsAdmin
+        #    password: redhat1!
+        #    url: http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/12/signal?signal={startRef|stopRef}
 
       vars:
         script: 'disable_ad_account'
@@ -77,3 +77,10 @@
 
       tags:
         - delete
+
+    - name: Inform BPM
+        uri:
+        method: POST
+        user: bpmsAdmin
+        password: redhat1!
+        url: http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/12/signal?signal={startRef|stopRef}
