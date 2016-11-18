@@ -78,6 +78,9 @@
 - name: Inform BPM of updates to process flow
   # we run this on the Tower server, as win_uri doesn't have auth yet
   hosts: localhost
+  ansible_connection: ssh
+  ansible_port: 22
+
   # we don't need any host facts, so disable to make run faster
   gather_facts: false
 
