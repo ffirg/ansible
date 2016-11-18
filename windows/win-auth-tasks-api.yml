@@ -2,15 +2,14 @@
 - name: Perform Actions On Users AD Account
   # we run this on the AD server, to save messing with permissions
   hosts: tag_Name_active_directory_server
-  connection: winrm
   # we don't need any host facts, so disable to make run faster
   gather_facts: false
 
   vars:
     # mainly connection stuff, also global playbook ones
-    ansible_connection: winrm
-    ansible_port: 5986
-    ansible_winrm_server_cert_validation: ignore
+    #ansible_connection: winrm
+    #ansible_port: 5986
+    #ansible_winrm_server_cert_validation: ignore
     tmp_dir: 'C:\Temp'
 
   tasks:
@@ -79,13 +78,12 @@
 - name: Inform BPM of updates to process flow
   # we run this on the Tower server, as win_uri doesn't have auth yet
   hosts: localhost
-  connection: local
   # we don't need any host facts, so disable to make run faster
   gather_facts: false
 
   vars:
-    ansible_connection: ssh
-    ansible_port: 22
+    #ansible_connection: ssh
+    #ansible_port: 22
 
   tasks:
 
