@@ -6,10 +6,6 @@
   gather_facts: false
 
   vars:
-    # mainly connection stuff, also global playbook ones
-    #ansible_connection: winrm
-    #ansible_port: 5986
-    #ansible_winrm_server_cert_validation: ignore
     tmp_dir: 'C:\Temp'
 
   tasks:
@@ -73,17 +69,11 @@
       tags:
         - delete
 
-#- include: inform-bpm.yml
-
 - name: Inform BPM of updates to process flow
   # we run this on the Tower server, as win_uri doesn't have auth yet
   hosts: localhost
   # we don't need any host facts, so disable to make run faster
   gather_facts: false
-
-  vars:
-    #ansible_connection: ssh
-    #ansible_port: 22
 
   tasks:
 
@@ -92,6 +82,6 @@
         method: POST
         user: bpmsAdmin
         password: redhat1!
-        url: "http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/12/signal?signal={stopRef}"
+        url: "http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/{{pid}}/signal?signal={stopRef}"
       tags:
         - always
