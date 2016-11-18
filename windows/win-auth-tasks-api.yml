@@ -38,11 +38,6 @@
       always:
         - debug: msg='Tasks to disable users AD account have been run'
         - win_file: path='{{tmp_dir}}/{{script}}.ps1' state=absent
-        #- win_uri:
-        #    method: POST
-        #    user: bpmsAdmin
-        #    password: redhat1!
-        #    url: http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/12/signal?signal={startRef|stopRef}
 
       vars:
         script: 'disable_ad_account'
@@ -80,8 +75,7 @@
 
 - name: Inform BPM of updates to process flow
   # we run this on the Tower server, as win_uri doesn't have auth yet
-  hosts: localhost
-  connection: local
+  hosts: 127.0.0.1
   # we don't need any host facts, so disable to make run faster
   gather_facts: false
 
@@ -92,4 +86,4 @@
         method: POST
         user: bpmsAdmin
         password: redhat1!
-        url: http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/12/signal?signal={stopRef}
+        url: "http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/12/signal?signal={stopRef}"
