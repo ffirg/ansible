@@ -73,6 +73,8 @@
       tags:
         - delete
 
+#- include: inform-bpm.yml
+
 - name: Inform BPM of updates to process flow
   # we run this on the Tower server, as win_uri doesn't have auth yet
   hosts: localhost
@@ -81,7 +83,7 @@
 
   tasks:
 
-    - name: Callback to BPM using pid 
+    - name: Callback to BPM using pid
       uri:
         method: POST
         user: bpmsAdmin
