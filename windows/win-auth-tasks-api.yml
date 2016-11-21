@@ -1,4 +1,21 @@
 ---
+- name: Inform BPM start of process
+  # we run this on the Tower server, as win_uri doesn't have auth yet
+  hosts: localhost
+  # we don't need any host facts, so disable to make run faster
+  gather_facts: false
+
+  tasks:
+
+    - name: Callback to BPM using pid
+      uri:
+        method: POST
+        user: bpmsAdmin
+        password: redhat1!
+        url: "http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/{{pid}}/signal?signal={startRef}"
+      tags:
+        - always
+
 - name: Perform Actions On Users AD Account
   # we run this on the AD server, to save messing with permissions
   hosts: tag_Name_active_directory_server
@@ -69,7 +86,7 @@
       tags:
         - delete
 
-- name: Inform BPM of updates to process flow
+- name: Inform BPM end of process
   # we run this on the Tower server, as win_uri doesn't have auth yet
   hosts: localhost
   # we don't need any host facts, so disable to make run faster
