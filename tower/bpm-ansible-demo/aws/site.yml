@@ -43,7 +43,6 @@
   post_tasks:
 
     - name: Send out login details via email
-      hosts: localhost
       mail:
         host='email-smtp.eu-west-1.amazonaws.com'
         port=587
@@ -54,6 +53,7 @@
         to="requester <demo@mailinator.com>"
         subject='Your VM has been created'
         body='Your "{{ ec2_os_type }}" instance has been created - "{{ ec2_dns_name }}"'
+      delegate_to: localhost
       tags:
         - always
 
