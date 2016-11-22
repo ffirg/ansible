@@ -28,7 +28,7 @@
 
 - name: Get public DNS name
   set_fact:
-    dns_name: "{{ newmachines.instances[0].ec2_dns_name }}"
+    dns_name: "{{ newmachines.instances[0].public_dns }}"
 
 - name: Add the machine to in memory inventory
   add_host:
