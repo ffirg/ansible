@@ -18,7 +18,6 @@
     # passed as 'extra_vars' from BPM form input
     instance_type: "{{ ec2_instance_type }}"
   register: newmachines
-- debug: var="{{ newmachines }}"
 
 - name: Wait for SSH to start
   wait_for:
@@ -29,7 +28,7 @@
 
 - name: Get public DNS name
   set_fact:
-    dns_name: "{{ newmachines.instances[0].public_dns }}"
+    dns_name: "{{ newmachines.instances[0].public_dns_name }}"
 
 - name: Add the machine to in memory inventory
   add_host:
