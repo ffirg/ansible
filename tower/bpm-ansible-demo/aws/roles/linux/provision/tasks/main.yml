@@ -26,10 +26,10 @@
     timeout: 300
   delegate_to: localhost
 
-- name: Record DNS name for email
-  set_fact:
-    ec2_dns_name: "{{ newmachines.instances[0].public_dns_name }}"
-- debug: var=ec2_dns_name
+#- name: Record DNS name for email
+#  set_fact:
+#    ec2_dns_name: "{{ newmachines.instances[0].public_dns_name }}"
+#- debug: var=ec2_dns_name
 
 - name: Add new VM to in memory inventory so we can post-process
   add_host:
