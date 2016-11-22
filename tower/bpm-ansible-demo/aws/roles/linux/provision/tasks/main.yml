@@ -18,6 +18,7 @@
     # passed as 'extra_vars' from BPM form input
     instance_type: "{{ ec2_instance_type }}"
   register: newmachines
+- debug: var="{{ newmachines.instances[0] }}"
 
 - name: Wait for SSH to start
   wait_for:
