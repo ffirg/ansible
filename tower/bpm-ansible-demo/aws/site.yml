@@ -5,10 +5,17 @@
   hosts: localhost
   connection: local
   gather_facts: no
+  ignore_errors: True
 
   pre_tasks:
-    - name: 'Pre-task: Tell BPM that we have started'
-      shell: /usr/bin/echo 'Foo'
+    - name: Callback to BPM using pid
+      uri:
+        method: POST
+        user: bpmsAdmin
+        password: redhat1!
+        url: "http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/{{pid}}/signal?signal=startRef"
+      tags:
+        - always
 
   roles:
     - { role: 'linux/provision', tags: ["instances", "linux"], when: ec2_os_type == 'linux' }
@@ -33,5 +40,11 @@
   #  - windows/postcreate
 
   post_tasks:
-    - name: 'Post-task: Tell BPM that we have finished'
-      shell: /usr/bin/echo 'Foo'
+    - name: Callback to BPM using pid
+      uri:
+        method: POST
+        user: bpmsAdmin
+        password: redhat1!
+        url: "http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/{{pid}}/signal?signal=stopRef"
+      tags:
+        - always
