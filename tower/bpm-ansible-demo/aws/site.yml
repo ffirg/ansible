@@ -40,6 +40,12 @@
   #roles:
   #  - windows/postcreate
 
+- name: Final notifications stage
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  ignore_errors: True
+
   post_tasks:
 
     - name: Send out login details via email
