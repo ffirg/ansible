@@ -27,7 +27,7 @@
   delegate_to: localhost
 
 - name: Get public DNS name
-  set_fact:
+  vars:
     dns_name: "{{ newmachines.instances[0].public_dns_name }}"
 
 - name: Add the machine to in memory inventory
