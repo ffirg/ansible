@@ -56,7 +56,7 @@
         password='AmueIT9s4roHW8mN/JavXpEyJzxT+ZMPePs74Jyf4zxu'
         from="noreply@bangonabout.com (Ansible VM Creator)"
         headers=Reply-To=helpdesk@mailinator.com
-        to="requester <demo@mailinator.com>"
+        to="requester <demofoobar123z@mailinator.com>"
         subject='Your VM has been created'
         body='Your "{{ ec2_os_type }}" instance has been created - "{{ ec2_dns_name }}"'
       delegate_to: localhost
