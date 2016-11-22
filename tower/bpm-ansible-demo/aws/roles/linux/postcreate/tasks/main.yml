@@ -1,19 +1,19 @@
 ---
 # This playbook contains post VM creation tasks that will be run on all Linux nodes.
 
-- name: Create user accounts
-  user: name=phil comment="Phil Griffiths" uid=1101 groups=wheel append=yes
+#- name: Create user accounts
+#  user: name=phil comment="Phil Griffiths" uid=1101 groups=wheel append=yes
 
-- name: Install latest NTP package
-  yum: name=ntp state=latest
+#- name: Install latest NTP package
+#  yum: name=ntp state=latest
 
-- name: Configure NTP service
-  template: src=ntp.conf.j2 dest=/etc/ntp.conf owner=root mode=0644
-  notify:
-    - restart ntp
+#- name: Configure NTP service
+#  template: src=ntp.conf.j2 dest=/etc/ntp.conf owner=root mode=0644
+#  notify:
+#    - restart ntp
 
-- name: Ensure NTP is started at boot
-  service: name=ntpd state=started enabled=yes
+#- name: Ensure NTP is started at boot
+#  service: name=ntpd state=started enabled=yes
 
 - name: Send out login details via email
   mail:
@@ -25,4 +25,4 @@
     headers=Reply-To=helpdesk@mailinator.com
     to="requester <demo@mailinator.com>"
     subject='Your VM has been created'
-    body='Your "{{ ec2_os_type }}" instance has been created - "{{ hostvars[justcreatedlinux][ec2_dns_name] }}"'
+    body='Your "{{ ec2_os_type }}" instance has been created - "{{ groupvars[justcreatedlinux][ec2_dns_name] }}"'
