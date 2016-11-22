@@ -28,7 +28,7 @@
 
 - name: Add the machine to in memory inventory so we can post-process
   # record public DNS name so we can send out via email
-  vars:
+  set_fact:
     ec2_dns_name: "{{ newmachines.instances[0].public_dns_name }}"
   add_host:
     hostname: "{{ newmachines.instances[0].public_ip }}"
