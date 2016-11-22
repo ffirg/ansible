@@ -26,11 +26,10 @@
     timeout: 300
   delegate_to: localhost
 
-- name: Get public DNS name
+- name: Add the machine to in memory inventory so we can post-process
+  # record public DNS name so we can send out via email
   vars:
     ec2_dns_name: "{{ newmachines.instances[0].public_dns_name }}"
-
-- name: Add the machine to in memory inventory
   add_host:
     hostname: "{{ newmachines.instances[0].public_ip }}"
     groups: justcreatedlinux
