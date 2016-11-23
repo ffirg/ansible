@@ -8,7 +8,7 @@
   tasks:
 
     - name: Configure hostname
-      hostname: 
+      hostname:
         name: "{{ inventory_hostname }}.philredhat.com"
 
     - name: add user accounts
