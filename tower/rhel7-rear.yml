@@ -1,6 +1,6 @@
 # vim:ft=ansible:
 ---
-- hosts: beckton
+- hosts: all
   gather_facts: yes
   become: yes
 
