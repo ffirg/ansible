@@ -13,7 +13,7 @@
   tasks:
 
     - name: Demonstrates RHEL7's Relax-and-Recover (ReaR) utility
-      command: /bin/echo "As per https://access.redhat.com/solutions/2115051"
+      command: /bin/echo "How to use ReaR on RHEL - https://access.redhat.com/solutions/2115051"
 
     - name: Install packages required for creating ISO images
       yum: name={{ item }} state=installed
@@ -29,5 +29,5 @@
     - name: Create disaster recovery system and generate backup files
       command: rear -d -v mkbackup
 
-    - name: Refer to documentation to use for recovery
-      command: /bin/echo "https://access.redhat.com/solutions/2115051"
+    - name: Refer to documentation on how to recover
+      command: /bin/echo "ReaR recovery steps - https://access.redhat.com/solutions/2115051"

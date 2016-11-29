@@ -17,4 +17,4 @@
         zone: Default
         resource_type: template
         instance_name: '{{ hostname }}'
-        instance_type: server123
+        instance_type: server123.
