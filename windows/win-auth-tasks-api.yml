@@ -68,7 +68,7 @@
             src: 'templates/{{script}}.j2'
             dest: '{{tmp_dir}}/{{script}}.ps1'
 
-        - name: Disable Users AD Account
+        - name: Delete Users AD Account
           raw: '{{tmp_dir}}/{{script}}.ps1'
           register: output
         - debug: var=output.stdout
