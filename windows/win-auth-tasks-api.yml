@@ -10,8 +10,8 @@
     - name: Callback to BPM using pid
       uri:
         method: POST
-        user: bpmsAdmin
-        password: redhat1!
+        user: ******
+        password: ******
         url: "http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/{{pid}}/signal?signal=startRef"
       tags:
         - always
