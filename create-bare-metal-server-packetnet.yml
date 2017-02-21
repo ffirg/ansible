@@ -1,0 +1,28 @@
+# Simple example playbook for use with packet.net cloud
+# needs ansible 2.3 to support the packet_device module
+# assumes you've already set env var PACKET_API_TOKEN (or add it in here)
+# The project is already setup and ready to be used as a pre-requisite
+
+- name: "Example packet.net cloud provisioning"
+  hosts: localhost
+  connection: local
+
+  tasks:
+  - name: "Provision 2 small bare metal servers"
+    packet_device:
+      project_id: 1b778d35-8e8b-4a51-bed1-79b597988f46
+      hostnames: [my-demo-server1, my-demo-server2]
+      operating_system: ubuntu_16_04
+      plan: baremetal_0
+      facility: ams1
+      wait: yes
+    register: newhosts
+
+  - name: wait for SSH
+    wait_for:
+      delay: 1
+      host: "{{ item.public_ipv4 }}"
+      port: 22
+      state: started
+      timeout: 500
+    with_items: "{{ newhosts.devices }}"
