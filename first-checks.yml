@@ -4,7 +4,7 @@
   become: yes
   become_method: sudo
   gather_facts: true
-  ignore_errors: false
+  ignore_errors: true
 
   tasks:
     - name: Test connection
