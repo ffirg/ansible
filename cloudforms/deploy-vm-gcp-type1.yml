@@ -15,7 +15,7 @@
           machine_type: '{{ machine_type }}'
           image: '{{ image }}'
           project_id: '{{ project_id }}'
-          tags: webserver
+          tags: rhel-7
       register: gce
 
     - name: Wait for SSH to come up
