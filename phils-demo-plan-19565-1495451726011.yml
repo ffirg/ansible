@@ -14,7 +14,7 @@
 # Identifier: (CVE_2017_2636_kernel|KERNEL_CVE_2017_2636,105,mitigate)
 # Version: 73ce59d190b34351078f6e89f80851427ca7b800
 - name: Disable n_hdlc kernel module
-  hosts: "barnsley.philredhat.com"
+  hosts: "all"
   become: true
 
   tasks:
@@ -36,7 +36,7 @@
       register: loaded_modules
       changed_when: false
       check_mode: no
-      
+
     # If the module was found, a reboot is necessary
     - when: "{{ loaded_modules.stdout | default('') | search('n_hdlc') }}"
       block:
@@ -80,7 +80,7 @@
       command: modprobe -r dccp
       register: modprobe_result
       ignore_errors: true
-      
+
     - when: modprobe_result|failed
       block:
         - name: Unable to remove loaded module; Rebooting
