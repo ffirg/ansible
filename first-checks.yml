@@ -17,7 +17,7 @@
         - ping
 
     - hostname:
-        name: beckton
+        name: barnsley
       tags:
         - config
 
