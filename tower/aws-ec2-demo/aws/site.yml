@@ -1,0 +1,74 @@
+---
+# This playbook provides VM orchestration on Amazon EC2
+
+- name: VM and Application Orchestration Demo
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  ignore_errors: True
+
+  pre_tasks:
+
+    - name: Callback to BPM using pid
+      uri:
+        method: POST
+        user: ******
+        password: ******
+        url: "http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/{{pid}}/signal?signal=startRef"
+      tags:
+        - always
+
+  roles:
+    - { role: 'linux/provision', tags: ["instances", "linux"], when: ec2_os_type == 'linux' }
+    - { role: 'windows/provision', tags: ["instances", "windows"], when: ec2_os_type == 'windows' }
+
+- name: Configure common options across new Linux instances
+  hosts: justcreatedlinux
+  gather_facts: yes
+  become: yes
+  become_method: sudo
+
+  roles:
+    - linux/postcreate
+    - { role: 'linux/apps/web', tags: ["apps", "linux"], when: ec2_instance_app == 'web' }
+    # we can add more apps roles here if we wanted, or perhaps an array of apps would be better to loop through?
+
+- name: Configure common options across new Windows instances
+  hosts: justcreatedwindows
+  gather_facts: no
+
+  #roles:
+  #  - windows/postcreate
+
+- name: Final notifications stage
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  ignore_errors: True
+
+  post_tasks:
+
+    - name: Send out login details via email
+      mail:
+        host='email-smtp.eu-west-1.amazonaws.com'
+        port=587
+        username=AKIAJP43DRPPY5HSIQIQ
+        password='AmueIT9s4roHW8mN/JavXpEyJzxT+ZMPePs74Jyf4zxu'
+        from="noreply@bangonabout.com (Ansible VM Creator)"
+        headers=Reply-To=helpdesk@mailinator.com
+        to="requester <demofoobar123z@mailinator.com>"
+        subject='Your VM has been created'
+        body='Your "{{ ec2_os_type }}" instance has been created - "{{ ec2_dns_name }}"'
+      delegate_to: localhost
+      tags:
+        - always
+
+
+    - name: Callback to BPM using pid
+      uri:
+        method: POST
+        user: ******
+        password: ******
+        url: "http://ec2-52-212-76-182.eu-west-1.compute.amazonaws.com:8080/business-central/rest/runtime/com.gatwick.demo:gatwickdemoproject:1.0/process/instance/{{pid}}/signal?signal=stopRef"
+      tags:
+        - always

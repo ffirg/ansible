@@ -1,0 +1,21 @@
+---
+# These tasks install http and the php modules.
+
+- name: Install web and associated packages
+  yum: name={{ item }} state=present
+  with_items:
+   - httpd
+   - php
+   - php-mysql
+   - git
+   - libsemanage-python
+   - libselinux-python
+
+#- name: insert firewalld rule for httpd
+#  firewalld: port={{ httpd_port }}/tcp permanent=true state=enabled immediate=yes
+
+- name: Start the web service
+  service: name=httpd state=started enabled=yes
+
+- name: Configure SELinux to allow httpd to connect to remote database
+  seboolean: name=httpd_can_network_connect_db state=true persistent=yes

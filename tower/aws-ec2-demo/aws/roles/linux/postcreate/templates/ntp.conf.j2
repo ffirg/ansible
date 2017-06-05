@@ -1,0 +1,13 @@
+
+driftfile /var/lib/ntp/drift
+
+restrict 127.0.0.1
+restrict -6 ::1
+
+server "{{ ntpserver1 }}"
+server "{{ ntpserver2 }}"
+fudge "{{ ntpserver2 }}" stratum 10
+
+includefile /etc/ntp/crypto/pw
+
+keys /etc/ntp/keys

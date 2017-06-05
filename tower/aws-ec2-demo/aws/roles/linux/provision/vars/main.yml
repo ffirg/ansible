@@ -6,5 +6,7 @@ ami: ami-f8cc838b
 public_ip: yes
 group: bpm-ansible-demo
 subnet: subnet-bc69e8e4
-# we use this AWS tag to identify newly provisioned instances
+instance_type: t2.micro
+# we use this AWS tag to identify newly provisioned instances and
+# rhsm to identify new hosts that need to be registered
 instance_tags: '{"type":"demo-clients","Name":"just-created-linux","rhsm":"false"}'
