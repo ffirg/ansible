@@ -18,5 +18,6 @@
         password: '{{rhn_password}}'
         #autosubscribe: true
         pool: '{{rhn_pool_id}}'
+        ignore_errors: yes
       tags:
         - register
