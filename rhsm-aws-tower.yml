@@ -12,4 +12,5 @@
         #autosubscribe: true
         pool_ids: '{{rhn_pool_id}}'
       tags:
-        - RHSM
+        - rhsm
+        
