@@ -1,5 +1,6 @@
 ---
 # This playbook provides VM orchestration on Amazon EC2
+# most things set in vars directory in case you're wondering :)
 
 - name: VM and Application Orchestration Demo
   hosts: localhost
