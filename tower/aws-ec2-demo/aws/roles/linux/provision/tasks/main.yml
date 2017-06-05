@@ -11,7 +11,7 @@
     assign_public_ip: "{{ public_ip }}"
     vpc_subnet_id: "{{ subnet }}"
     group: "{{ group }}"
-    count: 2
+    count: 1
     monitoring: yes
     wait: yes
     state: present
@@ -26,7 +26,7 @@
     timeout: 300
   delegate_to: localhost
 
-- name: Record DNS name for email
+- name: Show me the DNS name
   set_fact:
     ec2_dns_name: "{{ newmachines.instances[0].public_dns_name }}"
 - debug: var=ec2_dns_name
@@ -35,4 +35,3 @@
   add_host:
     hostname: "{{ newmachines.instances[0].public_ip }}"
     groups: justcreatedlinux
-#   ec2_dns_name: "{{ newmachines.instances[0].public_dns_name }}"
