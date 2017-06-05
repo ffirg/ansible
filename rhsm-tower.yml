@@ -1,0 +1,14 @@
+---
+- name: Register to Red Hat RHSM
+  hosts: all
+
+  tasks:
+    - name: Register host and subscribe (using tower survey)
+      redhat_subscription:
+        state: present
+        username: '{{rhn_username}}'
+        password: '{{rhn_password}}'
+        #autosubscribe: true
+        pool_ids: '{{rhn_pool_id}}'
+      tags:
+        - RHSM
