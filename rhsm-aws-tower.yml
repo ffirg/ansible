@@ -4,7 +4,7 @@
   hosts: tag_rhsm_false
 
   tasks:
-    - name: Register host and subscribe (using tower survey)
+    - name: "Register host and subscribe (using tower survey)"
       redhat_subscription:
         state: present
         username: '{{rhn_username}}'
