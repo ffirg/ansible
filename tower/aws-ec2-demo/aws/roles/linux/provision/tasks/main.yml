@@ -11,12 +11,12 @@
     assign_public_ip: "{{ public_ip }}"
     vpc_subnet_id: "{{ subnet }}"
     group: "{{ group }}"
-    count: 1
+    count: 2
     monitoring: yes
     wait: yes
     state: present
     # passed as 'extra_vars' from BPM form input
-    instance_type: "{{ ec2_instance_type }}"
+    instance_type: "{{ instance_type }}"
   register: newmachines
 
 - name: Wait for SSH to start
