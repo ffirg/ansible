@@ -17,6 +17,7 @@
         username: '{{rhn_username}}'
         password: '{{rhn_password}}'
         #autosubscribe: true
+        force_register: true
         pool: '{{rhn_pool_id}}'
         ignore_errors: yes
       tags:
