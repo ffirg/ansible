@@ -1,6 +1,7 @@
 ---
 - name: Register to Red Hat RHSM
-  hosts: all
+  # I use the tag below to pick up unsubscribed hosts from the inventory
+  hosts: tag_rhsm_false
 
   tasks:
     - name: Register host and subscribe (using tower survey)
