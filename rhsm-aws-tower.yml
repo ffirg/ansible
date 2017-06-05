@@ -12,13 +12,13 @@
         - install
 
     - name: "Register host and subscribe (using tower survey)"
+      ignore_errors: yes
       redhat_subscription:
         state: present
         username: '{{rhn_username}}'
         password: '{{rhn_password}}'
         #autosubscribe: true
         force_register: true
-        pool: '{{rhn_pool_id}}'
-        ignore_errors: yes
+        pool: '{{rhn_pool_id}}'  
       tags:
         - register
