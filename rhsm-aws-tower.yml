@@ -4,13 +4,19 @@
   hosts: tag_rhsm_false
 
   tasks:
+    - name: Install OS Packages
+      yum:
+        name: subscription-manager
+        state: present
+      tags:
+        - install
+
     - name: "Register host and subscribe (using tower survey)"
       redhat_subscription:
         state: present
         username: '{{rhn_username}}'
         password: '{{rhn_password}}'
         #autosubscribe: true
-        pool_ids: '{{rhn_pool_id}}'
+        pool: '{{rhn_pool_id}}'
       tags:
-        - rhsm
-        
+        - register
