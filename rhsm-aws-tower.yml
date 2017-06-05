@@ -19,6 +19,6 @@
         password: '{{rhn_password}}'
         #autosubscribe: true
         force_register: true
-        pool: '{{rhn_pool_id}}'  
+        pool: '{{rhn_pool_id}}'
       tags:
         - register
