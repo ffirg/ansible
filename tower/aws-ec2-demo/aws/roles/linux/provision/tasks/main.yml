@@ -8,6 +8,7 @@
     zone: "{{ zone }}"
     image: "{{ ami }}"
     instance_tags: "{{ instance_tags }}"
+    instance_type: "{{ instance_type }}"
     assign_public_ip: "{{ public_ip }}"
     vpc_subnet_id: "{{ subnet }}"
     group: "{{ group }}"
@@ -15,8 +16,6 @@
     monitoring: yes
     wait: yes
     state: present
-    # passed as 'extra_vars' from BPM form input
-    instance_type: "{{ instance_type }}"
   register: newmachines
 
 - name: Wait for SSH to start
