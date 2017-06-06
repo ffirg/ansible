@@ -4,13 +4,15 @@
   become_method: sudo
   gather_facts: true
 
-- name: Install Samba and misc packages
-  yum: name={{item}} state=latest
-  with_items:
-    - samba
-    - samba-client
-    - samba-winbind
-    - samba-winbind-clients
-    - samba-winbind-krb5-locator
-    - wget
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  tasks:
+
+    - name: Install Samba and misc packages
+      yum: name={{item}} state=latest
+      with_items:
+        - samba
+        - samba-client
+        - samba-winbind
+        - samba-winbind-clients
+        - samba-winbind-krb5-locator
+        - wget
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
