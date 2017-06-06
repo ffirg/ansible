@@ -1,4 +1,5 @@
 ---
+# hosts: not required as being called from Tower which will supply inventory
 # Install and register host to Red Hat Insights
 
 - name: Install Red Hat Access Insights Client
