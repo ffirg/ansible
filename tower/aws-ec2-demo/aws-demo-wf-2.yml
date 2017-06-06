@@ -4,7 +4,8 @@
   become_method: sudo
   gather_facts: false
 
-- name: Create ops user accounts
-  user:
-    name=bill comment="Bill Rogers" uid=1102 groups=wheel append=yes
-    name=ted comment="Ted Wonderful" uid=1103 groups=wheel append=yes
+  tasks:
+    - name: Create ops user accounts
+      user:
+        name=bill comment="Bill Rogers" uid=1102 groups=wheel append=yes
+        name=ted comment="Ted Wonderful" uid=1103 groups=wheel append=yes
