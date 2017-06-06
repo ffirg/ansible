@@ -1,5 +1,4 @@
 ---
-# use limits in tower
 
 - name: Install Red Hat Access Insights Client
   yum:
