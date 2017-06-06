@@ -1,33 +1,26 @@
-# vim:ft=ansible:
 ---
-- hosts: all
-  gather_facts: yes
-  become: yes
+# hosts: not required as being called from Tower which will supply inventory
+# Install and register host to Red Hat Insights
 
-  vars:
-    output_type: ISO
-    nfs_server: 192.168.133.103
-    nfs_mountpoint: recovery
-    # NOTE: root password is required and gets passed in via Tower survey
+- name: Install Red Hat Access Insights Client
+  yum:
+    name='{{ item }}'
+    state=present
+  with_items:
+      - redhat-access-insights
 
-  tasks:
+- name: Configure Red Hat Access Insights Client
+  template:
+    src=insights-client.conf.j2
+    dest=/etc/redhat-access-insights/redhat-access-insights.conf
 
-    - name: Demonstrates RHEL7's Relax-and-Recover (ReaR) utility
-      command: /bin/echo "How to use ReaR on RHEL - https://access.redhat.com/solutions/2115051"
+# check for this file
+- stat:
+  path=/etc/redhat-access-insights/.unregistered
+  register: unreg
 
-    - name: Install packages required for creating ISO images
-      yum: name={{ item }} state=installed
-      with_items:
-        - rear
-        - genisoimage
-        - syslinux
-      when: ansible_distribution == 'RedHat' and ansible_distribution_major_version == '7'
-
-    - name: Create local ReaR configuration
-      template: src=./rear/local.conf dest=/etc/rear/local.conf
-
-    - name: Create disaster recovery system and generate backup files
-      command: rear -d -v mkbackup
-
-    - name: Refer to documentation on how to recover
-      command: /bin/echo "ReaR recovery steps - https://access.redhat.com/solutions/2115051"
+# Only register if this system hasn't been registered before
+- name: Register to the Red Hat Access Insights Service
+  command:
+    redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
+  when: unreg.stat.exists == false
