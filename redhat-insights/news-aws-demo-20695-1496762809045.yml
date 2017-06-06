@@ -13,8 +13,7 @@
 # Identifier: (CVE_2017_2636_kernel|KERNEL_CVE_2017_2636,105,mitigate)
 # Version: 73ce59d190b34351078f6e89f80851427ca7b800
 - name: Disable n_hdlc kernel module
-  hosts: "ip-10-0-1-228.eu-west-1.compute.internal"
-  become: true
+  hosts: "all"
 
   tasks:
     # While this module may already be disabled in a different file,
@@ -35,7 +34,7 @@
       register: loaded_modules
       changed_when: false
       check_mode: no
-      
+
     # If the module was found, a reboot is necessary
     - when: "{{ loaded_modules.stdout | default('') | search('n_hdlc') }}"
       block:
@@ -52,7 +51,7 @@
 
 
 - name: run insights
-  hosts: ip-10-0-1-228.eu-west-1.compute.internal
+  hosts: all
   become: True
   tasks:
     - name: run insights
