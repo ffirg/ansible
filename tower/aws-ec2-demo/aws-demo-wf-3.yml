@@ -7,7 +7,7 @@
   tasks:
 
     - name: Install Samba and misc packages
-      yum: name={{item}} state=latest
+      yum: name={{item}} state=present
       with_items:
         - samba
         - samba-client
