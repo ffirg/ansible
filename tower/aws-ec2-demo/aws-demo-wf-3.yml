@@ -13,6 +13,5 @@
         - samba-client
         - samba-winbind
         - samba-winbind-clients
-        - samba-winbind-krb5-locator
         - wget
-      #when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
