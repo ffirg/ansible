@@ -1,5 +1,4 @@
 ---
-# This playbook contains post VM creation tasks that will be run on all Linux nodes.
 - hosts: tag_Name_just_created_linux
   become: yes
   become_method: sudo
