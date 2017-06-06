@@ -1,0 +1,31 @@
+---
+- hosts: all
+
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  gather_facts: false
+
+  vars_prompt:
+    - name: "continue"
+      prompt: "Danger Will Robinson, do you wish to continue? "
+      default: "y"
+
+  tasks:
+
+  - fail: msg="Chicken!"
+    when: continue != "y"
+
+  - name: Copy over RHN script
+    copy:
+      src: ./rhsm.sh
+      dest: /tmp
+      owner: root
+      group: wheel
+      mode: 0550
+      backup: yes
+
+  - name: register on RHN
+    command: /tmp/rhsm.sh
+    register: RHN
+  - debug: var=RHN
