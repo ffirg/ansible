@@ -14,6 +14,7 @@
     src=insights-client.conf.j2
     dest=/etc/redhat-access-insights/redhat-access-insights.conf
 
+# check for this file
 - stat:
   path=/etc/redhat-access-insights/.unregistered
   register: unreg
