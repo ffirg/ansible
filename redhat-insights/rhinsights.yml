@@ -28,3 +28,8 @@
       command:
         redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
       when: unreg.stat.exists == false
+
+    - name: Run Red Hat Insights
+      command: 
+        redhat-access-insights
+      changed_when: false
