@@ -24,7 +24,7 @@
 
 
 - name: run insights
-  hosts: clust1.example.com,elk.adrians.cloud
+  hosts: "all"
   become: True
   tasks:
     - name: run insights

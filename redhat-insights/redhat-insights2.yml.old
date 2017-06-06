@@ -1,0 +1,9 @@
+---
+- hosts: all
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  gather_facts: true
+
+  roles:
+  - { role: redhataccess.redhat-access-insights-client, when: ansible_os_family == 'RedHat' }
