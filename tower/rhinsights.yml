@@ -1,5 +1,8 @@
 ---
 - hosts: all
+  become: yes
+  become_method: sudo
+  gather_facts: false
 
 - name: Install Red Hat Access Insights Client
   yum:
@@ -15,7 +18,7 @@
 
 # check for this file
 - stat:
-  path=/etc/redhat-access-insights/.unregistered
+    path=/etc/redhat-access-insights/.unregistered
   register: unreg
 
 # Only register if this system hasn't been registered before
