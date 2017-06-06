@@ -11,7 +11,5 @@
       with_items:
         - samba-4.2.3-12.el7_2
         - samba-client-libs-4.2.3-12.el7_2
-        - samba-winbind
-        - samba-winbind-clients
         - wget
       when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
