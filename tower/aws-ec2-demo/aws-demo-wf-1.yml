@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: no
+  become_method: sudo
+  gather_facts: false
+
+  tasks:
+    - name: Test connection
+      ping:

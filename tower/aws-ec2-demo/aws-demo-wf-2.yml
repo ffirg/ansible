@@ -1,0 +1,12 @@
+---
+# This playbook contains post VM creation tasks that will be run on all Linux nodes.
+- hosts: all
+  become: yes
+  become_method: sudo
+  gather_facts: false
+
+- name: Create user accounts
+  user: name=phil comment="Phil Griffiths" uid=1101 groups=wheel append=yes
+
+- name: Install latest NTP package
+  yum: name=wget state=latest
