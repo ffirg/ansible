@@ -2,6 +2,9 @@
 - name: Register to Red Hat RHSM
   # I use the tag below to pick up unsubscribed hosts from the inventory
   hosts: tag_rhsm_false
+  # need to be root in order to install and register
+  become: yes
+  become_method: sudo
 
   tasks:
     - name: Install OS Packages
