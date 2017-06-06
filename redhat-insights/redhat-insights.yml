@@ -1,9 +1,24 @@
 ---
-- hosts: all
-  remote_user: vagrant
-  become: yes
-  become_method: sudo
-  gather_facts: true
+# use limits in tower
 
-  roles:
-  - { role: redhataccess.redhat-access-insights-client, when: ansible_os_family == 'RedHat' }
+- name: Install Red Hat Access Insights Client
+  yum:
+    name='{{ item }}'
+    state=present
+  with_items:
+      - redhat-access-insights
+
+- name: Configure Red Hat Access Insights Client
+  template:
+    src=insights-client.conf.j2
+    dest=/etc/redhat-access-insights/redhat-access-insights.conf
+
+- stat:
+  path=/etc/redhat-access-insights/.unregistered
+  register: unreg
+
+# Only register if this system hasn't been registered before
+- name: Register to the Red Hat Access Insights Service
+  command:
+    redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
+  when: unreg.stat.exists == false
