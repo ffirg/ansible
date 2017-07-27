@@ -10,7 +10,7 @@
   tasks:
   - name: "Provision 2 small bare metal servers"
     packet_device:
-      project_id: 1b778d35-8e8b-4a51-bed1-79b597988f46
+      project_id: something123
       hostnames: [my-demo-server1, my-demo-server2]
       operating_system: ubuntu_16_04
       plan: baremetal_0
