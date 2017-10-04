@@ -52,8 +52,8 @@
       mail:
         host='email-smtp.eu-west-1.amazonaws.com'
         port=587
-        username=AKIAJP43DRPPY5HSIQIQ
-        password='AmueIT9s4roHW8mN/JavXpEyJzxT+ZMPePs74Jyf4zxu'
+        username=*****
+        password='*****'
         from="noreply@bangonabout.com (Ansible VM Creator)"
         headers=Reply-To=helpdesk@mailinator.com
         to="requester <demofoobar123z@mailinator.com>"
