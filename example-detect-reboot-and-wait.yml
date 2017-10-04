@@ -1,0 +1,103 @@
+﻿---
+
+# Kernel with loaded modules vulnerable to remote code execution via Bluetooth stack (CVE-2017-1000251/Blueborne)
+# Identifier: (CVE_2017_1000251_kernel_blueborne|KERNEL_CVE_2017_1000251_LOADED,105,mitigate)
+# Version: 6d1b521decfe661d51db7922b1c9164b2f4d1092
+- name: Disable bluetooth-related kernel modules
+  hosts: all
+  become: true
+  vars:
+    modules:
+      - bnep
+      - bluetooth
+      - btusb
+
+  tasks:
+    # While modules may already be disabled in a different file,
+    # create a blacklist file explicitly for this issue.
+    - name: Blacklisting bluetooth kernel modules
+      lineinfile:
+        dest: /etc/modprobe.d/disable-bluetooth.conf
+        line: "install {{ item }} /bin/true"
+        owner: root
+        group: root
+        mode: 0644
+        state: present
+        create: yes
+      with_items: "{{ modules }}"
+
+    # Stop and disable the bluetooth service if it exists
+    - name: Checking available services (RHEL 7)
+      command: systemctl list-unit-files
+      register: servicelist_7
+      changed_when: false
+      check_mode: no
+      when: ansible_distribution_major_version == '7'
+
+    - name: Checking available services (RHEL 6)
+      command: chkconfig --list
+      register: servicelist_6
+      changed_when: false
+      check_mode: no
+      when: ansible_distribution_major_version == '6'
+
+    - name: Disabling bluetooth service (RHEL 7)
+      systemd:
+        name: bluetooth
+        state: stopped
+        enabled: no
+        masked: yes
+      when: ansible_distribution_major_version == '7' and servicelist_7.stdout | default('') | search("bluetooth.service")
+
+    - name: Disabling bluetooth service (RHEL 6)
+      service:
+        name: bluetooth
+        state: stopped
+        enabled: no
+      when: ansible_distribution_major_version == '6' and servicelist_6.stdout | default('') | search("bluetooth")
+
+    # Attempt to unload modules if any are loaded
+    - name: Checking loaded modules
+      command: awk /^(bnep|bluetooth|btusb)/ /proc/modules
+      register: loaded_modules
+      changed_when: false
+      check_mode: no
+
+    - name: Attempting to remove loaded modules
+      command: modprobe -r {{ item }}
+      register: modprobe
+      with_items: "{{ modules }}"
+      ignore_errors: true
+      when: loaded_modules.stdout | default('') | search(item)
+
+    # If any modules could not be removed, a reboot is necessary
+    - when: modprobe | failed
+      set_fact:
+        insights_needs_reboot: true
+
+
+# Reboots a system if any of the preceeding plays sets the 'insights_needs_reboot' variable to true.
+# The variable can be overridden to suppress this behavior.
+- name: Reboot system (if applicable)
+  hosts: all
+  become: True
+  gather_facts: False
+  tasks:
+    - when:
+        - insights_needs_reboot is defined
+        - insights_needs_reboot
+      block:
+        - name: Reboot system
+          shell: sleep 2 && shutdown -r now "Ansible triggered reboot"
+          async: 1
+          poll: 0
+          ignore_errors: true
+
+        - name: Wait for system to boot up
+          local_action:
+            module: wait_for
+            host: "{{ hostvars[inventory_hostname]['ansible_host'] | default(hostvars[inventory_hostname]['ansible_ssh_host'], true) | default(inventory_hostname, true) }}"
+            port: "{{ hostvars[inventory_hostname]['ansible_port'] | default(hostvars[inventory_hostname]['ansible_ssh_port'], true) | default('22', true) }}"
+            delay: 15
+            timeout: 300
+          become: false
