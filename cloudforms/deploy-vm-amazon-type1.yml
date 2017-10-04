@@ -5,7 +5,7 @@
   tasks:
     - name: Create an EC2 machine
       ec2:
-        key_name: ansible-tower
+        key_name: *****
         region: eu-west-1
         zone: eu-west-1b
         instance_type: t2.micro

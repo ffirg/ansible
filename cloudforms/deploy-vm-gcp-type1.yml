@@ -7,7 +7,7 @@
     #machine_type: n1-standard-1 # default
     machine_type: f1-micro
     image: rhel-7
-    project_id: redhat-examples
+    project_id: *****
     zone: europe-west1-b
 
   tasks:
