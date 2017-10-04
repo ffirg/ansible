@@ -14,11 +14,11 @@
         location: 'West Europe'
         user: pgriffit
         os_type: linux
-        ssh_cert_path: /Users/pgriffit/.ssh/azure-cert.pem
-        management_cert_path: /Users/pgriffit/.ssh/azure-manage.cer
-        password: "Redhat01"
-        subscription_id: a62a781e-0b4d-48a4-9094-3aa422bb02e3
-        storage_account: abc123classic
+        ssh_cert_path: *****/azure-cert.pem
+        management_cert_path: *****/azure-manage.cer
+        password: "*****"
+        subscription_id: *****
+        storage_account: *****
         state: present
         wait: yes
       register: newmachines

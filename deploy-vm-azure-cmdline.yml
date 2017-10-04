@@ -9,7 +9,7 @@
         resource_group: 'tower'
         name: pjgtestvm1
         vm_size: Standard_D1
-        ad_user: pgriffit@redhat.com
+        ad_user: *****
         admin_username: root
         admin_password: xxxxxx
         image:

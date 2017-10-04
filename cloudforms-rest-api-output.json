@@ -1,4 +1,4 @@
-$ curl -s -XGET -u admin:smartvm "https://cloudforms-elb.bangonabout.com/api/" | python -m json.tool
+$ curl -s -XGET -u xxx:xxxxx "https://cloudforms.xxxxxxfooxxxx.com/api/" | python -m json.tool
 {
     "collections": [
         {

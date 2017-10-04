@@ -14,7 +14,6 @@
   tasks:
     - name: Delete an ESXi VM Guest
       vsphere_guest:
-        #vcenter_hostname: vcenter.gps.hst.ams2.redhat.com
         vcenter_hostname: 10.39.164.21
         # version 2.1 only -> validate_certs: no
         username: '{{ username }}'
