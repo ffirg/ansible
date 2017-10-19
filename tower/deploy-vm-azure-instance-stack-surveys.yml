@@ -1,5 +1,5 @@
 ---
-- name: Setup a complete Azure compute stack
+- name: Setup a complete Azure compute stack using Tower Surveys for customisation
   hosts: localhost
   connection: local
   gather_facts: false
@@ -8,40 +8,41 @@
 
     - name: Create a resource group
       azure_rm_resourcegroup:
-        name: tower-demos-rg1
-        location: westeurope
+        name: '{{azure_resource_group_name}}'
+        location: '{{azure_region}}'
         tags:
           demo: tower
           type: standard
+          location: '{{azure_region}}'
 
     - name: Create storage account
       azure_rm_storageaccount:
-        resource_group: tower-demos-rg1
-        name: towerdemos
+        resource_group: '{{azure_resource_group_name}}'
+        name: '{{azure_storage_account_name}}'
         account_type: Standard_LRS
 
     - name: Create virtual network
       azure_rm_virtualnetwork:
-        resource_group: tower-demos-rg1
+        resource_group: '{{azure_resource_group_name}}'
         name: vn001
         address_prefixes: "10.10.0.0/16"
 
     - name: Add subnet
       azure_rm_subnet:
-        resource_group: tower-demos-rg1
+        resource_group: '{{azure_resource_group_name}}'
         name: subnet001
         address_prefix: "10.10.0.0/24"
         virtual_network: vn001
 
     - name: Create public ip
       azure_rm_publicipaddress:
-        resource_group: tower-demos-rg1
+        resource_group: '{{azure_resource_group_name}}'
         allocation_method: Static
         name: pubip001
 
     - name: Create security group that allows SSH
       azure_rm_securitygroup:
-        resource_group: tower-demos-rg1
+        resource_group: '{{azure_resource_group_name}}'
         name: secgroup001
         rules:
           - name: SSH
@@ -53,7 +54,7 @@
 
     - name: Create NIC
       azure_rm_networkinterface:
-        resource_group: tower-demos-rg1
+        resource_group: '{{azure_resource_group_name}}'
         name: nic001
         virtual_network: vn001
         subnet: subnet001
@@ -62,15 +63,15 @@
 
     - name: Create virtual machine
       azure_rm_virtualmachine:
-        resource_group: tower-demos-rg1
-        name: tower-demo-vm001
-        short_hostname: vm001
+        resource_group: '{{azure_resource_group_name}}'
+        name: '{{azure_vm_name}}'
+        short_hostname: '{{azure_vm_name}}'
         vm_size: Standard_D1
-        storage_account: towerdemos
-        storage_container: tower-demo-vm001
-        storage_blob: tower-demo-vm001.vhd
-        admin_username: centos
-        admin_password: Redhat01
+        storage_account: '{{azure_storage_account_name}}'
+        storage_container: '{{azure_vm_name}}'
+        storage_blob: '{{azure_vm_name}}'.vhd
+        admin_username: '{{admin_username}}'
+        admin_password: '{{admin_password}}'
         network_interfaces: nic001
         image:
           offer: CentOS
