@@ -69,7 +69,7 @@
         vm_size: Standard_D1
         storage_account: '{{azure_storage_account_name}}'
         storage_container: '{{azure_vm_name}}'
-        storage_blob: '{{azure_vm_name}}'.vhd
+        storage_blob: '{{azure_vm_name}}.vhd'
         admin_username: '{{admin_username}}'
         admin_password: '{{admin_password}}'
         network_interfaces: nic001
