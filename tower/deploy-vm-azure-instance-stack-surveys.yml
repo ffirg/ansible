@@ -55,7 +55,7 @@
     - name: Create NIC
       azure_rm_networkinterface:
         resource_group: '{{azure_resource_group_name}}'
-        name: nic001
+        name: '{{azure_vm_name}}'_nic001
         virtual_network: vn001
         subnet: subnet001
         public_ip_name: pubip001
