@@ -63,8 +63,10 @@
     - name: Create virtual machine
       azure_rm_virtualmachine:
         resource_group: tower-demos-rg1
-        name: tower-demo-vm001
-        short_hostname: vm001
+        #name: tower-demo-vm001
+        #short_hostname: vm001
+        name: '{{azure_vm_name}}'
+        short_hostname: '{{azure_vm_name}}'
         vm_size: Standard_D1
         storage_account: towerdemos
         storage_container: tower-demo-vm001
