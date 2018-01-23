@@ -54,7 +54,7 @@
     - name: Create NIC
       azure_rm_networkinterface:
         resource_group: tower-demos-rg1
-        name: nic001
+        name: '{{azure_vm_name}}'_nic001
         virtual_network: vn001
         subnet: subnet001
         public_ip_name: pubip001
@@ -73,7 +73,7 @@
         storage_blob: tower-demo-vm001.vhd
         admin_username: centos
         admin_password: Redhat01
-        network_interfaces: nic001
+        network_interfaces: '{{azure_vm_name}}'_nic001
         image:
           offer: CentOS
           publisher: OpenLogic
