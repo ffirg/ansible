@@ -1,7 +1,8 @@
 ---
-- name: Discover RHV VMs
+- name: RHV Discovery
   hosts: localhost
   connection: local
+  gather_facts: true
 
   vars:
     #hostname: pgriffit-ansible-test1
