@@ -1,0 +1,20 @@
+- hosts: localhost
+  gather_facts: false
+  vars:
+    fruits:
+      - oranges
+      - lemons
+      - apples
+      
+  tasks:
+    - name: Check for apples...
+      assert:
+        that: >-
+          'apples' in fruits
+        msg: fires when eval is false - so you have no apples
+
+    - name: Now check for lemons...
+      assert:
+        that: >-
+          'lemons' in fruits
+        msg: you have no lemons

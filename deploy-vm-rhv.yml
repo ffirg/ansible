@@ -5,6 +5,7 @@
   gather_facts: false
 
   vars:
+    rhvm: lnlabrhvm01.opstklab.local
     hostname: pgriffit-ansible-test1
 
   vars_prompt:
@@ -16,13 +17,15 @@
       private: yes
 
   tasks:
+
+    - name: Authenicate with RHV
+      ovirt_auth:
+        url: https://'{{rhvm}}'/ovirt-engine/api
+        username: '{{ username }}@internal'
+        password: "{{ password }}"
+
     - name: Create a VM called {{ hostname }}
-      ovirt:
-        url: https://rhevm.saleslab.fab.redhat.com
-        user: '{{ username }}@internal'
-        password: '{{ password }}'
-        image: pgriffit-rhel7-base-template
-        zone: Default
-        resource_type: template
-        instance_name: '{{ hostname }}'
-        instance_type: server
+      ovirt_vms:
+        state: present
+        name: '{{ hostname }}'
+        template: pgriffit-rhel7-base-template
