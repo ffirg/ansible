@@ -4,28 +4,7 @@
   connection: local
   gather_facts: true
 
-  vars:
-    #hostname: pgriffit-ansible-test1
-
   tasks:
     – name: List VMs
     ovirt_vms_facts:
     fetch_nested: true
-    #nested_attributes:
-    #– description
-    #auth: '{{ ovirt_auth }}'
-
-    – name: Set VMs
-    set_fact:
-    vm: '{{ item.name }}: {{ item.snapshots | map(attribute=’description’) | join(‘,’) }}'
-    with_items: '{{ ovirt_vms }}'
-    loop_control:
-    label: '{{ item.name }}'
-    register: all_vms
-
-    – name: make a list
-    set_fact: vms='{{ all_vms.results | map(attribute=’ansible_facts.vm’) | list }}'
-
-    – name: Print VMs
-    debug:
-    var: vms
