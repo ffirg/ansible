@@ -8,8 +8,8 @@
     ovirt_auth:
       # pass username/password in using Tower Survey
       url: 'https://lnlabrhvm01.opstklab.local/ovirt-engine/api'
-      username: '{{ rhv_username }}'
-      password: '{{ rhv_password }}'
+      username: '{{ rhvm_username }}'
+      password: '{{ rhvm_password }}'
 
   - name: List VMs
     ovirt_vms_facts:
