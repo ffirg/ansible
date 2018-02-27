@@ -1,5 +1,5 @@
 ---
-- name: RHV Discovery
+- name: "RHV Discovery"
   hosts: localhost
   connection: local
   gather_facts: true
@@ -7,4 +7,3 @@
   tasks:
     – name: List VMs
     ovirt_vms_facts:
-    fetch_nested: true
