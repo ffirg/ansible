@@ -14,3 +14,4 @@
 
   - name: List VMs
     ovirt_vms_facts:
+      auth: "{{ ovirt_auth }}"
