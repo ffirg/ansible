@@ -4,8 +4,11 @@
 
   tasks:
 
-  - name: Authenticate
+  - name: Authenticate against RHVM
     ovirt_auth:
-      
+      url: '{{ovirt_url}}'
+      username: '{{ovirt_username}}'
+      password: '{{ovirt_password }}'
+
   - name: List VMs
     ovirt_vms_facts:
