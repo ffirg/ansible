@@ -4,5 +4,8 @@
 
   tasks:
 
+  - name: Authenticate
+    ovirt_auth:
+      
   - name: List VMs
     ovirt_vms_facts:
