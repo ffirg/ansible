@@ -6,10 +6,10 @@
   tasks:
     - name: Create an ESXi VM Guest From Template
       vsphere_guest:
-        guest: tower-generated-vm
-        from_template: yes
-        template_src: RHEL7.4-template-vmware
+        name: tower-generated-vm
+        template: RHEL7.4-template-vmware
         cluster: LAB
-        esxi:
-          datacenter: LNLAB-OPNSTK
-          hostname: 10.212.91.12
+        datacenter: LNLAB-OPNSTK
+        #state: poweredon
+        #wait_for_ip_address: true
+        #validate_certs: False
