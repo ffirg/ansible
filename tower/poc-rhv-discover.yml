@@ -1,9 +1,8 @@
 ---
-- name: "RHV Discovery"
-  hosts: localhost
-  connection: local
-  gather_facts: true
+- name: RHV Discovery
+  hosts: all
 
   tasks:
-    – name: List VMs
+
+  - name: List VMs
     ovirt_vms_facts:
