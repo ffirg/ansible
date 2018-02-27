@@ -1,0 +1,15 @@
+---
+- name: Setup an vsphere ESXI VM from a template
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Create an ESXi VM Guest From Template
+      vsphere_guest:
+        guest: tower-generated-vm
+        from_template: yes
+        template_src: RHEL7.4-template-vmware
+        cluster: LAB
+        esxi:
+          datacenter: LNLAB-OPNSTK
+          hostname: 10.212.91.12
