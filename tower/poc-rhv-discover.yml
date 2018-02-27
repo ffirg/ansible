@@ -11,9 +11,9 @@
     – name: List VMs
     ovirt_vms_facts:
     fetch_nested: true
-    nested_attributes:
-    – description
-    auth: “{{ ovirt_auth }}”
+    #nested_attributes:
+    #– description
+    #auth: “{{ ovirt_auth }}”
 
     – name: Set VMs
     set_fact:
