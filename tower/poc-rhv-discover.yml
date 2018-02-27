@@ -6,9 +6,9 @@
 
   - name: Authenticate against RHVM
     ovirt_auth:
-      url: '{{ovirt_url}}'
-      username: '{{ovirt_username}}'
-      password: '{{ovirt_password }}'
+      url: '{{ OVIRT_URL }}'
+      username: '{{ OVIRT_USERNAME }}'
+      password: '{{ OVIRT_PASSWORD }}'
 
   - name: List VMs
     ovirt_vms_facts:
