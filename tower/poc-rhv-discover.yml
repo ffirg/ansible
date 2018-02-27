@@ -6,9 +6,10 @@
 
   - name: Authenticate against RHVM
     ovirt_auth:
-      url: '{{ url }}'
-      username: '{{ username }}'
-      password: '{{ password }}'
+      # pass username/password in using Tower Survey
+      url: 'https://lnlabrhvm01.opstklab.local/ovirt-engine/api'
+      username: '{{ rhv_username }}'
+      password: '{{ rhv_password }}'
 
   - name: List VMs
     ovirt_vms_facts:
