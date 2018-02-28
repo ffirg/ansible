@@ -14,5 +14,5 @@
         cluster: LAB
         datacenter: LNLAB-OPNSTK
         #state: poweredon
-        #wait_for_ip_address: true
+        wait_for_ip_address: true
         validate_certs: False
