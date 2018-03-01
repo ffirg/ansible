@@ -1,6 +1,7 @@
 ---
 - name: RHV Discovery
   hosts: all
+  gather_facts: false
 
   tasks:
 
