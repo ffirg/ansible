@@ -1,0 +1,16 @@
+---
+- name: Break things to make the server vulnerable!!
+  hosts: all
+
+  tasks:
+    - name: Downgrade bash - shellshock
+      yum:
+        name: bash-4.2.45-5.el7.x86_64
+        state: installed
+        allow_downgrade: yes
+
+    - name: Downgrade sudo
+      yum:
+        name: sudo-1.8.6p7-13.el7.x86_64
+        state: installed
+        allow_downgrade: yes
