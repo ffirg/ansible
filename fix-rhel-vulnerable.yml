@@ -1,0 +1,17 @@
+---
+- name: Fix things that made the server vulnerable!!
+  hosts: all
+
+  tasks:
+    - name: Update bash - shellshock
+      yum:
+        name: bash
+        state: latest
+
+    - name: Upgrade sudo
+      yum:
+        name: sudo
+        state: latest
+
+    - name: Run Insights
+      command: /bin/redhat-access-insights
