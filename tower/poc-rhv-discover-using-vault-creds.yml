@@ -6,15 +6,16 @@
 
     - block:
 
+      - register: rhvm_password
+      - debug: msg="The password is '{{ password }}'"
+
       - name: Authenticate against RHVM
         ovirt_auth:
           # pass username/password in using Tower Survey
           url: 'https://lnlabrhvm01.opstklab.local/ovirt-engine/api'
           username: '{{ rhvm_username }}'
-          password: 'St@ck123'
+          password: '{{ rhvm_password }}'
           insecure: yes
-          register: password
-      - debug: msg="The password is '{{ password }}'"
 
       - name: List VMs
         ovirt_vms_facts:
