@@ -22,8 +22,8 @@
       #  ovirt_vms_facts:
       #    auth: "{{ ovirt_auth }}"
 
-      always:
-        - name: Always revoke the SSO token
-          ovirt_auth:
-            state: absent
-            ovirt_auth: "{{ ovirt_auth }}"
+      #always:
+      #  - name: Always revoke the SSO token
+      #    ovirt_auth:
+      #      state: absent
+      #      ovirt_auth: "{{ ovirt_auth }}"
