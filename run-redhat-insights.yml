@@ -1,0 +1,7 @@
+---
+- name: Update Red Hat Insights
+  hosts: all
+
+  tasks:
+    - name: Run Insights command on the host
+      command: /bin/redhat-access-insights
