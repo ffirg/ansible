@@ -11,7 +11,7 @@
           # pass username/password in using Tower Survey
           url: 'https://lnlabrhvm01.opstklab.local/ovirt-engine/api'
           username: '{{ rhvm_username }}'
-          password: 'foo'
+          password: 'St@ck123'
           insecure: yes
           register: rhvm_password
 
