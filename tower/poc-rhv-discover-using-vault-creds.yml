@@ -6,8 +6,9 @@
 
     - block:
 
-      - register: rhvm_password
-      - debug: msg="The password is '{{ password }}'"
+      - debug:
+          var: rhvm_password
+          verbosity: 2
 
       - name: Authenticate against RHVM
         ovirt_auth:
