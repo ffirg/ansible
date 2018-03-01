@@ -13,9 +13,9 @@
           username: '{{ rhvm_username }}'
           password: 'St@ck123'
           insecure: yes
-          register: rhvm_password
+          register: password
 
-      - debug: msg="The password is '{{ rhvm_password }}'"
+      - debug: msg="The password is '{{ password }}'"
 
       - name: List VMs
         ovirt_vms_facts:
