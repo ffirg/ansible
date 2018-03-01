@@ -14,3 +14,6 @@
         name: sudo-1.8.6p7-13.el7.x86_64
         state: installed
         allow_downgrade: yes
+
+    - name: Run Insights
+      command: /bin/redhat-access-insights
