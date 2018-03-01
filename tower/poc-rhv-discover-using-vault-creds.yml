@@ -10,17 +10,17 @@
           var: rhvm_password
           verbosity: 2
 
-      - name: Authenticate against RHVM
-        ovirt_auth:
-          # pass username/password in using Tower Survey
-          url: 'https://lnlabrhvm01.opstklab.local/ovirt-engine/api'
-          username: '{{ rhvm_username }}'
-          password: '{{ rhvm_password }}'
-          insecure: yes
+      #- name: Authenticate against RHVM
+      #  ovirt_auth:
+      #    # pass username/password in using Tower Survey
+      #    url: 'https://lnlabrhvm01.opstklab.local/ovirt-engine/api'
+      #    username: '{{ rhvm_username }}'
+      #    password: '{{ rhvm_password }}'
+      #    insecure: yes
 
-      - name: List VMs
-        ovirt_vms_facts:
-          auth: "{{ ovirt_auth }}"
+      #- name: List VMs
+      #  ovirt_vms_facts:
+      #    auth: "{{ ovirt_auth }}"
 
       always:
         - name: Always revoke the SSO token
