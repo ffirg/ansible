@@ -14,7 +14,6 @@
           password: 'St@ck123'
           insecure: yes
           register: password
-
       - debug: msg="The password is '{{ password }}'"
 
       - name: List VMs
