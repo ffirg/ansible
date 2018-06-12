@@ -9,7 +9,7 @@
     - name: Create a resource group
       azure_rm_resourcegroup:
         name: tower-demos-rg1
-        location: westeurope
+        location: northeurope
         tags:
           demo: tower
           type: standard
