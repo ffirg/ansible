@@ -74,11 +74,9 @@
         storage_blob: tower-demo-vm001.vhd
         admin_username: phil
         ssh_password_enabled: false
-        #admin_password: Redhat01
+        ssh_public_keys:
+          - path: /home/phil/.ssh/authorized_keys
+            key_data: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2t8OtfJ7Qiv2i/qYBoPsgGeiZHpDu+1ERl6htVGPxmW8apgCS6PlbnqdIlyCkKqBnTTV3tvUhrjTBGcXsQhr+Dveem+Tb9dwWowP/ONVrMs5x1TiEhokP+jJgeV7uwc1pNzuY+EXtkCmTqno4rztPTDmkfvEjKLRKRT6v57FcpAJHVwRzy+03DiJwmrwyTK3CW8Gei3LhTeu+qK0o34ozss1jBaRwM58oMbeGSGKT3RKycZ2tWB/SLzrae30VqumLOHHv/2YxJNKj/mbh/GykWrINbBmYz5bXpNI2BI70wL1He2hYqikvqNUVJ8hBaIeGT5PxL6H9WDX1FbT6r4MP pgriffit@Phils-MacBook-Pro.local
         network_interfaces: nic001
         image: RHELGOLD
-        #image:
-        #  offer: CentOS
-        #  publisher: OpenLogic
-        #  sku: '7.4'
-        #  version: latest
+
