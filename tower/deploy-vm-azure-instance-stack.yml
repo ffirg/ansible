@@ -72,8 +72,8 @@
         storage_account: towerdemos
         storage_container: tower-demo-vm001
         storage_blob: tower-demo-vm001.vhd
-        admin_username: centos
-        admin_password: Redhat01
+        #admin_username: centos
+        #admin_password: Redhat01
         network_interfaces: nic001
         image: RHELGOLD
         #image:
