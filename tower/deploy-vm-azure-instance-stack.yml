@@ -73,7 +73,7 @@
         storage_container: tower-demo-vm001
         storage_blob: tower-demo-vm001.vhd
         admin_username: phil
-        sh_password_enabled: false
+        ssh_password_enabled: false
         #admin_password: Redhat01
         network_interfaces: nic001
         image: RHELGOLD
