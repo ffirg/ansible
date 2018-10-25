@@ -9,7 +9,7 @@
     - name: Delete resource group
       azure_rm_resourcegroup:
         name: tower-demos-rg1
-        state:absent
+        state: absent
         force: yes
 
    
