@@ -72,10 +72,10 @@
         storage_account: towerdemos
         storage_container: tower-demo-vm001
         storage_blob: tower-demo-vm001.vhd
-        admin_username: phil
+        admin_username: "{{ username }}"
         ssh_password_enabled: false
         ssh_public_keys:
-          - path: /home/phil/.ssh/authorized_keys
+          - path: "{{ keypath }}"
             key_data: "{{ sshkey }}"
         network_interfaces: nic001
         image: RHELGOLD
