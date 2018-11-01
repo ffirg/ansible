@@ -2,11 +2,10 @@
 - hosts: all
 
   tasks:
-    - name: Test SSH Connection
     - name: Create an incident
       snow_record:
         username: admin
-        password: r9SWf9UqTkbX
+        password: S3rv1c3n0w
         instance: dev20070
         state: present
         data:
