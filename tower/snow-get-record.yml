@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+
+  tasks:
+    - name: Grab a user record
+      snow_record:
+        username: ansible_test
+        password: my_password
+        instance: dev99999
+        state: present
+        number: 7696f1d9dba963001fe855d0cf961995
+        table: sys_user
+        lookup_field: sys_id
