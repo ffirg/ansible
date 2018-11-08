@@ -1,0 +1,27 @@
+---
+- name: Patch RHEL systems 
+- hosts: "{{ target_hosts | default('all') }}"
+  gather_facts:yes
+  become: yes
+
+  vars:
+    reboot_after_update: no 
+    packages:
+      RedHat7:
+        - kernel
+        - microcode_ctl
+        - perf
+        - python-perf
+      RedHat6:
+        - kernel
+        - kernel-firmware
+        - perf
+        - python-perf
+
+  tasks:
+    - name: RHEL | Install updates
+      yum:
+        name: "{{ packages[ansible_os_family ~ ansible_distribution_major_version] }}"
+        state: present
+      when: ansible_pkg_mgr == 'yum'
+      notify: reboot system
