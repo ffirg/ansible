@@ -1,3 +1,5 @@
+#!/bin/env python
+
 def main():
     module = AnsibleModule(
         argument_spec = dict())
