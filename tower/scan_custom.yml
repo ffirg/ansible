@@ -4,4 +4,4 @@
   gather_facts: false
 
   tasks:
-    - scan_foo
+    - scan_foo:
