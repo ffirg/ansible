@@ -5,11 +5,11 @@
   tasks:
     - name: Get facts for all virtual machines of a resource group
       azure_rm_virtualmachine_facts:
-        resource_group: core-infra
+        resource_group: cicd-rg
  
     - action:
         module: azure_rm_virtualmachine_facts
-        resource_group: core-infra
+        resource_group: cicd-rg
       register: azure_rm_vm_facts
  
     - action:
