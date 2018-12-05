@@ -8,7 +8,7 @@
 
     - name: Delete resource group
       azure_rm_resourcegroup:
-        name: tower-demos-rg1
+        name: "{{ rg }}"
         state: absent
         force: yes
 
