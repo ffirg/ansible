@@ -7,7 +7,7 @@
 #    - common
 
 - name: Configure and deploy the web server and content
-
+  hosts: all
   roles:
     - web
 
