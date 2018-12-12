@@ -1,0 +1,21 @@
+---
+# This playbook deploys a simple web server along with some simple web content
+
+#- name: Apply common configuration to all nodes
+#
+#  roles:
+#    - common
+
+- name: Configure and deploy the web server and content
+
+  roles:
+    - web
+
+#- name: deploy MySQL and configure the databases
+#  hosts: dbservers
+#  remote_user: vagrant
+#  become: yes
+#  become_method: sudo
+#
+#  roles:
+#    - db

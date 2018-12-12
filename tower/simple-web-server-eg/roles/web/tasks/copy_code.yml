@@ -1,0 +1,12 @@
+---
+# These tasks are responsible for copying the latest dev/production code from
+# the version control system. 
+
+- name: Install the web content from SCM repository
+  git: 
+    repo: "{{ repository }}"
+    dest: /var/www/html
+    version: azure-pipelines
+
+- name: Create the index.php file 
+  template: src=index.php.j2 dest=/var/www/html/index.php
