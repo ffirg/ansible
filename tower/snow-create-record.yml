@@ -17,5 +17,11 @@
         table: incident # can be change_reuest, incident
       register: new_snow_record
 
-    - debug: var=new_snow_record.record.number
+    - debug: 
+        var: new_snow_record.record.number
+        verbosity: 1
 
+    - name: "Save ServiceNow Record for updating"
+        set_stats:
+          data:
+            snow_record:  "{{ new_snow_record.record.number }}"
