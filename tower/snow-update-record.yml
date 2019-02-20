@@ -5,6 +5,7 @@
 
   vars:
     table: incident # can be change_reuest, incident
+    short_desc: "Web Services Creation"
 
   tasks:
     - name: Update the ServiceNow record
@@ -18,7 +19,8 @@
         data:
           comments : "Update from Ansible Tower. Sweet."
           close_code: 99
-          close_notes: "web services creation done."
+          close_notes: "{{ short_desc }} done."
+          incident_state: Closed
 
 
 

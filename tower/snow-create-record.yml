@@ -5,6 +5,7 @@
 
   vars:
     table: incident # can be change_reuest, incident
+    short_desc: "Web Services Creation"
 
   tasks:
     - name: Create a ServiceNow record
@@ -15,7 +16,7 @@
         instance: "{{ snow_instance }}"
         table: "{{ table }}" 
         data:
-          short_description: "Creating web services"
+          short_description: "{{ short_desc }}"
           severity: 3
           priority: 2
           category: web
