@@ -22,6 +22,6 @@
         verbosity: 1
 
     - name: "Save ServiceNow Record for updating"
-        set_stats:
-          data:
-            snow_record:  "{{ new_snow_record.record.number }}"
+      set_stats:
+        data:
+          snow_record:  "{{ new_snow_record.record.number }}"
