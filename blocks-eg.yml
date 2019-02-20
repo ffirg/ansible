@@ -1,24 +1,29 @@
 ---
-- hosts: beckton
-  remote_user: vagrant
-  become: yes
-  become_method: sudo
-  gather_facts: true
+- hosts: localhost
+  #remote_user: vagrant
+  #become: yes
+  #become_method: sudo
+  #gather_facts: true
 
   tasks:
 
     - block:
       - ping:
       - command: echo "Hello there"
-      - command: /bin/false
+      - command: /bin/this-command-doesnt-exist
+      ignore_errors: true
 
       rescue:
         - debug: msg='Caught an error in this block'
-        - local_action: command /usr/bin/say "Oops! Houston we have a problem, let's roll back"
-        - pause: seconds=2
+        - local_action: command /usr/bin/say "Oops! Houston we have a problem"
+        #- pause: seconds=2
 
       always:
-        - local_action: command /usr/bin/say "We're done here."
+        - local_action: command /usr/bin/say "We're done with this block"
 
-      when: ansible_distribution == 'RedHat'
-      become: no
+      #when: ansible_distribution != 'RedHat'
+      #become: no
+    
+    - name: Now onto the next step
+      win_ping:
+      ignore_errors: true

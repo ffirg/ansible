@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+  gather_facts: false
+  no_log: false
+
+  tasks:
+    - name: Create a ServiceNow record
+      snow_record:
+        username: "{{ snow_username }}"
+        password: "{{ snow_password }}"
+        instance: "{{ snow_instance }}"
+        state: present
+        data:
+          short_description: "This is a record opened using Ansible"
+          severity: 3
+          priority: 2
+      register: new_snow_record
+
+    - debug: var=new_snow_record.record.number
+
