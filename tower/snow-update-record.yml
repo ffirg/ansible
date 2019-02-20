@@ -18,9 +18,8 @@
         number: "{{ snow_record }}" 
         data:
           comments : "Update from Ansible Tower. Sweet."
-          close_code: 99
-          close_notes: "{{ short_desc }} done."
-          incident_state: Closed
+          work_notes: "{{ short_desc }} done."
+
 
 
 
