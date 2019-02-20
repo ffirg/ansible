@@ -4,7 +4,7 @@
   no_log: false
 
   vars:
-    table: incident # can be change_reuest, incident
+    table: incident
     short_desc: "Web Services Creation"
 
   tasks:

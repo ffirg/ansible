@@ -4,9 +4,8 @@
   no_log: false
 
   vars:
-    table: incident # can be change_reuest, incident
-    short_desc: "Web Services Creation"
-
+    table: incident 
+    
   tasks:
     - name: Update the ServiceNow record
       snow_record:
@@ -18,7 +17,7 @@
         number: "{{ snow_record }}" 
         data:
           comments : "Update from Ansible Tower. Sweet."
-          work_notes: "{{ short_desc }} done."
+
 
 
 
