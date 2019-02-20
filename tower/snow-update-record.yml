@@ -10,7 +10,7 @@
         password: "{{ snow_password }}"
         instance: "{{ snow_instance }}"
         state: present
-        number: "{{ new_snow_record.record.number }}"
+        number: "{{ snow_record }}"
         data:
           work_notes : "Update from Ansible Tower. Sweet."
 
