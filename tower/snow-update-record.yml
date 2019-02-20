@@ -7,7 +7,7 @@
     table: incident # can be change_reuest, incident
 
   tasks:
-    - name: Update a ServiceNow record
+    - name: Update the ServiceNow record
       snow_record:
         state: present
         username: "{{ snow_username }}"
@@ -17,5 +17,8 @@
         number: "{{ snow_record }}" 
         data:
           comments : "Update from Ansible Tower. Sweet."
+          close_code: 99
+          close_notes: "web services creation done."
+
 
 
