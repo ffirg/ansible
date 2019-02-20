@@ -1,4 +1,5 @@
 # ignore some stuff 
+credentials
 *fact*
 *key*
 *.retry
