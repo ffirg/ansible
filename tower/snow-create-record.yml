@@ -14,6 +14,7 @@
           short_description: "This is a record opened using Ansible"
           severity: 3
           priority: 2
+        table: incident # can be change_reuest, incident
       register: new_snow_record
 
     - debug: var=new_snow_record.record.number

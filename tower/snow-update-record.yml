@@ -1,0 +1,17 @@
+---
+- hosts: localhost
+  gather_facts: false
+  no_log: false
+
+  tasks:
+    - name: Update a ServiceNow record
+      snow_record:
+        username: "{{ snow_username }}"
+        password: "{{ snow_password }}"
+        instance: "{{ snow_instance }}"
+        state: present
+        number: "{{ new_snow_record.record.number }}"
+        data:
+          work_notes : "Update from Ansible Tower. Sweet."
+
+
