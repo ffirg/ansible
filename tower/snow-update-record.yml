@@ -3,15 +3,19 @@
   gather_facts: false
   no_log: false
 
+  vars:
+    table: incident # can be change_reuest, incident
+
   tasks:
     - name: Update a ServiceNow record
       snow_record:
+        state: present
         username: "{{ snow_username }}"
         password: "{{ snow_password }}"
         instance: "{{ snow_instance }}"
-        state: present
-        number: "{{ snow_record }}"
+        table: "{{ table }}" 
+        number: "{{ snow_record }}" 
         data:
-          work_notes : "Update from Ansible Tower. Sweet."
+          comments : "Update from Ansible Tower. Sweet."
 
 

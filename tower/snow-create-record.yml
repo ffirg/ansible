@@ -1,20 +1,24 @@
 ---
 - hosts: localhost
   gather_facts: false
-  no_log: false
+  no_log: true
+
+  vars:
+    table: incident # can be change_reuest, incident
 
   tasks:
     - name: Create a ServiceNow record
       snow_record:
+        state: present
         username: "{{ snow_username }}"
         password: "{{ snow_password }}"
         instance: "{{ snow_instance }}"
-        state: present
+        table: "{{ table }}" 
         data:
-          short_description: "This is a record opened using Ansible"
+          short_description: "Creating web services"
           severity: 3
           priority: 2
-        table: incident # can be change_reuest, incident
+          category: web
       register: new_snow_record
 
     - debug: 
