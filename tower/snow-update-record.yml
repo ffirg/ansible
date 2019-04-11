@@ -7,6 +7,11 @@
     table: incident 
     
   tasks:
+  
+    - fail:
+        msg: "We don't have a ServiceNow {{ table }} number to update"
+      when: snow_record is not defined
+      
     - name: Update the ServiceNow record
       snow_record:
         state: present
