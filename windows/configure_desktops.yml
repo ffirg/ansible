@@ -15,7 +15,7 @@
     win_shortcut:
       description: '{{ item.description }}'
       src: '{{ ansible_env["ProgramFiles(x86)"] if "ProgramFiles(x86)" in ansible_env else ansible_env.ProgramFiles }}\Google\Chrome\Application\chrome.exe'
-      arguments: '--new-window {{ item.url }} {{ item.arguments|default("") }}'
+      arguments: '{{ item.arguments }}'
       dest: '{{ item.dest }}'
       icon: '{{ item.icon | default(",0") }}'
       windowstyle: '{{ item.windowstyle | default("normal") }}'
@@ -23,16 +23,23 @@
       state: present
       
     with_items:
+    
     - description: RedHat website
-      url: http://www.redhat.com/
       dest: '%Public%\Desktop\redhat.lnk'
+      arguments: --new-window https://www.redhat.com/
+      directory: '%ProgramFiles%\Google\Chrome\Application'
+      icon: '%ProgramFiles%\Google\Chrome\Application\chrome.exe,0'
       windowstyle: maximized
+      
     - description: Ansible website
-      url: https://www.ansible.com/
       dest: '%Public%\Desktop\ansible.lnk'
+      arguments: --new-window https://ansible.com/
+      directory: '%ProgramFiles%\Google\Chrome\Application'
+      icon: '%ProgramFiles%\Google\Chrome\Application\chrome.exe,0'
       windowstyle: maximized
+      hotkey: Ctrl+Alt+A
     tags: shortcuts
-
+    
   - name: Set red background for admin users
     win_regedit:
       path: '{{ item.path }}'
