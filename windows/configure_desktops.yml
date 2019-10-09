@@ -1,6 +1,15 @@
 - hosts: all
   
   tasks:
+  
+  - name: install Chocolatey and then necessary software
+    win_chocolatey:
+      name: '{{item.name}}'
+      state: present
+    with_items:
+    - name: chocolatey
+    - name: googlechrome
+    - name: notepadplusplus
 
   - name: Add default desktop shortcuts
     win_shortcut:
