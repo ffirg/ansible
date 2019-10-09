@@ -1,0 +1,77 @@
+- hosts: all
+  
+  tasks:
+
+  - name: Add default desktop shortcuts
+    win_shortcut:
+      description: '{{ item.description }}'
+      src: '{{ ansible_env["ProgramFiles(x86)"] if "ProgramFiles(x86)" in ansible_env else ansible_env.ProgramFiles }}\Google\Chrome\Application\chrome.exe'
+      arguments: '--new-window {{ item.url }} {{ item.arguments|default("") }}'
+      dest: '{{ item.dest }}'
+      icon: '{{ item.icon | default(",0") }}'
+      windowstyle: '{{ item.windowstyle | default("normal") }}'
+      hotkey: '{{ item.hotkey | default(omit) }}'
+      state: present
+      
+    with_items:
+    - description: RedHat website
+      url: http://www.redhat.com/
+      dest: '%Public%\Desktop\redhat.lnk'
+      windowstyle: maximized
+    - description: Ansible website
+      url: https://www.ansible.com/
+      dest: '%Public%\Desktop\ansible.lnk'
+      windowstyle: maximized
+    tags: shortcuts
+
+  - name: Set red background for admin users
+    win_regedit:
+      path: '{{ item.path }}'
+      name: '{{ item.name }}'
+      data: '{{ item.data }}'
+      type: '{{ item.type }}'
+    with_items:
+    - path: HKCU:\Control Panel\Desktop
+      name: Wallpaper
+      data: ''
+      type: string
+    - path: HKCU:\Control Panel\Desktop
+      name: WallpaperStyle
+      data: 10
+      type: string
+    - path: HKCU:\Control Panel\Colors
+      name: Background
+      data: '232 17 35'
+      type: string
+    tags:
+    - admin_users
+
+  - name: Remove unwanted desktop shortcuts
+    win_shortcut:
+      dest: '{{ item }}'
+      state: absent
+    with_items:
+    - C:\Users\{{ user }}\Desktop\WinDirStat.lnk
+    - '%Public%\Desktop\Audacity.lnk'
+    - '%Public%\Desktop\CDex.lnk'
+    - '%Public%\Desktop\Firefox.lnk'
+    - '%Public%\Desktop\Google Chrome.lnk'
+    - '%Public%\Desktop\Google Earth.lnk'
+    - '%Public%\Desktop\Inkscape.lnk'
+    - '%Public%\Desktop\Inkscape 0.92.1.lnk'
+    - '%Public%\Desktop\Inkscape 0.92.2.lnk'
+    - '%Public%\Desktop\Inkscape 0.92.3.lnk'
+#    - '%Public%\Desktop\InfraRecorder.lnk'
+#    - '%Public%\Desktop\KeePass 2.lnk'
+    - '%Public%\Desktop\LibreOffice 5.1.lnk'
+    - '%Public%\Desktop\LibreOffice 5.2.lnk'
+    - '%Public%\Desktop\LibreOffice 5.3.lnk'
+    - '%Public%\Desktop\LibreOffice 5.4.lnk'
+    - '%Public%\Desktop\LibreOffice 6.0.lnk'
+    - '%Public%\Desktop\Mozilla Firefox.lnk'
+    - '%Public%\Desktop\VLC media player.lnk'
+    - '%Public%\Desktop\WinDirStat.lnk'
+    - '%Public%\Desktop\Google Drive File Stream.lnk'
+    tags:
+    - cleanup
+    - shortcuts
