@@ -2,8 +2,7 @@
 - name: Ping
   hosts: all
   gather_facts: false
-  remote_user: vagrant
 
   tasks:
-  - name: ping
+  - name: Check we can contact the server...
     win_ping:
