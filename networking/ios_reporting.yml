@@ -1,6 +1,6 @@
 ---
   - name: build IOS inventory report
-    hosts: ios
+    hosts: all
     connection: network_cli
     gather_facts:  False
 
