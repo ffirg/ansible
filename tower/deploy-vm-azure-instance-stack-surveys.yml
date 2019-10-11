@@ -24,7 +24,7 @@
     - name: Create virtual network
       azure_rm_virtualnetwork:
         resource_group: '{{azure_resource_group_name}}'
-        name: vn001
+        name: '{{azure_vm_name}}'
         address_prefixes: "10.10.0.0/16"
 
     - name: Add subnet
@@ -32,7 +32,7 @@
         resource_group: '{{azure_resource_group_name}}'
         name: subnet001
         address_prefix: "10.10.0.0/24"
-        virtual_network: vn001
+        virtual_network: '{{azure_vm_name}}'
 
     - name: Create public ip
       azure_rm_publicipaddress:
@@ -55,8 +55,8 @@
     - name: Create NIC
       azure_rm_networkinterface:
         resource_group: '{{azure_resource_group_name}}'
-        name: nic001
-        virtual_network: vn001
+        name: '{{azure_vm_name}}'
+        virtual_network: '{{azure_vm_name}}'
         subnet: subnet001
         public_ip_name: pubip001
         security_group: secgroup001
@@ -76,5 +76,5 @@
         ssh_public_keys:
           - path: "{{ keypath }}"
             key_data: "{{ sshkey }}"
-        network_interfaces: nic001
+        network_interfaces: '{{azure_vm_name}}'
         image: RHELGOLD
