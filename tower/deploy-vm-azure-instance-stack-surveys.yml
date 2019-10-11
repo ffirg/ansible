@@ -57,8 +57,8 @@
         resource_group: '{{azure_resource_group_name}}'
         name: nic001
         virtual_network: 'vn-{{azure_vm_name}}'
-        subnet: subnet001
-        public_ip_name: pubip001
+        subnet_name: subnet001
+        public_ip_address_name: pubip001
         security_group: secgroup001
 
     - name: Create virtual machine
