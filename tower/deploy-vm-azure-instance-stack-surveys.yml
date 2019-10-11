@@ -54,11 +54,11 @@
 
     - name: Create NIC
       azure_rm_networkinterface:
-        resource_group: '{{azure_resource_group_name}}'
+        resource_group: tower-demo-rg1
         name: nic001
-        virtual_network: 'vn-{{azure_vm_name}}'
+        virtual_network: vn-splunk-index-1
         subnet_name: subnet001
-        public_ip_address_name: pubip001
+        public_ip_name: pubip001
         security_group: secgroup001
 
     - name: Create virtual machine
