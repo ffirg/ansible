@@ -54,7 +54,7 @@
 
     - name: Create NIC
       azure_rm_networkinterface:
-        resource_group: tower-demo-rg1
+        resource_group: tower-demos-rg1
         name: nic001
         virtual_network: vn-splunk-index-1
         subnet_name: subnet001
