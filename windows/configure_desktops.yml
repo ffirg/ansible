@@ -27,16 +27,16 @@
     - description: RedHat website
       dest: '%Public%\Desktop\redhat.lnk'
       arguments: --new-window https://www.redhat.com/
-      directory: '%ProgramFiles%\Google\Chrome\Application'
-      icon: '%ProgramFiles%\Google\Chrome\Application\chrome.exe,0'
-      windowstyle: maximized
+      directory: '%ProgramFiles(x86)%\Google\Chrome\Application'
+      icon: '%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe,0'
+      windowstyle: normal
       
     - description: Ansible website
       dest: '%Public%\Desktop\ansible.lnk'
       arguments: --new-window https://ansible.com/
-      directory: '%ProgramFiles%\Google\Chrome\Application'
-      icon: '%ProgramFiles%\Google\Chrome\Application\chrome.exe,0'
-      windowstyle: maximized
+      directory: '%ProgramFiles(x86)%\Google\Chrome\Application'
+      icon: '%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe,0'
+      windowstyle: normal
       hotkey: Ctrl+Alt+A
     tags: shortcuts
     
