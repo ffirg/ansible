@@ -72,9 +72,9 @@
         storage_blob: '{{azure_vm_name}}.vhd'
         admin_username: '{{admin_username}}'
         admin_password: '{{admin_password}}'
+        ssh_password_enabled: true
+        ssh_public_keys:
+          - path: "{{ keypath }}"
+            key_data: "{{ sshkey }}"
         network_interfaces: nic001
-        image:
-          offer: CentOS
-          publisher: OpenLogic
-          sku: '7.4'
-          version: latest
+        image: RHELGOLD
