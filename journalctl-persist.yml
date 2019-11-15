@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+
+  - name: Persist journalctl logs to disk
+    lineinfile:
+      path: /etc/systemd/journald.conf
+      regexp: '^Storage='
+      insertafter: '^#Storage=auto'
+      line: Storage=persistent

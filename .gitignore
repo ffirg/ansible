@@ -5,6 +5,7 @@ credentials
 *.retry
 *cachedir*
 cachedir/*
+.vscode
 
 # Packages
 *.7z
