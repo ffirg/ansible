@@ -1,9 +1,12 @@
 ---
 # This playbook uses the win_get_url module to download a simple HTML file for IIS
 
-- name: Setup Windows IIS Service and Deploy Web Site
+- name: Demo Windows Web Services Creation
   hosts: all
   gather_facts: false
 
-- include: enable_iis.yml
-- include: deploy_web_site.yml
+- name: Install/enable IIS
+  import_playbook: enable_iis.yml
+ 
+- name: Create web site content
+  import_playbook: deploy_web_site.yml
