@@ -2,7 +2,7 @@
 # tasks file for disk role
 
 - name: Find large files
-  command: /bin/find "{{ disk_path | default('/') }}" -size +{{ disk_min_size_check | default('1') }}M -ls
+  command: find "{{ disk_path | default('/') }}" -size +{{ disk_min_size_check | default('1') }}M -ls
   register: output
 
 - name: Output

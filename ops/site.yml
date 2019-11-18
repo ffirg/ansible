@@ -1,9 +1,9 @@
 ---
 
 - name: Common ops tasks
-  hosts: all
+  hosts: localhost
 
   roles:
-    - { role: config }
-    - { role: services }
+#    - { role: config }
+#    - { role: services }
     - { role: disk, disk_path: /tmp/apps }
