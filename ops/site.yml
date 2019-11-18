@@ -1,4 +1,5 @@
 ---
+hosts: all
 
 - name: Common ops tasks
 
