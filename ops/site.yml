@@ -1,7 +1,7 @@
 ---
 
 - name: Common ops tasks
-  hosts: tbd
+  hosts: localhost
 
   roles:
 #    - { role: config }
