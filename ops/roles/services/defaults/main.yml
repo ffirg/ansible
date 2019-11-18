@@ -1,0 +1,6 @@
+---
+# defaults file for services role
+
+services_list:
+  - httpd
+  - chronyd

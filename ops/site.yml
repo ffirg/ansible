@@ -4,4 +4,6 @@
   hosts: all
 
   roles:
-    - { role: disk, disk_patj: /tmp/apps }
+    - { role: config }
+    - { role: services }
+    - { role: disk, disk_path: /tmp/apps }
