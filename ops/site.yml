@@ -1,0 +1,7 @@
+---
+
+- name: Common ops tasks
+  hosts: all
+
+  roles:
+    - { role: disk, disk_patj: /tmp/apps }
