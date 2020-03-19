@@ -7,6 +7,6 @@
 - name: check domain membership
   assert:
     that:
-      - "'present' in userquery_result.stdout"
+      - "'present' in userquery.state"
     success_msg: "'username is a DOMAIN account'"
     fail_msg: "'username is not a DOMAIN member'"
