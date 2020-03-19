@@ -1,0 +1,10 @@
+---
+- hosts: '{{ target | default("tag_os_windows") }}'
+  gather_facts: no
+
+  tasks:
+
+  - name: Apply Windows updates
+    win_updates:
+      category_names:
+        - "{{ categories }}"

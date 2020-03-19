@@ -1,3 +1,4 @@
+---
 - hosts: '{{ target | default("all") }}'
   gather_facts: no
 
