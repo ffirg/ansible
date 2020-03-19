@@ -47,20 +47,12 @@
     tags:
     - onedrive
 
-  - name: Remove OneDrive (1)
+  - name: Remove OneDrive
     win_shell: |
       taskkill.exe /F /IM OneDrive.exe
     register: taskkill
     changed_when: taskkill.rc == 0 and 'The process "OneDrive.exe" not found.' not in taskkill.stderr
     failed_when: taskkill.rc != 0 and 'The process "OneDrive.exe" not found.' not in taskkill.stderr
-    ignore_errors: yes
-    tags:
-    - onedrive
-
-  - name: Remove OneDrive (2)
-    win_shell: |
-      %SYSTEMROOT%\System32\OneDriveSetup.exe /uninstall
-      %SYSTEMROOT%\SysWOW64\OneDriveSetup.exe /uninstall
     ignore_errors: yes
     tags:
     - onedrive
