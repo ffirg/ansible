@@ -1,0 +1,4 @@
+- name: check for domain user account
+  win_domain_user:
+    name: "{{ username }}"
+    state: query
