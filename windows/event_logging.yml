@@ -1,6 +1,9 @@
 - hosts: '{{ target | default("all") }}'
   gather_facts: no
 
+  vars:
+    this: lookup('file', '/proc/self/cmdline') | regex_replace('\u0000',' ')
+
   tasks:
 
   - name: Add a new event log for automation events
@@ -15,4 +18,4 @@
       log: Automation
       source: ansible-actions
       event_id: 1
-      message: Just created this log using "{{ ansible_play_name }}".
+      message: Just created this log using "{{ this }}".
