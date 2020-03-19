@@ -2,3 +2,10 @@
   win_domain_user:
     name: "{{ username }}"
     state: query
+  register: userquery
+
+- assert:
+    that:
+      - "'present' in userquery.stdout"
+    success_msg: "'username is a DOMAIN account'"
+    fail_msg: "'username is not a DOMAIN member'"
