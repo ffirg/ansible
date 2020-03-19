@@ -1,0 +1,15 @@
+---
+- name: Windows AD Tasks
+  hosts: skylight-dc
+  gather_facts: no
+  
+  tasks:
+  - name: Add AD user account
+    win_domain_user:
+      name: pgriffit
+      firstname: Phil
+      surname: Griffiths
+      company: Red Hat
+      password: "{{ password }}"
+      groups:
+        - Domain Admins
