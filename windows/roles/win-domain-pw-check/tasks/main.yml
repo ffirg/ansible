@@ -15,12 +15,12 @@
 
 - name: Domain user account changes
   include_role: 
-    name: win-domain-user.yml
+    name: win-domain-user
   when: domainuserquery.state == "present"
   tags: domain
 
 - name: Local user account changes
   include_role: 
-    name: win-local-user.yml
+    name: win-local-user
   when: domainuserquery.state == "absent"
   tags: local
