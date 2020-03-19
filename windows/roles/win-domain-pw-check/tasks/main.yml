@@ -10,3 +10,4 @@
       - "'present' in userquery.state"
     success_msg: "'username is a DOMAIN account'"
     fail_msg: "'username is not a DOMAIN member'"
+    quiet: true
