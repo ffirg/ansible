@@ -7,12 +7,12 @@
     win_eventlog:
       name: Automation
       sources:
-        - ansible1
+        - ansible-actions
       state: present
 
   - name: Write an entry to the automation event log
     win_eventlog_entry:
       log: Automation
-      source: ansible
+      source: ansible-actions
       event_id: 1
       message: Just created this log for Ansible Automation events.
