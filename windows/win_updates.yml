@@ -1,5 +1,5 @@
 ---
-- hosts: '{{ target | default("tag_os_windows") }}'
+- hosts: '{{ target | default("os_windows") }}'
   gather_facts: no
 
   tasks:
