@@ -2,7 +2,7 @@
   gather_facts: no
 
   vars:
-    this: lookup('file', '/proc/self/cmdline') | regex_replace('\u0000',' ')
+    this: "{{lookup('file', '/proc/self/cmdline') | regex_replace('\u0000',' ')}}"
 
   tasks:
 
