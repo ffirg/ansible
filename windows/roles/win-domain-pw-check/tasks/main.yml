@@ -2,12 +2,20 @@
   win_domain_user:
     name: "{{ username }}"
     state: query
-  register: userquery
+  register: domainuserquery
 
 - name: check domain membership
   assert:
     that:
-      - "'present' in userquery.state"
-    success_msg: "'username is a DOMAIN account'"
-    fail_msg: "'username is not a DOMAIN member'"
+      - "'present' in domainuserquery.state"
+    success_msg: "{{ username }} is a DOMAIN account"
+    fail_msg: "{{ username }} is not a DOMAIN member"
     quiet: true
+
+- name: do domain stuff here
+  command: echo "domain"
+  when: domainuserquery.state == "present"
+
+- name: do local stuff here
+  command: echo "local"
+  when: domainuserquery.state == "absent"
