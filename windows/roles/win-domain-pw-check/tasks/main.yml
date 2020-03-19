@@ -12,10 +12,10 @@
     fail_msg: "{{ username }} is not a DOMAIN member"
     quiet: true
 
-- name: do domain stuff here
-  command: echo "domain"
+- name: Domain user account changes
+  include_role: win-domain-user.yml
   when: domainuserquery.state == "present"
 
-- name: do local stuff here
-  command: echo "local"
+- name: Local user account changes
+  include_role: win-local-user.yml
   when: domainuserquery.state == "absent"
