@@ -1,11 +1,12 @@
-- name: check for domain user account
+- name: query domain for user account
   win_domain_user:
     name: "{{ username }}"
     state: query
   register: userquery
 
-- assert:
+- name: check domain membership
+  assert:
     that:
-      - "'present' in userquery.stdout"
+      - "'present' in userquery_result.stdout"
     success_msg: "'username is a DOMAIN account'"
     fail_msg: "'username is not a DOMAIN member'"
