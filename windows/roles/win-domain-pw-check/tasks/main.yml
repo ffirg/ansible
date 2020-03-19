@@ -3,6 +3,7 @@
     name: "{{ username }}"
     state: query
   register: domainuserquery
+  tags: check
 
 - name: check domain membership
   assert:
@@ -12,6 +13,7 @@
     fail_msg: "{{ username }} is not a DOMAIN member"
     quiet: true
   ignore_errors: true
+  tags: check
 
 - name: Domain user account changes
   include_role: 
