@@ -1,4 +1,18 @@
-- name: change user password
+- name: check for LOCAL user account
+  win_user:
+    name: "{{ username }}"
+    state: query
+  register: localuserquery
+  
+  - name: check local membership
+  assert:
+    that:
+      - "'present' in localuserquery.state"
+    success_msg: "{{ username }} has a LOCAL account"
+    fail_msg: "{{ username }} does not have a LOCAL account"
+    quiet: true
+
+  - name: change user password
   win_user:
     name: "{{ username }}"
     state: present
