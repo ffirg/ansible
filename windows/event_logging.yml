@@ -15,4 +15,4 @@
       log: Automation
       source: ansible-actions
       event_id: 1
-      message: Just created this log for Ansible Automation events.
+      message: Just created this log using "{{ ansible_play_name }}".
