@@ -11,6 +11,7 @@
     success_msg: "{{ username }} is a DOMAIN account"
     fail_msg: "{{ username }} is not a DOMAIN member"
     quiet: true
+  ignore_errors: true
 
 - name: Domain user account changes
   include_role: 
