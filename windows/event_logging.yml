@@ -7,7 +7,7 @@
     win_eventlog:
       name: Automation
       sources:
-        - ansible
+        - ansible1
       state: present
 
   - name: Write an entry to the automation event log
