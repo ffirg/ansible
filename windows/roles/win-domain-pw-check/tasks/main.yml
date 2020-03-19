@@ -13,9 +13,13 @@
     quiet: true
 
 - name: Domain user account changes
-  include_role: win-domain-user.yml
+  include_role: 
+    name: win-domain-user.yml
   when: domainuserquery.state == "present"
+  tags: domain
 
 - name: Local user account changes
-  include_role: win-local-user.yml
+  include_role: 
+    name: win-local-user.yml
   when: domainuserquery.state == "absent"
+  tags: local
