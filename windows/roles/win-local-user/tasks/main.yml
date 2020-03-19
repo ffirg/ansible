@@ -1,0 +1,5 @@
+- name: change user password
+  win_user:
+    name: "{{ username }}"
+    state: present
+    password: "{{ password }}"
