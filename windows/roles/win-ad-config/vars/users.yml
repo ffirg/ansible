@@ -1,0 +1,19 @@
+active_directory_users:
+  - name: alan
+    first_name: 'Alan'
+    last_name: 'Ops'
+    password: ''
+    groups: 
+      - 'Operations'
+  - name: dave
+    first_name: 'Dave'
+    last_name: 'Developer'
+    password: ''
+    groups: 
+      - 'Development'
+  - name: alison
+    first_name: 'Alison'
+    last_name: 'Applications'
+    password: ''
+    groups: 
+      - 'Applications'

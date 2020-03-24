@@ -1,0 +1,10 @@
+- name: configure active_directory groups
+  win_domain_group:
+    state: "{{ item.value.ensure | default(active_directory_ensure) }}"
+    name: "{{ item.key }}"
+    description: "{{ item.value.description }}"
+#    path: "{{ item.value.path + ',' + active_directory_group_base_ou }}"
+    scope: "{{ item.value.scope | default(active_directory_group_scope) }}"
+    attributes:
+      mail: "{{ item.value.mail | default(item.key | lower + '@' + active_directory_email_domain) }}"
+  with_dict: "{{ active_directory_groups | default({}) }}"

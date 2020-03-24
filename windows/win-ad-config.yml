@@ -1,0 +1,10 @@
+---
+# This playbook is used to setup a dummy AD schema for demos etc
+# Designed to be run from Tower (as that has the skylight inventory required already)
+
+- name: Populate Active Directory with dummy demo data
+  hosts: skylight-dc
+  gather_facts: no
+
+  roles:
+    - { role: 'win-ad-config', tags: ["groups", "users"] }

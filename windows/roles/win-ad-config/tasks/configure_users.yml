@@ -1,0 +1,10 @@
+- name: configure active_directory users
+  win_domain_user:
+    state: "{{ item.ensure | default(active_directory_ensure) }}"
+    name: "{{ item.name }}"
+    firstname: "{{ item.first_name }}"
+    surname: "{{ item.last_name }}"
+    password: "{{ item.password | default(active_directory_user_default_password) }}"
+    groups: "{{ item.groups }}"
+    email: "{{ item.email | default(item.first_name | lower + '.' + item.last_name | lower + '@' + active_directory_email_domain) }}"
+  loop: "{{ active_directory_users }}"

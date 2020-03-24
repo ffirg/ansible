@@ -1,0 +1,4 @@
+- include_vars: groups.yml
+- import_tasks: configure_groups.yml
+- include_vars: users.yml
+- import_tasks: configure_users.yml

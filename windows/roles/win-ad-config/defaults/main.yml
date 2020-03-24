@@ -1,0 +1,18 @@
+active_directory_ensure: present
+
+### USERS
+active_directory_domain: 'ansibleskylight.com'
+active_directory_email_domain: 'ansibleskylight.com'
+active_directory_users: {}
+active_directory_user_base_ou: 'CN=Users,DC=ansibleskylight,DC=com'
+active_directory_update_password: 'on_create'
+active_directory_group_action: 'add'
+active_directory_password_never_expires_enabled: false
+active_directory_user_cannot_change_password_enabled: false
+active_directory_account_locked_enabled: false
+active_directory_user_default_password: ''
+
+### GROUPS
+active_directory_groups: {}
+active_directory_group_base_ou: 'OU=Groups,DC=ansibleskylight,DC=com'
+active_directory_group_scope: 'global'

@@ -1,0 +1,21 @@
+custom_group_all:
+  - 'Tower_Users'
+
+active_directory_groups:
+  Operations:
+    description: 'Operations Team'
+    path: 'CN=Operations'
+  Development:
+    description: 'Development Team'
+    path: 'CN=Development'
+  Applications:
+    description: 'Application Team'
+    path: 'CN=Applications'
+
+active_directory_default_groups:
+  Operations:
+    - Operations
+  Development:
+    - Development
+  Applications:
+    - Applications
