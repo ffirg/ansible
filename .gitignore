@@ -1,4 +1,5 @@
 # ignore some stuff 
+inventory
 credentials
 *fact*
 *key*
