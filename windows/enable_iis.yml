@@ -1,14 +1,23 @@
 ---
-# This playbook installs and enables IIS on Windows hosts
+# This playbook does basic IIS stuff on Windows hosts
 
-- name: Install IIS
-  hosts: all
+- name: IIS web deployment
+  hosts: windows
   gather_facts: false
+
   tasks:
     - name: Install IIS
       win_feature:
         name: "Web-Server"
         state: present
         restart: yes
-        include_sub_features: yes
-        include_management_tools: yes
+
+    - name: Start IIS service
+      win_service:
+        name: W3Svc
+        state: started
+
+    - name: Create website index.html
+      win_copy:
+        src: files/web.html
+        dest: C:\Inetpub\wwwroot\index.html

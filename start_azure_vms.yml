@@ -7,7 +7,7 @@
 
   vars:
     instances:
-      - { name: 'skylight-dc', rg: 'skylight-resource' }
+#     - { name: 'skylight-dc', rg: 'skylight-resource' }
       - { name: 'tower1', rg: 'core-infra' }
 
   tasks:
@@ -20,4 +20,4 @@
       loop: "{{ instances }}"
       register: output
       until: output is not failed
-      retries: 5
+      retries: 3
