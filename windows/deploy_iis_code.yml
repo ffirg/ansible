@@ -32,7 +32,7 @@
     - name: Deploy Web Code
       win_git:
         repo: 'https://gitlab.com/ffirg/AlienInvasion.git'
-        dest: 'C:\inetpub\wwwroot\alieninvasion'
+        dest: 'C:\temp\alieninvasion'
         branch: devel
         replace_dest: yes
         recursive: yes
