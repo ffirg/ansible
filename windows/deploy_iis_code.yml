@@ -17,6 +17,13 @@
         name: W3Svc
         state: started
 
+    - name: Configure Client DNS
+      win_dns_client:
+        adapter_names: Ethernet
+        ipv4_addresses:
+        - 10.0.1.4
+        - 8.8.8.8
+
     - name: Ensure git Installed
       win_chocolatey:
         name: git
