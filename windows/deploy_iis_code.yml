@@ -35,5 +35,4 @@
         dest: 'C:\Inetpub\wwwroot\'
         branch: devel
         recursive: yes
-        replace_dest: yes
         accept_hostkey: yes
