@@ -1,7 +1,7 @@
 ---
 # This playbook does basic IIS stuff on Windows hosts
 
-- name: IIS web deployment
+- name: IIS Web Code Deployment
   hosts: windows
   gather_facts: false
 
@@ -17,7 +17,11 @@
         name: W3Svc
         state: started
 
-    - name: Create website index.html
-      git:
+    - name: Deploy Web Code
+      win_git:
         repo: 'https://gitlab.com/ffirg/AlienInvasion.git'
-        dest: C:\Inetpub\wwwroot\
+        dest: 'C:\Inetpub\wwwroot\'
+        branch: devel
+        recursive: yes
+        replace_dest: yes
+        accept_hostkey: yes
