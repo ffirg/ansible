@@ -17,6 +17,11 @@
         name: W3Svc
         state: started
 
+    - name: Ensure git Installed
+      win_chocolatey:
+        name: git
+        state: present
+
     - name: Deploy Web Code
       win_git:
         repo: 'https://gitlab.com/ffirg/AlienInvasion.git'
