@@ -18,6 +18,6 @@
         state: started
 
     - name: Create website index.html
-      win_copy:
-        src: files/web.html
-        dest: C:\Inetpub\wwwroot\index.html
+      git:
+        repo: 'https://gitlab.com/ffirg/AlienInvasion.git'
+        dest: C:\Inetpub\wwwroot\
