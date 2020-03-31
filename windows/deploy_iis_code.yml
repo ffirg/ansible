@@ -34,7 +34,7 @@
         repo: 'https://gitlab.com/ffirg/AlienInvasion.git'
         dest: 'C:\inetpub\wwwroot'
         branch: devel
-        replace_dest: no
+        replace_dest: yes
         recursive: yes
         update: yes
         clone: yes
