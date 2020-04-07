@@ -10,6 +10,8 @@ Quick example of how to install Ansible Collections using a requirements.yml fil
 
 ## Installation
 
+You need to setup credentials and set in your ansible.cfg file in order to pull download content. This [blog](https://www.ansible.com/blog/hands-on-with-ansible-collections) described it beautifully :)
+
 First install, just do it:
 ```
 ansible-galaxy collection install -r ansible/collections/requirements.yml
