@@ -1,0 +1,14 @@
+collections:
+
+# Ansible Galaxy Sourced (requires API key):
+
+  - name: junipernetworks.junos
+    source: https://galaxy.ansible.com
+
+  - name: servicenow.servicenow
+    source: https://galaxy.ansible.com
+
+# Redhat Automation Hub Sourced (requires token):
+
+  - name: f5networks.f5_modules
+    source: https://cloud.redhat.com/api/automation-hub/

@@ -1,0 +1,18 @@
+---
+- name: Using ServiceNow Collection
+  hosts: localhost
+  gather_facts: no
+  collections:
+    - servicenow.servicenow
+
+  tasks:
+  - name: Create an incident
+    snow_record:
+      username: xxxxxx
+      password: xxxxxx
+      instance: dev82827
+      state: present
+      data:
+        short_description: "This is a test incident opened by Ansible using the SNOW collection module"
+        severity: 3
+        priority: 2
