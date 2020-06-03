@@ -4,6 +4,9 @@
   gather_facts: false
   become: true
 
+  vars:
+    git_branch: devel
+
   tasks:
     - name: Install Software Required
       yum:
@@ -18,7 +21,7 @@
       git:
         repo: 'https://gitlab.com/ffirg/AlienInvasion.git'
         dest: /var/www/html/
-        version: "{{ git_branch | default(devel), true }}"
+        version: "{{ git_branch }}"
         force: yes
       tags: content
 
