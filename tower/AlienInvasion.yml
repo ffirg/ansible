@@ -37,4 +37,4 @@
 
     - name: Smoke Testing
       uri:
-        url: "http://{{ ['inventory_hostname'].['ansible_facts'].['public_ip'] }}"
+        url: "http://{{ inventory_hostname.['ansible_facts'].['public_ip'] }}"
