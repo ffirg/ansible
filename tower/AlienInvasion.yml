@@ -1,0 +1,28 @@
+---
+- name: Deploy AlienInvasion Game
+  hosts: tower-demos-rg1
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Install Software Required
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - yum
+        - git
+      tags: software
+
+    - name: Git Clone Repo on to Web Servers
+      git:
+        repo: 'https://gitlab.com/ffirg/AlienInvasion.git'
+        dest: /var/www/html/
+        version: "{{ git_branch | default(devel) }}"
+      tags: content
+
+    - name: Start Web Services
+      service:
+        name: httpd
+        state: started
+      tags: service
