@@ -12,7 +12,6 @@
         packages:
         - httpd
         - git
-
       tags: software
 
     - name: Git Clone Repo on to Web Servers
