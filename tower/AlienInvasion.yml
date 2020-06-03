@@ -33,8 +33,4 @@
 
     - name: Smoke Testing
       uri:
-        url: "http://{{ ansible_host }}"
-
-    - name: Smoke Testing
-      uri:
         url: "http://{{ public_ip }}"
