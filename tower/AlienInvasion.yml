@@ -19,6 +19,7 @@
         repo: 'https://gitlab.com/ffirg/AlienInvasion.git'
         dest: /var/www/html/
         version: "{{ git_branch | default(devel), true }}"
+        force: yes
       tags: content
 
     - name: Start Web Services
