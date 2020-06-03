@@ -30,3 +30,11 @@
         name: httpd
         state: started
       tags: service
+
+    - name: Smoke Testing
+      uri:
+        url: "{{ ansible_host }}"
+
+    - name: Smoke Testing
+      uri:
+        url: "{{ hostvars[host]['ansible_facts']['public_ip'] }}"
