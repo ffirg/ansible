@@ -7,11 +7,12 @@
   tasks:
     - name: Install Software Required
       yum:
-        name: "{{ item }}"
-        state: latest
-      loop:
-        - yum
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - httpd
         - git
+
       tags: software
 
     - name: Git Clone Repo on to Web Servers
