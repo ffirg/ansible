@@ -1,0 +1,42 @@
+---
+- hosts: kindle
+  remote_user: root
+  gather_facts: false
+
+  tasks:
+    - name: Test connection
+      ping:
+      
+      tags:
+        - ping
+
+    - name: Announce what we'll do
+      local_action:
+        command /usr/bin/say -v {{ voice }} "{{ banter }}"
+
+      tags:
+        - voice
+    
+    - name: Change the display
+      shell: eips -c && eips 1 1 "*** RE-CONFIGURED USING ANSIBLE ***" && sleep 3 && eips -p
+      args:
+        executable: /bin/sh
+
+      tags:
+        - display
+
+    - name: Play some audio on the kindle
+      shell: /mnt/us/mplayer/mplayer /mnt/us/music/ansible-awesome.m4a
+      args:
+        executable: /bin/sh
+
+      tags:
+        - audio
+
+    - name:  Show clock
+      shell: eips -c && /mnt/us/timelit/timelit.sh
+      args: 
+        executable: /bin/sh
+
+      tags: 
+        - clock

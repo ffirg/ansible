@@ -1,0 +1,22 @@
+---
+- hosts: iot
+  gather_facts: false
+
+  tasks:
+    
+    - name: check device connectivity
+      shell: "ping -c 1 {{inventory_hostname}}"
+      register: ping_results
+      ignore_errors: true
+      delegate_to: localhost
+
+    - name: debug
+      debug:
+        var: ping_results.stdout
+        verbosity: 1
+
+    - name: add device to our in-memory inventory
+      add_host: 
+        name: "{{inventory_hostname}}"
+        groups: iot_online
+      when: not ('100% packet loss' in ping_results.stdout)
