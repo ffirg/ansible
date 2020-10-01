@@ -1,8 +1,0 @@
-# vim:ft=ansible:
----
-- hosts: all
-  gather_facts: true
-
-  roles:
-
-    - { role: RHEL7-STIG }
