@@ -1,5 +1,0 @@
----
-# tasks file for common
-
-tasks:
-  - include: install-pkgs.yml
