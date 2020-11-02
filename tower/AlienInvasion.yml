@@ -6,6 +6,7 @@
 
   vars:
     git_branch: devel
+    endpoint: game
 
   tasks:
     - name: Install Software Required
@@ -20,7 +21,7 @@
     - name: Git Clone Repo on to Web Servers
       git:
         repo: 'https://gitlab.com/ffirg/AlienInvasion.git'
-        dest: /var/www/html/game
+        dest: "/var/www/html/{{ endpoint }}"
         version: "{{ git_branch }}"
         force: yes
       tags: content
@@ -33,4 +34,4 @@
 
     - name: Smoke Testing
       uri:
-        url: "http://{{ public_ip }}"
+        url: "http://{{ public_ip }}/{{ endpoint }}"
