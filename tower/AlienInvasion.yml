@@ -20,7 +20,7 @@
     - name: Git Clone Repo on to Web Servers
       git:
         repo: 'https://gitlab.com/ffirg/AlienInvasion.git'
-        dest: /var/www/html/
+        dest: /var/www/html/game
         version: "{{ git_branch }}"
         force: yes
       tags: content
