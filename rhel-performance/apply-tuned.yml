@@ -1,0 +1,13 @@
+---
+- hosts: all
+
+  vars:
+    daemon: true
+    reapply_sysctl: false
+    use_recommended_profile: false
+    enable_recommend: false
+    dynamic_tuning: true
+    profile: balanced
+
+  roles:
+    - linux-system-roles.tuned
