@@ -1,1 +1,2 @@
 - src: https://github.com/linux-system-roles/tuned
+  name: linux-system-roles.tuned
