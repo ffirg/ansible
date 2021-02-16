@@ -1,2 +1,1 @@
-- name: tuned system role
-  src: https://github.com/linux-system-roles/tuned
+- src: https://github.com/linux-system-roles/tuned
