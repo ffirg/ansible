@@ -3,7 +3,6 @@
   vars:
     fruits:
       - oranges
-      - lemons
       - apples
       
   tasks:
