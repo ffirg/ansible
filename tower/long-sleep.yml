@@ -3,9 +3,12 @@
 - hosts: all
   gather_facts: false
 
+  vars:
+    period: 300
+
   tasks:
     - name: I'm feeling real sleepy...
-      wait_for:
-        timeout: 300
+      ansible.builtin.wait_for:
+        timeout: "{{ period }}"
       delegate_to: localhost
 
