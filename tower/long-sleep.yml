@@ -1,0 +1,11 @@
+# vim:ft=ansible:
+---
+- hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: I'm feeling real sleepy...
+      wait_for:
+        timeout: 300
+      delegate_to: localhost
+
