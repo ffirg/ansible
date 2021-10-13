@@ -1,7 +1,6 @@
 # vim:ft=ansible:
 ---
 - hosts: all
-  remote_user: vagrant
   become: yes
   become_method: sudo
   gather_facts: true
