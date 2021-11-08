@@ -1,6 +1,5 @@
 - hosts: localhost
 
-# create a variable named "proxy_env" that is a dictionary
   vars:
     unsafe_writes:
       ANSIBLE_UNSAFE_WRITES: 1
