@@ -11,3 +11,4 @@
         src: local_file_a
         dest: local_copy_a
       environment: "{{ unsafe_writes }}"
+      delegate_to: localhost
