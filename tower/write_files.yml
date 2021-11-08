@@ -8,6 +8,6 @@
 
     - name: Make a copy of a file inside the container
       ansible.builtin.copy:
-        src: ./local_file_a
-        dest: ./local_copy_a
+        src: local_file_a
+        dest: local_copy_a
       environment: "{{ unsafe_writes }}"
