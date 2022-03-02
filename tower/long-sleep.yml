@@ -14,4 +14,4 @@
 
 
     - ansible.builtin.debug:
-        msg: "Isolated paths mounted into execution node: {{ lookup('env', 'AWX_ISOLATION_PATHS') }}"
+        msg: "Isolated paths mounted into execution node: {{ lookup('env', 'AWX_ISOLATION_SHOW_PATHS') }}"
