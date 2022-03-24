@@ -5,5 +5,5 @@
   gather_facts: false
   tasks:
     - name: ping
-      shell: ping google.com -c 5
+      shell: /usr/bin/ping google.com -c 5
       register: ping
