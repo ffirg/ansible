@@ -13,7 +13,6 @@
         timeout: "{{ period }}"
       delegate_to: localhost
 
-
     - name: Read mounted file...
       ansible.builtin.debug:
         msg: "Read file... {{lookup('file', '{{ myfile }}_read') }}"
