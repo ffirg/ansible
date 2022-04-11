@@ -5,7 +5,7 @@
 
   vars:
     period: 120
-    myfile: /var/tmp/mydata/file_
+    myfile: /var/tmp/mydata/file
 
   tasks:
     - name: I'm feeling real sleepy...
