@@ -21,7 +21,7 @@
       ansible.builtin.copy:
         dest: "{{ myfile }}_write"
         content: |
-          \nThis is the file I've just written to.\n
+          This is the file I've just written to.
           
     - name: "Read written out file..."
       ansible.builtin.debug:
