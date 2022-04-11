@@ -15,7 +15,7 @@
 
     - name: "Read pre-existing file..."
       ansible.builtin.debug:
-        msg: "Read file... {{ lookup('file', '{{ myfile }}_read') }}"
+        msg: "{{ lookup('file', '{{ myfile }}_read') }}"
         
     - name: "Write to a new file..."
       ansible.builtin.copy:
@@ -24,7 +24,7 @@
           \nThis is the file I've just written to.\n
           
      - name: "Read written out file..."
-      ansible.builtin.debug:
-        msg: "Read file... {{ lookup('file', '{{ myfile }}_write') }}"
+       ansible.builtin.debug:
+         msg: "{{ lookup('file', '{{ myfile }}_write') }}"
           
           
