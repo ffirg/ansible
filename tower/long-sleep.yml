@@ -4,8 +4,8 @@
   gather_facts: false
 
   vars:
-    period: 300
-    myfile: /var/tmp/mydata/write_file
+    period: 120
+    myfile: /var/tmp/mydata/file_
 
   tasks:
     - name: I'm feeling real sleepy...
@@ -16,11 +16,11 @@
 
     - name: Read mounted file...
       ansible.builtin.debug:
-        msg: "Read file... {{lookup('file', '/var/tmp/mydata/read_file') }}"
+        msg: "Read file... {{lookup('file', '{{ myfile }}_read') }}"
         
     - name: Write to a new file...
       ansible.builtin.copy:
-        dest: "{{ myfile }}"
+        dest: "{{ myfile }}_write"
         content: |
         
           This is the file I've just written to.
