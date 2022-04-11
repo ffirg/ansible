@@ -8,20 +8,23 @@
     myfile: /var/tmp/mydata/file
 
   tasks:
-    - name: I'm feeling real sleepy...
+    - name: "I'm feeling real sleepy..."
       ansible.builtin.wait_for:
         timeout: "{{ period }}"
       delegate_to: localhost
 
-    - name: Read mounted file...
+    - name: "Read pre-existing file..."
       ansible.builtin.debug:
-        msg: "Read file... {{lookup('file', '{{ myfile }}_read') }}"
+        msg: "Read file... {{ lookup('file', '{{ myfile }}_read') }}"
         
-    - name: Write to a new file...
+    - name: "Write to a new file..."
       ansible.builtin.copy:
         dest: "{{ myfile }}_write"
         content: |
-        
-          This is the file I've just written to.
+          \nThis is the file I've just written to.\n
+          
+     - name: "Read written out file..."
+      ansible.builtin.debug:
+        msg: "Read file... {{ lookup('file', '{{ myfile }}_write') }}"
           
           
