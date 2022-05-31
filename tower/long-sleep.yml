@@ -15,7 +15,8 @@
         filter:
           - 'ansible_distribution'
           - 'ansible_machine_id'
-          - 'ansible_*_mb'
+          - 'ansible_memtotal_mb'
+          - 'ansible_memfree_mb'
       
     - name: "I'm feeling real sleepy..."
       ansible.builtin.wait_for:
