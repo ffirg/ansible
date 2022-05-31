@@ -1,7 +1,7 @@
 # vim:ft=ansible:
 ---
 - hosts: all
-  gather_facts: false
+  gather_facts: true
   ignore_errors: yes
 
   vars:
