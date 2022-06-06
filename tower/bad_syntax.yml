@@ -1,0 +1,14 @@
+---
+
+- name: Wrong Snytax
+  hosts: all
+  become: false
+  gather_facts: false
+  
+  tasks:
+    - name: This task contains the write syntax
+      ansible.builtin.debug: msg=Hello World
+      
+    - name: This task contains the wrong syntax
+        fail:
+        msg: This task failed
