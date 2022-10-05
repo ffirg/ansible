@@ -1,2 +1,7 @@
 [TEST]
-localhost
+localhost my_custom_var=foobar
+
+[TEST:vars]
+ansible_connection=local
+ansible_python_interpreter='{{ ansible_playbook_python }}'
+my_group_custom_var=foobar2

@@ -1,3 +1,4 @@
 exclude .git *
 recursive-exclude * *
 recursive-include tower *.yml
+include 2hosts

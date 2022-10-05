@@ -1,0 +1,12 @@
+# vim:ft=ansible:
+---
+- hosts: all
+  become: no
+  become_method: sudo
+  gather_facts: true
+
+  tasks:
+    - name: Test SSH Connection
+      ping:
+      tags:
+        - ssh, ping

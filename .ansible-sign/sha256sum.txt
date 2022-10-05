@@ -1,4 +1,5 @@
-583b766fd6f6e5737f5f349c94996f8788ccc02d763176075e31ecf7343ad662  MANIFEST.in
+cc8714c7eb853850085155d93765a7f11de4ef9f42e3f3c940f75c58ee85cf80  2hosts
+e9487c51bcf750d9d545b2b84168abb4d49fbf54c5a3dee6f5df72a5d30457e7  MANIFEST.in
 b98b5dbd0c7e531a22ea34ecc46c362d25d56e5caed2cc420da0e9ce778864e8  tower/AlienInvasion.yml
 11eeca4bef5d269e7c4aa24eb1e32759cbcc51bdcf98f4a43575fe8adac9516a  tower/aws-ec2-demo/aws-demo-wf-1.yml
 9f0d1fb3891be43382c3c0c524bed897e3c42e729d925ece366b5fdbb85ccfe7  tower/aws-ec2-demo/aws-demo-wf-2.yml
@@ -20,6 +21,7 @@ e06c96c6858cc4b6bf0f4eeb29d9cd121e635803da7849210a66949eed838d60  tower/aws-ec2-
 f0148e03e046a58c87419dface69f808caf96e4208ab9fad73e5149053dc3732  tower/aws-ec2-demo/aws/roles/windows/provision/vars/main.yml
 189c4dd7dc3b7ed4aa985736089d077ff3ec7e3ef5e0409f060b7e222b58b5bb  tower/aws-ec2-demo/aws/site.yml
 f29a71a4f810f7690118784deccb3156d6beebf67fb108c88dc6b9c6dd5ec243  tower/azure-rg-vm-discovery.yml
+b21000f216fd88d6c9c2068030921fe128b392c107a7184294bcf6bd2b1071b9  tower/bad_syntax.yml
 e85840ad840876a4dce8a5bb90ef54ef0ca85a1ec267d2c31032742e2a6a8554  tower/bpm-ansible-demo/aws/roles/linux/apps/web/handlers/main.yml
 4f6387f8d29acb413abab75aec661036c8a97d558b322b1dfbb3849a2592f955  tower/bpm-ansible-demo/aws/roles/linux/apps/web/tasks/copy_code.yml
 4bd9c0dce8f945ced22b748e1647353989be8f4050a0cbd0d80a7e032916ba18  tower/bpm-ansible-demo/aws/roles/linux/apps/web/tasks/install_httpd.yml
@@ -48,8 +50,9 @@ ae53239ac2351328f0dce7ef9e835899c2fe901ff96c25abfc28dd5b39a9bde4  tower/deploy-v
 5e71bd17b3fdbce6d84b635a9b965486a8ab5a0397a50333dfc47ac687154919  tower/linux-account-blocks-eg.yml
 5e71bd17b3fdbce6d84b635a9b965486a8ab5a0397a50333dfc47ac687154919  tower/linux-account-blocks.yml
 9a80b98b29edf205a6939a48fdac52a35a31f9f76ae3a0deb9998464a8239441  tower/linux-accounts.yml
-0d77b9ea1f86b3dedc1e9789c44fb80d3233fe4fedf81cb54b5061e31e35301e  tower/long-sleep.yml
+3c9e6aeacca7a0e8f3b427e37f647536ba55d853d05d688e37014568c450f123  tower/long-sleep.yml
 a8a250c5c9092135063bf99e5980a3aa907e7d3ffe6bc4aa8988ae6d160470e9  tower/patch-rhel-hosts.yml
+45fd1f39a042442a1263f1675733e9ec6c79bcc4377b5e6ef8c3e2b3252cc028  tower/ping-pong.yml
 c612054a9c4ed95046b8dcd8e48f0e0ae4adcf33a955cfdf19b48cffa479cca5  tower/poc-rhv-discover-using-vault-creds.yml
 8b073ebee38bcf6875475fcff28deb8f3c42db15fe57dfdc3f813548a44329dc  tower/poc-rhv-discover.yml
 7e9a5a4494df87dfbe3b50d15ce7863d20f9e6000699f98a8440922ba978cf95  tower/poc-vcenter-deploy-vm-template.yml
@@ -62,3 +65,4 @@ c3da40785b79ec8a18779f72ca23323c0e19cefa707f2205f20e4b3c2643d569  tower/sanity-c
 8f11fee07131dd759ecf88b416477e336ad0d604b6c69e19131997a91dab2c08  tower/snow-create-record.yml
 c33298c1a7c9d9626a70e2534b017000e4fdab7a2533f6e0d29bdbaabeaa0f16  tower/snow-get-record.yml
 7b7fa686b02340fac4971dd08359a53019e5b39a7b609248c8b1ba9d86769db2  tower/snow-update-record.yml
+b58f3d66e90d5527713a6e87e4cc5fc8d276ad4667e869a7b303bb7187d0de8c  tower/write_files.yml
