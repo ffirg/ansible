@@ -12,3 +12,5 @@
         timeout: "{{ period }}"
       delegate_to: localhost
 
+    - ansible.builtin.debug:
+        msg: "Isolated paths mounted into execution node: {{ AWX_ISOLATIONS_PATHS }}"
