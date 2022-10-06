@@ -42,7 +42,6 @@ south
 
 [azure]
 #ubuntu-azure-1.westeurope.cloudapp.azure.com
-#40.118.108.249
 my-azure-vm.cloudapp.net
 
 [cloud:children]
