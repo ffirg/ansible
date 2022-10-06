@@ -2,5 +2,4 @@
 foo1 instance_group=foo_ig_a
 foo2 instance_group=foo_ig_b
 [foogroup:vars]
-foo="foofoofoo"
 instance_group="foo_ig_default"
