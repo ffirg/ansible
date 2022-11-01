@@ -23,10 +23,9 @@
         timeout: "{{ period }}"
       delegate_to: localhost
 
-<<<<<<< HEAD
     - ansible.builtin.debug:
         msg: "Isolated paths mounted into execution node: {{ AWX_ISOLATIONS_PATHS }}"
-=======
+
     - name: "Read pre-existing file..."
       ansible.builtin.debug:
         msg: "{{ lookup('file', '{{ myfile }}_read') }}"
@@ -40,6 +39,4 @@
     - name: "Read written out file..."
       ansible.builtin.debug:
         msg: "{{ lookup('file', '{{ myfile }}_write') }}"
-          
-          
->>>>>>> dea84a6f1530a6e7955c7cd64c1d5d0bcda5ae2d
+        
