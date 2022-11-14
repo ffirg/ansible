@@ -3,6 +3,7 @@
 - name: Print order of hosts in each host group
   hosts: all
   gather_facts: no
+  serial: 1
 
   tasks:
     - name: Print order of hosts in each host group in the inventory
