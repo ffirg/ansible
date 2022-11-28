@@ -11,6 +11,6 @@
   - name: Get system inventory.
     idrac_system_info:
       idrac_ip: "{{ inventory_hostname  }}"
-      idrac_user: "{{ user }}"
+      idrac_user: "{{ username }}"
       idrac_password: "{{ password }}"
       validate_certs: false
