@@ -9,7 +9,7 @@
   tasks:
   - name: Get system inventory.
     idrac_system_info:
-       idrac_ip: "{{ inventory_hostname  }}"
-       idrac_user: "{{ user }}"
-       idrac_password:  "{{ password }}"
-       validate_certs: False
+      idrac_ip: "{{ inventory_hostname  }}"
+      idrac_user: "{{ user }}"
+      idrac_password:  "{{ password }}"
+      validate_certs: False
