@@ -1,9 +1,9 @@
-plugin: ansible.builtin.constructed
+plugin: constructed
 strict: False
 
 groups:
   idrac_managed_servers: inventory_hostname.startswith('idrac_')
-  idrac_unmanaged_servers: inventory_hostname.startswith('192.')
+  idrac_unmanaged_servers: (public_dns_name is not defined or ip_address is defined)
 
 #keyed_groups:    
 #  - prefix: ""
