@@ -1,5 +1,7 @@
 [idrac]
 192.168.0.1
+idrac_1
+idrac_2
 
 [idrac:vars]
 ansible_python_interpreter=/usr/bin/python3.8
