@@ -1,7 +1,6 @@
----
 plugin: ansible.builtin.constructed
 
-#strict: False
+strict: False
 #compose:
 #  var_sum: var1 +var2
 
