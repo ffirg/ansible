@@ -3,7 +3,7 @@ strict: False
 
 groups:
   idrac_managed_servers: inventory_hostname.startswith('idrac_')
-  idrac_unmanaged_servers: (ip_address is defined)
+  idrac_unmanaged_servers: inventory_hostname.startswith('192.')
 
 #keyed_groups:    
 #  - prefix: ""
