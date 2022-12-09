@@ -1,20 +1,11 @@
 plugin: ansible.builtin.constructed
-
 strict: False
-#compose:
-#  var_sum: var1 +var2
 
 groups:
-  idrac_managed_servers: inventory_hostname.startswith('idrac')
+  idrac_managed_servers: inventory_hostname.startswith('idrac_')
   idrac_unmanaged_servers: inventory_hostname.startswith('192.')
 
-keyed_groups:
-  - prefix: distro
-    key: ansible_distribution
-    
-  - prefix: arch
-    key: architecture
-    
-  - prefix: ""
-    separator: ""
-    key: idrac.region
+#keyed_groups:    
+#  - prefix: ""
+#    separator: ""
+#    key: region
