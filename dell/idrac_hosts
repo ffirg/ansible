@@ -5,3 +5,4 @@
 ansible_python_interpreter=/usr/bin/python3.8
 user=user
 password=password
+region=datacenter1
