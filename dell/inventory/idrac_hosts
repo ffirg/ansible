@@ -1,7 +1,8 @@
-[idrac]
 192.168.0.1
 idrac_1 region=datacenter1
 idrac_2 region=datacenter2
+
+[idrac]
 
 [idrac:vars]
 ansible_python_interpreter=/usr/bin/python3.8
