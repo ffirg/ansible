@@ -1,10 +1,9 @@
 [idrac]
 192.168.0.1
-idrac_1
-idrac_2
+idrac_1 region=datacenter1
+idrac_2 region=datacenter2
 
 [idrac:vars]
 ansible_python_interpreter=/usr/bin/python3.8
 user=user
 password=password
-region=datacenter1
