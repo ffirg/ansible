@@ -14,3 +14,7 @@ keyed_groups:
     
   - prefix: arch
     key: architecture
+    
+  - prefix: ""
+    separator: ""
+    key: region
