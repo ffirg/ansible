@@ -5,7 +5,7 @@ groups:
   idrac_managed_servers: inventory_hostname.startswith('idrac_')
   idrac_unmanaged_servers: inventory_hostname.startswith('192.')
 
-#keyed_groups:    
-#  - prefix: ""
-#    separator: ""
-#    key: region
+keyed_groups:    
+  - prefix: ""
+    separator: ""
+    key: region
