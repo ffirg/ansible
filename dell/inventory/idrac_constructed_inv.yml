@@ -17,4 +17,4 @@ keyed_groups:
     
   - prefix: ""
     separator: ""
-    key: hostvars.region
+    key: idrac.region
