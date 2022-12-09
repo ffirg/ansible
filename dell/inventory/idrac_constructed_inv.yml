@@ -16,4 +16,4 @@ keyed_groups:
     
   - prefix: ""
     separator: ""
-    key: region
+    key: hostvars.region
