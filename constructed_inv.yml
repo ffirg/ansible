@@ -1,3 +1,4 @@
+---
 plugin: ansible.builtin.constructed
 
 #strict: False
@@ -5,7 +6,7 @@ plugin: ansible.builtin.constructed
 #  var_sum: var1 +var2
 
 groups:
-  idrac_servers: inventry_hostname.startswith('idrac')
+  idrac_servers: inventory_hostname.startswith('idrac')
 
 keyed_groups:
   - prefix: distro
