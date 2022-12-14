@@ -1,6 +1,6 @@
 all:
   hosts:
     example1.server.debeka.de:
-    example2.server/debeka.de:
+    example2.server.debeka.de:
   vars:
     ansible_connection: local
