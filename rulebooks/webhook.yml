@@ -1,0 +1,15 @@
+---
+- name: Capture POSTs from a webhook
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5000
+      filters:
+        - ansible.eda.dashes_to_underscores:
+
+  rules:
+    - name: Update repo
+      condition: event.payload is defined
+      action:
+        debug:
