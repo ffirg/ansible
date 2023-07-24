@@ -16,7 +16,7 @@
           - event.url_check.status == 'down'
       actions:
         - run_job_template:
-            fact:
-              service_known_down: true
+            name: "Demo Job Template"
+            organization: "Default"
         - debug:
             msg: "{{ event['url_check']['url'] }} may be down!"
