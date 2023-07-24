@@ -1,9 +1,10 @@
 ---
-- name: Check that URLs are Available
-  hosts: localhost
+- name: Web Site Checks Rulebook
+  hosts: all
   
   sources:
-    - ansible.eda.url_check:
+    - name: Are my key web sites operational
+      ansible.eda.url_check:
         verify_ssl: false
         delay: 30 # seconds
         urls:
@@ -12,7 +13,7 @@
         
   rules:
     - name: Alert if URL is down
-      condition: event.url_check.status == 'down'
+      condition: event.url_check.status == "down"
       action:
         run_job_template:
           name: "Demo Job Template"
