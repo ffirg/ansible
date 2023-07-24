@@ -1,13 +1,15 @@
 ---
 - name: Check that URLs are Available
   hosts: localhost
+  
   sources:
     - ansible.eda.url_check:
         verify_ssl: false
-        delay: 10 # seconds
+        delay: 30 # seconds
         urls:
           - https://status.redhat.com
-          - https://loadofrubbishurl.com/
+          - http://loadofrubbishurl.com
+        
   rules:
     - name: Alert if URL is down
       condition: event.url_check.status == 'down'
@@ -15,5 +17,3 @@
         run_job_template:
           name: "Demo Job Template"
           organization: "Default"
-        debug:
-          msg: "{{ event['url_check']['url'] }} may be down!"
