@@ -9,7 +9,7 @@
         delay: 30 # seconds
         urls:
           - https://status.redhat.com
-          #- http://loadofrubbishurl.com
+          - http://loadofrubbishurl.com
         
   rules:
     - name: Alert if URL is down
