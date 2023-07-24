@@ -1,5 +1,4 @@
 ---
-
 - name: Check that URLs are Available
   hosts: localhost
   sources:
