@@ -13,7 +13,7 @@
       condition:
         all:
           - event.url_check.status == 'down'
-      actions:
+      action:
         - run_job_template:
             name: "Demo Job Template"
             organization: "Default"
