@@ -6,7 +6,7 @@
     - name: Are my key web sites operational
       ansible.eda.url_check:
         verify_ssl: false
-        delay: 60 # seconds
+        delay: 30 # seconds
         urls:
           - https://status.redhat.com
           - http://loadofrubbishurl.com
