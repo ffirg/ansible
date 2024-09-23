@@ -6,4 +6,4 @@
   roles:
 #    - { role: config }
 #    - { role: services }
-    - { role: disk, disk_path: /tmp/apps }
+    - { role: disk, disk_path: /tmp }
