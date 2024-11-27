@@ -24,7 +24,7 @@
       delegate_to: localhost
 
     - ansible.builtin.debug:
-        msg: "Isolated paths mounted into execution node: {{ AWX_ISOLATION_SHOW_PATHS }}"
+        msg: "Isolated paths mounted into execution node: {{ AWX_ISOLATION_PATHS }}"
 
     - name: "Read pre-existing file..."
       ansible.builtin.debug:
