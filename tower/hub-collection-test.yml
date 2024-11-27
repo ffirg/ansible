@@ -9,4 +9,4 @@
   tasks:
   
     - name: Run Infra validated AAP Configuraton as Code
-      infra.aap_configuration.configure_aap.yml
+      infra.aap_configuration.configure_aap.yml:
