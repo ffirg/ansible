@@ -1,0 +1,12 @@
+# vim:ft=ansible:
+# setup namespaces/upload collections into containerized PAH
+# turn verbose project syncing on
+# call one of the collection things here
+---
+- hosts: all
+  gather_facts: false
+
+  tasks:
+  
+    - name: Run AAP Configuraton dispatch role
+      infra.aap_configuration.dispatch
