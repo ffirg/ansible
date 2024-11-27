@@ -3,10 +3,21 @@
 # turn verbose project syncing on
 # call one of the collection things here
 ---
-- hosts: all
+- name: Add user to EDA Controller
+  hosts: localhost
+  connection: local
   gather_facts: false
-
-  tasks:
-  
-    - name: Run Infra validated AAP Configuraton as Code
-      infra.aap_configuration.configure_aap.yml:
+  vars:
+    eda_validate_certs: false
+  # Define following vars here, or in eda_configs/eda_auth.yml
+  # controller_host: ansible-eda-web-svc-test-user.example.com
+  # eda_token: changeme
+  pre_tasks:
+    - name: Include vars from eda_configs directory
+      ansible.builtin.include_vars:
+        dir: ./vars
+        extensions: ["yml"]
+      tags:
+        - always
+  roles:
+    - infra.aap_configuration.eda_users
