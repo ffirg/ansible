@@ -8,5 +8,5 @@
 
   tasks:
   
-    - name: Run AAP Configuraton dispatch role
-      infra.aap_configuration.dispatch
+    - name: Run Infra validated AAP Configuraton as Code
+      infra.aap_configuration.configure_aap.yml
