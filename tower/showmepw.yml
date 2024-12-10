@@ -4,4 +4,4 @@
   tasks:
     - name: Display passwords
       ansible.builtin.debug:
-        msg: "{{ ansible_passsword }}" and "{{ vault_password }}"
+        msg: "{{ ansible_passsword }} and {{ vault_password }}"
