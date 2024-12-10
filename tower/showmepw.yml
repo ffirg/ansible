@@ -4,7 +4,4 @@
   tasks:
     - name: Display passwords
       ansible.builtin.debug:
-        msg: "{{ item.type }} password is {{ item.password }}"
-      loop:
-        - { type: 'machine', password: '{{ ansible_password | default(omit) }}' }
-        - { type: 'vault', password: '{{ vault_password | default(omit) }}' }
+        msg: "{{ ansible_passsword }}" and "{{ vault_password }}"
