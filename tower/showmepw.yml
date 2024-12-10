@@ -7,4 +7,4 @@
         msg: "{{ item.type }} password is {{ item.password }}"
       loop:
         - { type: 'machine', password: '{{ ansible_password | default(omit) }}' }
-        - { type: 'vault', password: '{{ ansible_vault_password | default(omit) }}' }
+        - { type: 'vault', password: '{{ vault_password | default(omit) }}' }
