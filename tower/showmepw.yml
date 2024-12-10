@@ -2,6 +2,6 @@
   hosts: all
 
   tasks:
-    - name: Display passwords
+    - name: Display password
       ansible.builtin.debug:
-        msg: "{{ ansible_password }} and {{ vault_password }}"
+        msg: "{{ ansible_password }}"
