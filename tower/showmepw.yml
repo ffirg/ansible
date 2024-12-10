@@ -2,6 +2,9 @@
   hosts: all
 
   tasks:
-    - name: Display password
+    - name: Display passwords
       ansible.builtin.debug:
-        msg: "{{ ansible_password }}"
+        msg: "{{ item.type }} password is {{ item.password }}"
+      loop:
+        - { type: 'machine', password: '{{ ansible_password | default(omit) }}' }
+        - { type: 'vault', password: '{{ ansible_vault_password | default(omit) }}' }
