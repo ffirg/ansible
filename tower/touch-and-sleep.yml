@@ -1,18 +1,17 @@
 ---
-- name: Touch-and-Sleep
-  hosts: all
-  gather_facts: false
-  serial: 1
+- hosts: "{{ ansible_limit | default(None) }}"
+  gather_facts: false
+  serial: 1
 
   vars:
     sleepTime: 30
 
-  tasks:
-    - name: Touch /tmp/touch-and-sleep
-      file:
-        path: /tmp/touch-and-sleep
-        state: touch
+  tasks:
+    - name: Touch /tmp/touch-and-sleep
+      file:
+        path: /tmp/touch-and-sleep
+        state: touch
 
-    - name: Sleep for sleepTime seconds
-      pause:
-        seconds: "{{ sleepTime }}"
+    - name: Sleep for sleepTime seconds
+      pause:
+       seconds: "{{ sleepTime }}"
