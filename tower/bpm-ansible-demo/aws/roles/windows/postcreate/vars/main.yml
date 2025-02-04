@@ -1,7 +1,0 @@
----
-# Local variables if we need them
-# syntax is:
-# variable: value
-# ansible_connection: winrm
-# ansible_port: 5986
-# ansible_winrm_server_cert_validation: ignore

@@ -1,9 +1,0 @@
----
-- hosts: tag_Name_just_created_linux
-  become: no
-  become_method: sudo
-  gather_facts: false
-
-  tasks:
-    - name: Test connection
-      ping:

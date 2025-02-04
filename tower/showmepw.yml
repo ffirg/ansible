@@ -1,7 +1,0 @@
-- name: Passwords
-  hosts: all
-
-  tasks:
-    - name: Display password
-      ansible.builtin.debug:
-        msg: "{{ ansible_password }}"

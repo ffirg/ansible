@@ -1,4 +1,0 @@
----
-# Local variables if we need them
-ntpserver1: 0.rhel.pool.ntp.org
-ntpserver2: 127.127.1.0

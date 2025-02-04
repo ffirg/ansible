@@ -1,5 +1,0 @@
----
-# Creates some front-of-shop web content so we can demo something
-
-- name: Create a index.html file
-  template: src=index.html.j2 dest=/var/www/html/index.html

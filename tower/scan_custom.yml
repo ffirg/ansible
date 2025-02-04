@@ -1,7 +1,0 @@
----
-- name: Custom Fact Scan Example
-  hosts: all
-  gather_facts: false
-
-  tasks:
-    - scan_foo:
