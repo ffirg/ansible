@@ -2,7 +2,11 @@
   gather_facts: false
   vars:
     fruits:
+<<<<<<< HEAD
       - oranges
+=======
+      - lemons
+>>>>>>> 767595d (slight mod)
       
   tasks:
     - name: Check for apples...
