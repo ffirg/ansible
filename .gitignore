@@ -7,6 +7,8 @@ credentials
 *cachedir*
 cachedir/*
 .vscode
+.ansible*
+ansible.cfg
 
 # Packages
 *.7z
