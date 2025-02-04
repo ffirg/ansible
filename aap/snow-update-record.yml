@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  gather_facts: false
+  no_log: false
+
+  vars:
+    table: incident 
+    
+  tasks:
+  
+    - fail:
+        msg: "We don't have a ServiceNow {{ table }} number to update"
+      when: snow_record is not defined
+      
+    - name: Update the ServiceNow record
+      snow_record:
+        state: present
+        username: "{{ snow_username }}"
+        password: "{{ snow_password }}"
+        instance: "{{ snow_instance }}"
+        table: "{{ table }}" 
+        number: "{{ snow_record }}" 
+        data:
+          comments : "Update from Ansible Tower. Sweet."
+
+
+
+
+

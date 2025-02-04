@@ -1,0 +1,15 @@
+---
+- hosts: tag_Name_just_created_linux
+  become: yes
+  become_method: sudo
+  gather_facts: true
+
+  tasks:
+
+    - name: Install Samba and misc packages
+      yum: name={{item}} state=present
+      with_items:
+        - samba-4.2.3-12.el7_2
+        - samba-client-libs-4.2.3-12.el7_2
+        - wget
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'

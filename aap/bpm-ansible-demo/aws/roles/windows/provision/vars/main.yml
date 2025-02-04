@@ -1,0 +1,10 @@
+---
+key_name: ansible-tower
+region: eu-west-1
+zone: eu-west-1c
+ami: ami-5d47142e
+public_ip: yes
+group: bpm-ansible-demo
+subnet: subnet-bc69e8e4
+# we use this AWS tag to identify newly provisioned instances
+instance_tags: '{"type":"demo-clients","Name":"just-created-windows"}'

@@ -1,0 +1,25 @@
+# vim:ft=ansible:
+---
+- hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Test SSH Connection
+      ping:
+      tags:
+        - ssh, ping, ip
+
+    - name: Check IP Gateway
+      debug: msg="Server {{ inventory_hostname }} has gateway {{ ansible_default_ipv4.gateway }}"
+      when: ansible_default_ipv4.gateway is defined
+      tags:
+        - ip
+
+    - name: Verify Firewall Rules
+      firewalld: port={{ item }} permanent=true state=enabled
+      with_items:
+        - 80/tcp
+        - 443/tcp
+        - 22/tcp
+      tags:
+        - firewall

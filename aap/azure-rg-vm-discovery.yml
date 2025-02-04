@@ -1,0 +1,18 @@
+- hosts: localhost
+  connection: local
+  gather_facts: true
+
+  tasks:
+    - name: Get facts for all virtual machines of a resource group
+      azure_rm_virtualmachine_facts:
+        resource_group: "{{ rg }}"
+ 
+    - action:
+        module: azure_rm_virtualmachine_facts
+        resource_group: "{{ rg }}"
+      register: azure_rm_vm_facts
+ 
+    - action:
+        module: debug
+        msg: "{{ azure_rm_vm_facts }}"
+ 

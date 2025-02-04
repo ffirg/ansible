@@ -1,0 +1,37 @@
+---
+- name: Deploy AlienInvasion Game
+  hosts: all
+  gather_facts: false
+  become: true
+
+  vars:
+    git_branch: devel
+    endpoint: game
+
+  tasks:
+    - name: Install Software Required
+      yum:
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - httpd
+        - git
+      tags: software
+
+    - name: Git Clone Repo on to Web Servers
+      git:
+        repo: 'https://gitlab.com/ffirg/AlienInvasion.git'
+        dest: "/var/www/html/{{ endpoint }}"
+        version: "{{ git_branch }}"
+        force: yes
+      tags: content
+
+    - name: Start Web Services
+      service:
+        name: httpd
+        state: started
+      tags: service
+
+    - name: Smoke Testing
+      uri:
+        url: "http://{{ public_ip }}/{{ endpoint }}"

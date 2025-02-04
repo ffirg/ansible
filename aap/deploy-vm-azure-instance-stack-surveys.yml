@@ -1,0 +1,80 @@
+---
+- name: Setup a complete Azure compute stack using Tower Surveys for customisation
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+    - name: Create a resource group
+      azure_rm_resourcegroup:
+        name: '{{azure_resource_group_name}}'
+        location: '{{azure_region}}'
+        tags:
+          demo: tower
+          type: standard
+          location: '{{azure_region}}'
+
+    - name: Create storage account
+      azure_rm_storageaccount:
+        resource_group: '{{azure_resource_group_name}}'
+        name: '{{azure_storage_account_name}}'
+        account_type: Standard_LRS
+
+    - name: Create virtual network
+      azure_rm_virtualnetwork:
+        resource_group: '{{azure_resource_group_name}}'
+        name: 'vn-{{azure_vm_name}}'
+        address_prefixes: "10.10.0.0/16"
+
+    - name: Add subnet
+      azure_rm_subnet:
+        resource_group: '{{azure_resource_group_name}}'
+        name: subnet001
+        address_prefix: "10.10.0.0/24"
+        virtual_network: '{{azure_vm_name}}'
+
+    - name: Create public ip
+      azure_rm_publicipaddress:
+        resource_group: '{{azure_resource_group_name}}'
+        allocation_method: Static
+        name: pubip001
+
+    - name: Create security group that allows SSH
+      azure_rm_securitygroup:
+        resource_group: '{{azure_resource_group_name}}'
+        name: secgroup001
+        rules:
+          - name: SSH
+            protocol: Tcp
+            destination_port_range: 22
+            access: Allow
+            priority: 101
+            direction: Inbound
+
+    - name: Create NIC
+      azure_rm_networkinterface:
+        resource_group: '{{azure_resource_group_name}}'
+        name: nic001
+        virtual_network: 'vn-{{azure_vm_name}}'
+        subnet_name: subnet001
+        public_ip_name: pubip001
+        security_group: secgroup001
+
+    - name: Create virtual machine
+      azure_rm_virtualmachine:
+        resource_group: '{{azure_resource_group_name}}'
+        name: '{{azure_vm_name}}'
+        short_hostname: '{{azure_vm_name}}'
+        vm_size: Standard_D1
+        storage_account: '{{azure_storage_account_name}}'
+        storage_container: '{{azure_vm_name}}'
+        storage_blob: '{{azure_vm_name}}.vhd'
+        admin_username: '{{admin_username}}'
+        admin_password: '{{admin_password}}'
+        ssh_password_enabled: true
+        ssh_public_keys:
+          - path: "{{ keypath }}"
+            key_data: "{{ sshkey }}"
+        network_interfaces: '{{azure_vm_name}}'
+        image: RHELGOLD

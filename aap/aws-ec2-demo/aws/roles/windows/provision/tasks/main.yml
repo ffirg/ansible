@@ -1,0 +1,32 @@
+---
+
+- name: 'Create Amazon VM Instance(s)'
+  ec2:
+    # set in vars/main.yml, just for convenience
+    key_name: "{{ key_name }}"
+    region: "{{ region }}"
+    zone: "{{ zone }}"
+    image: "{{ ami }}"
+    instance_tags: "{{ instance_tags }}"
+    assign_public_ip: "{{ public_ip }}"
+    vpc_subnet_id: "{{ subnet }}"
+    group: "{{ group }}"
+    count: 1
+    monitoring: yes
+    wait: yes
+    state: present
+    # passed as 'extra_vars' from BPM form input
+    instance_type: "{{ ec2_instance_type }}"
+  register: newmachines
+
+- name: Wait for RDP to start
+  wait_for:
+    host: "{{ newmachines.instances[0].public_ip }}"
+    port: 3389
+    timeout: 300
+  delegate_to: localhost
+
+- name: Add the machine to in memory inventory
+  add_host:
+    hostname: "{{ newmachines.instances[0].public_ip }}"
+    groups: justcreatedwindows 

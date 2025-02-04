@@ -1,0 +1,33 @@
+# vim:ft=ansible:
+---
+- hosts: all
+  gather_facts: yes
+  become: yes
+
+  vars:
+    output_type: ISO
+    nfs_server: 192.168.133.103
+    nfs_mountpoint: recovery
+    # NOTE: root password is required and gets passed in via Tower survey
+
+  tasks:
+
+    - name: Demonstrates RHEL7's Relax-and-Recover (ReaR) utility
+      command: /bin/echo "How to use ReaR on RHEL - https://access.redhat.com/solutions/2115051"
+
+    - name: Install packages required for creating ISO images
+      yum: name={{ item }} state=installed
+      with_items:
+        - rear
+        - genisoimage
+        - syslinux
+      when: ansible_distribution == 'RedHat' and ansible_distribution_major_version == '7'
+
+    - name: Create local ReaR configuration
+      template: src=./rear/local.conf dest=/etc/rear/local.conf
+
+    - name: Create disaster recovery system and generate backup files
+      command: rear -d -v mkbackup
+
+    - name: Refer to documentation on how to recover
+      command: /bin/echo "ReaR recovery steps - https://access.redhat.com/solutions/2115051"

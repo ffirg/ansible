@@ -1,0 +1,16 @@
+---
+# This playbook contains post VM creation tasks that will be run on all Linux nodes.
+
+#- name: Create user accounts
+#  user: name=phil comment="Phil Griffiths" uid=1101 groups=wheel append=yes
+
+#- name: Install latest NTP package
+#  yum: name=ntp state=latest
+
+#- name: Configure NTP service
+#  template: src=ntp.conf.j2 dest=/etc/ntp.conf owner=root mode=0644
+#  notify:
+#    - restart ntp
+
+#- name: Ensure NTP is started at boot
+#  service: name=ntpd state=started enabled=yes

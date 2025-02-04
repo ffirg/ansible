@@ -1,0 +1,32 @@
+---
+- hosts: localhost
+  gather_facts: false
+  no_log: false
+
+  vars:
+    table: incident
+    short_desc: "Web Services Creation"
+
+  tasks:
+    - name: Create a ServiceNow record
+      snow_record:
+        state: present
+        username: "{{ snow_username }}"
+        password: "{{ snow_password }}"
+        instance: "{{ snow_instance }}"
+        table: "{{ table }}" 
+        data:
+          short_description: "{{ short_desc }}"
+          severity: 3
+          priority: 2
+          category: web
+      register: new_snow_record
+
+    - debug: 
+        var: new_snow_record.record.number
+        verbosity: 1
+
+    - name: "Save ServiceNow Record for updating"
+      set_stats:
+        data:
+          snow_record:  "{{ new_snow_record.record.number }}"
