@@ -1,0 +1,28 @@
+---
+# Ansible Automation Platform related variables
+aap_hostname: "<GATEWAY>"
+aap_username: "<GATEWAY_USER>"
+aap_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63633763653530343566363864333130656433613634333465363733326261336465333362623635
+          3061333439626238616332313663633431663962353735320a633732346232396165373931653039
+          64326462306162396366373565316631343033656230363038623237313036613166313331623533
+          3363636462646534330a616437646665393738386235306361653333313338656563346633396434
+          35346164656437326231326433323934643133353436323562373762616531326463
+aap_validate_certs: false
+
+# Details for creating organization, team, and user
+org_name: "Demo-Organization"
+team_name: "Demo-Team"
+user_username: "Demo-User"
+user_email: "demo.user@example.com"
+user_password: "3ncrypt3d_P@$$word"
+
+# Role names as they exist in your Ansible Automation Platform
+role_for_team_in_org: "Organization Inventory Admin" # "Executor"
+role_for_user_in_org: "Organization Auditor"
+role_for_user_in_team: "Auditor" # if your platform supports team-scoped roles
+
+# Custom role definition details
+custom_role_name: "NetOps ReadOnly"
+custom_role_description: "Read-only access to network objects"
