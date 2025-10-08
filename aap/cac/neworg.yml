@@ -1,0 +1,10 @@
+---
+- name: Create new Org using platform collection
+  hosts: localhost
+  gather_facts: false
+ 
+  tasks:
+    - name: Ensure new organization exists
+      ansible.platform.organization:
+        name: "PhilFooOrg"
+        state: present
