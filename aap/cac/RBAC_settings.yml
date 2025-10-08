@@ -1,0 +1,75 @@
+---
+- name: Create RBAC objects and assign roles to them
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ./vars/all.yml
+  tasks:
+    - name: Ensure new organization exists
+      ansible.platform.organization:
+        name: "{{ org_name }}"
+        state: present
+        aap_hostname: "{{ aap_hostname }}"
+        aap_username: "{{ aap_username }}"
+        aap_password: "{{ aap_password }}"
+        aap_validate_certs: "{{ aap_validate_certs }}"
+
+    - name: Ensure new team exists in organization
+      ansible.platform.team:
+        name: "{{ team_name }}"
+        organization: "{{ org_name }}"
+        state: present
+        aap_hostname: "{{ aap_hostname }}"
+        aap_username: "{{ aap_username }}"
+        aap_password: "{{ aap_password }}"
+        aap_validate_certs: "{{ aap_validate_certs }}"
+
+    - name: Ensure new user exists
+      ansible.platform.user:
+        username: "{{ user_username }}"
+        email: "{{ user_email }}"
+        password: "{{ user_password }}"
+        state: present
+        aap_hostname: "{{ aap_hostname }}"
+        aap_username: "{{ aap_username }}"
+        aap_password: "{{ aap_password }}"
+        aap_validate_certs: "{{ aap_validate_certs }}"
+
+    - name: Ensure new custom role exists
+      ansible.platform.role_definition:
+        name: "{{ custom_role_name }}"
+        description: "{{ custom_role_description }}"
+        content_type: awx.inventory
+        permissions:
+          - awx.view_inventory
+          - awx.change_inventory
+        state: present
+        aap_hostname: "{{ aap_hostname }}"
+        aap_username: "{{ aap_username }}"
+        aap_password: "{{ aap_password }}"
+        aap_validate_certs: "{{ aap_validate_certs }}"
+
+    - name: Assign already existing role to team in organization
+      ansible.platform.role_team_assignment:
+        team: "{{ team_name }}"
+        assignment_objects:
+          - name: "{{ org_name }}"
+            type: "organizations"
+        role_definition: "{{ role_for_team_in_org }}"
+        state: present
+        aap_hostname: "{{ aap_hostname }}"
+        aap_username: "{{ aap_username }}"
+        aap_password: "{{ aap_password }}"
+        aap_validate_certs: "{{ aap_validate_certs }}"
+
+    - name: Assign already existing role to user in organization
+      ansible.platform.role_user_assignment:
+        user: "{{ user_username }}"
+        object_ids:
+          - "{{ org_name }}"
+        role_definition: "{{ role_for_user_in_org }}"
+        state: present
+        aap_hostname: "{{ aap_hostname }}"
+        aap_username: "{{ aap_username }}"
+        aap_password: "{{ aap_password }}"
+        aap_validate_certs: "{{ aap_validate_certs }}"
