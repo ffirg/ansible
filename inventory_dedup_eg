@@ -4,15 +4,15 @@ all:
       hosts:
         foobar1.host:
           interfaces:
-            frontend: foobar1-fe.host
-            backend: foobar1-be.host
-            management: foobar1-mgmt.host
+            frontend: server1-fe.lan
+            backend: server1-be.lan
+            management: server1-mgmt.lan
           ansible_host: "{{ interfaces[target_network | default('management')] }}"
         foobar2.host:
           interfaces:
-            frontend: foobar2-fe.host
-            backend: foobar2-be.host
-            management: foobar2-mgmt.host
+            frontend: server2-fe.lan
+            backend: server2-be.lan
+            management: server2-mgmt.lan
           ansible_host: "{{ interfaces[target_network | default('management')] }}"
       vars:
         ansible_connection: local
