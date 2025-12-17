@@ -1,0 +1,14 @@
+all:
+  hosts:
+    server1.example.com:
+      interfaces:
+        frontend:
+          name: server1-fe.example.com
+          ip: 10.1.0.50
+        backend:
+          name: server1-be.example.com
+          ip: 10.2.0.50
+        management:
+          name: server1-me
+          ip: 10.3.0.50
+    ansible_host: "{{ interfaces[target_network | default('management')].name }}"
