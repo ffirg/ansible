@@ -1,6 +1,8 @@
+---
 all:
   hosts:
     server1.example.com:
+      # These are all host-level variables for server1.example.com
       interfaces:
         frontend:
           name: server1-fe.example.com
@@ -11,7 +13,6 @@ all:
         management:
           name: server1-me
           ip: 10.3.0.50
-    ansible_host: "{{ interfaces[target_network | default('management')].name }}"
-    vars:
-      ansible_connection: ssh  # Note: Changed from local unless you are testing
-      ansible_python_interpreter: '{{ ansible_playbook_python }}'
+      ansible_host: "{{ interfaces[target_network | default('management')].name }}"
+      ansible_connection: local
+      ansible_python_interpreter: "{{ ansible_playbook_python }}"
