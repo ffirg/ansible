@@ -265,7 +265,6 @@
         dest: "{{ report_file }}"
         mode: '0644'
       when: report_file | length > 0
-      delegate_to: localhost
 
     - name: Report file location
       ansible.builtin.debug:
