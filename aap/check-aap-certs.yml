@@ -125,6 +125,26 @@
       changed_when: false
       failed_when: false
 
+    - name: Get local CA subject (for BYO detection)
+      ansible.builtin.shell: |
+        openssl x509 -in "{{ aap_base }}/tls/ca.cert" -noout -subject 2>/dev/null | \
+          sed 's/subject=//'
+      register: ca_subject
+      changed_when: false
+      failed_when: false
+
+    - name: Get certificate issuer
+      ansible.builtin.shell: |
+        openssl x509 -in "{{ item.item.path }}" -noout -issuer 2>/dev/null | \
+          sed 's/issuer=//'
+      loop: "{{ cert_files.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+      when: item.stat.exists
+      register: cert_issuer
+      changed_when: false
+      failed_when: false
+
     - name: Build certificate report data
       ansible.builtin.set_fact:
         cert_report: >-
@@ -136,6 +156,12 @@
               'days_remaining': (item.1.stdout | int) if item.0.stat.exists else none,
               'expiry_date': item.2.stdout if item.0.stat.exists else 'N/A',
               'cn': item.3.stdout if item.0.stat.exists else 'N/A',
+              'issuer': item.4.stdout | default('N/A') if item.0.stat.exists else 'N/A',
+              'source':
+                'N/A' if not item.0.stat.exists else
+                'Self-Signed' if item.0.item.name == 'CA Certificate' else
+                'Installer' if (item.4.stdout | default('')) == (ca_subject.stdout | default('NO_MATCH')) else
+                'BYO',
               'status':
                 'missing' if not item.0.stat.exists else
                 'expired' if (item.1.stdout | int) < 0 else
@@ -143,7 +169,7 @@
                 'ok'
             }]
           }}
-      loop: "{{ cert_files.results | zip(days_remaining.results, cert_expiry.results, cert_cn.results) | list }}"
+      loop: "{{ cert_files.results | zip(days_remaining.results, cert_expiry.results, cert_cn.results, cert_issuer.results) | list }}"
       loop_control:
         label: "{{ item.0.item.name }}"
 
@@ -179,11 +205,11 @@
 
     - name: Display certificate table header
       ansible.builtin.debug:
-        msg: "{{ '%-22s' | format('CERTIFICATE') }} {{ '%-10s' | format('STATUS') }} {{ '%-12s' | format('EXPIRES') }} {{ '%6s' | format('DAYS') }}  {{ '%-20s' | format('CN') }}  PATH"
+        msg: "{{ '%-22s' | format('CERTIFICATE') }} {{ '%-10s' | format('STATUS') }} {{ '%-10s' | format('SOURCE') }} {{ '%-12s' | format('EXPIRES') }} {{ '%6s' | format('DAYS') }}  PATH"
 
     - name: Display certificate status
       ansible.builtin.debug:
-        msg: "{{ '%-22s' | format(item.name) }} {{ '%-10s' | format('[' + item.status | upper + ']') }} {{ '%-12s' | format(item.expiry_date[:12] if item.expiry_date != 'N/A' else 'N/A') }} {{ '%6s' | format(item.days_remaining | default('N/A')) }}  {{ '%-20s' | format((item.cn | default('N/A'))[:20]) }}  {{ item.path }}"
+        msg: "{{ '%-22s' | format(item.name) }} {{ '%-10s' | format('[' + item.status | upper + ']') }} {{ '%-10s' | format(item.source) }} {{ '%-12s' | format(item.expiry_date[:12] if item.expiry_date != 'N/A' else 'N/A') }} {{ '%6s' | format(item.days_remaining | default('N/A')) }}  {{ item.path }}"
       loop: "{{ cert_report_sorted }}"
       loop_control:
         label: "{{ item.name }}"
@@ -238,10 +264,10 @@
 
           ## Certificate Details
 
-          | Certificate | Status | Expires | Days Left | CN | Path |
-          |-------------|--------|---------|-----------|-----|------|
+          | Certificate | Status | Source | Expires | Days Left | Path |
+          |-------------|--------|--------|---------|-----------|------|
           {% for cert in cert_report_sorted %}
-          | {{ cert.name }} | {% if cert.status == 'expired' %}**EXPIRED**{% elif cert.status == 'warning' %}**WARNING**{% elif cert.status == 'missing' %}MISSING{% else %}OK{% endif %} | {{ cert.expiry_date }} | {{ cert.days_remaining | default('N/A') }} | {{ cert.cn | default('N/A') }} | `{{ cert.path }}` |
+          | {{ cert.name }} | {% if cert.status == 'expired' %}**EXPIRED**{% elif cert.status == 'warning' %}**WARNING**{% elif cert.status == 'missing' %}MISSING{% else %}OK{% endif %} | {{ cert.source }} | {{ cert.expiry_date }} | {{ cert.days_remaining | default('N/A') }} | `{{ cert.path }}` |
           {% endfor %}
 
           ## Certificates Requiring Attention
@@ -251,9 +277,10 @@
           ### {{ cert.name }} ({{ cert.status | upper }})
 
           - **Path:** `{{ cert.path }}`
+          - **Source:** {{ cert.source }}
           - **Expires:** {{ cert.expiry_date }}
           - **Days Remaining:** {{ cert.days_remaining }}
-          - **CN:** {{ cert.cn }}
+          - **Action Required:** {% if cert.source == 'Installer' %}Regenerate using AAP installer or openssl{% elif cert.source == 'BYO' %}Obtain new certificate from your CA/ACME provider{% else %}Check certificate configuration{% endif %}
 
           {% endfor %}
           {% else %}
