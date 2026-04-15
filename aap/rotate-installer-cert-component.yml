@@ -1,8 +1,10 @@
 ---
-# playbooks/rotate-component-cert.yml
+# rotate-installer-cert-component.yml
 #
 # Included task file for rotating a single component's certificate
-# Called by rotate-aap-certs.yml
+# Called by rotate-installer-certs.yml
+#
+# Safety check: Only rotates certs signed by internal CA
 
 - name: "{{ component_name }} - Get component definition"
   ansible.builtin.set_fact:
@@ -13,16 +15,52 @@
     path: "{{ component.cert_path }}"
   register: current_cert
 
+- name: "{{ component_name }} - Get current cert issuer"
+  ansible.builtin.shell: |
+    openssl x509 -in "{{ component.cert_path }}" -noout -issuer 2>/dev/null | sed 's/issuer=//'
+  register: cert_issuer
+  when: current_cert.stat.exists
+  changed_when: false
+
+- name: "{{ component_name }} - Get CA subject"
+  ansible.builtin.shell: |
+    openssl x509 -in "{{ aap_base }}/tls/ca.cert" -noout -subject 2>/dev/null | sed 's/subject=//'
+  register: ca_subject
+  when: current_cert.stat.exists
+  changed_when: false
+
+- name: "{{ component_name }} - Check if cert is signed by internal CA"
+  ansible.builtin.set_fact:
+    is_installer_cert: "{{ cert_issuer.stdout | default('') == ca_subject.stdout | default('NO_MATCH') }}"
+  when: current_cert.stat.exists
+
+- name: "{{ component_name }} - SKIP: Certificate not signed by internal CA"
+  ansible.builtin.debug:
+    msg:
+      - "╔═══════════════════════════════════════════════════════════════════╗"
+      - "║ SKIPPING: {{ component_name }} is NOT signed by internal CA       "
+      - "║ Issuer: {{ cert_issuer.stdout | default('N/A') }}"
+      - "║ Expected: {{ ca_subject.stdout | default('N/A') }}"
+      - "║ This appears to be a BYO/external certificate.                    "
+      - "║ Use the appropriate rotation procedure for BYO certs.             "
+      - "╚═══════════════════════════════════════════════════════════════════╝"
+  when:
+    - current_cert.stat.exists
+    - not is_installer_cert | default(false)
+
 - name: "{{ component_name }} - Get current cert expiry"
   ansible.builtin.shell: |
     openssl x509 -in "{{ component.cert_path }}" -noout -enddate 2>/dev/null | sed 's/notAfter=//'
   register: current_expiry
-  when: current_cert.stat.exists
+  when:
+    - current_cert.stat.exists
+    - is_installer_cert | default(false)
   changed_when: false
 
 - name: "{{ component_name }} - Display current status"
   ansible.builtin.debug:
-    msg: "Current cert expires: {{ current_expiry.stdout | default('N/A') }}"
+    msg: "Current cert expires: {{ current_expiry.stdout | default('N/A') }} (signed by internal CA)"
+  when: is_installer_cert | default(false)
 
 - name: "{{ component_name }} - Backup existing certificate"
   ansible.builtin.copy:
@@ -36,9 +74,11 @@
   when:
     - backup | bool
     - current_cert.stat.exists
+    - is_installer_cert | default(false)
 
-# Regenerate certificate with internal CA
+# Regenerate certificate with internal CA (only if current cert is installer-signed)
 - name: "{{ component_name }} - Regenerate certificate with internal CA"
+  when: is_installer_cert | default(false) or not current_cert.stat.exists
   block:
     - name: "{{ component_name }} - Generate new private key"
       community.crypto.openssl_privatekey:
@@ -80,6 +120,7 @@
     openssl x509 -in "{{ component.cert_path }}" -noout -enddate 2>/dev/null | sed 's/notAfter=//'
   register: new_expiry
   changed_when: false
+  when: is_installer_cert | default(false) or not current_cert.stat.exists
 
 - name: "{{ component_name }} - Verify certificate/key match"
   ansible.builtin.shell: |
@@ -89,6 +130,7 @@
   register: cert_key_match
   changed_when: false
   failed_when: cert_key_match.stdout != "MATCH"
+  when: is_installer_cert | default(false) or not current_cert.stat.exists
 
 # Reload services to pick up new cert
 - name: "{{ component_name }} - Check if container uses nginx"
@@ -97,11 +139,14 @@
   register: has_nginx
   changed_when: false
   failed_when: false
+  when: is_installer_cert | default(false) or not current_cert.stat.exists
 
 - name: "{{ component_name }} - Test nginx config"
   ansible.builtin.command: >
     podman exec {{ component.container }} nginx -t
-  when: "'HAS_NGINX' in has_nginx.stdout"
+  when:
+    - is_installer_cert | default(false) or not current_cert.stat.exists
+    - "'HAS_NGINX' in has_nginx.stdout | default('')"
   register: nginx_test
   changed_when: false
 
@@ -109,13 +154,16 @@
   ansible.builtin.command: >
     podman exec {{ component.container }} nginx -s reload
   when:
-    - "'HAS_NGINX' in has_nginx.stdout"
-    - nginx_test.rc == 0
+    - is_installer_cert | default(false) or not current_cert.stat.exists
+    - "'HAS_NGINX' in has_nginx.stdout | default('')"
+    - nginx_test.rc | default(1) == 0
 
 - name: "{{ component_name }} - Restart container (no nginx)"
   ansible.builtin.command: >
     podman restart {{ component.container }}
-  when: "'NO_NGINX' in has_nginx.stdout"
+  when:
+    - is_installer_cert | default(false) or not current_cert.stat.exists
+    - "'NO_NGINX' in has_nginx.stdout | default('')"
 
 - name: "{{ component_name }} - Display result"
   ansible.builtin.debug:
@@ -125,5 +173,6 @@
       - "  Old expiry: {{ current_expiry.stdout | default('N/A') }}"
       - "  New expiry: {{ new_expiry.stdout }}"
       - "  Cert/Key:   {{ cert_key_match.stdout }}"
-      - "  Reload:     {{ 'nginx -s reload' if 'HAS_NGINX' in has_nginx.stdout else 'container restart' }}"
+      - "  Reload:     {{ 'nginx -s reload' if 'HAS_NGINX' in has_nginx.stdout | default('') else 'container restart' }}"
       - "───────────────────────────────────────────────────────────────────"
+  when: is_installer_cert | default(false) or not current_cert.stat.exists
