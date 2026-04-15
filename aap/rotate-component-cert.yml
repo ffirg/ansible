@@ -1,0 +1,146 @@
+---
+# playbooks/rotate-component-cert.yml
+#
+# Included task file for rotating a single component's certificate
+# Called by rotate-aap-certs.yml
+
+- name: "{{ component_name }} - Get component definition"
+  ansible.builtin.set_fact:
+    component: "{{ cert_definitions[component_name] }}"
+
+- name: "{{ component_name }} - Check current certificate exists"
+  ansible.builtin.stat:
+    path: "{{ component.cert_path }}"
+  register: current_cert
+
+- name: "{{ component_name }} - Get current cert expiry"
+  ansible.builtin.shell: |
+    openssl x509 -in "{{ component.cert_path }}" -noout -enddate 2>/dev/null | sed 's/notAfter=//'
+  register: current_expiry
+  when: current_cert.stat.exists
+  changed_when: false
+
+- name: "{{ component_name }} - Display current status"
+  ansible.builtin.debug:
+    msg: "Current cert expires: {{ current_expiry.stdout | default('N/A') }}"
+
+- name: "{{ component_name }} - Backup existing certificate"
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ aap_base }}/cert-backups/{{ ansible_date_time.date }}/{{ component_name }}_{{ item | basename }}"
+    remote_src: true
+    mode: preserve
+  loop:
+    - "{{ component.cert_path }}"
+    - "{{ component.key_path }}"
+  when:
+    - backup | bool
+    - current_cert.stat.exists
+
+# BYO Certificate path
+- name: "{{ component_name }} - Install BYO certificate"
+  when: byo_cert | length > 0
+  block:
+    - name: "{{ component_name }} - Copy BYO certificate"
+      ansible.builtin.copy:
+        src: "{{ byo_cert }}"
+        dest: "{{ component.cert_path }}"
+        mode: '0640'
+
+    - name: "{{ component_name }} - Copy BYO private key"
+      ansible.builtin.copy:
+        src: "{{ byo_key }}"
+        dest: "{{ component.key_path }}"
+        mode: '0400'
+
+# Internal CA regeneration path
+- name: "{{ component_name }} - Regenerate certificate with internal CA"
+  when: byo_cert | length == 0
+  block:
+    - name: "{{ component_name }} - Generate new private key"
+      community.crypto.openssl_privatekey:
+        path: "{{ component.key_path }}"
+        size: 4096
+        mode: '0400'
+        force: true
+
+    - name: "{{ component_name }} - Generate CSR"
+      community.crypto.openssl_csr_pipe:
+        privatekey_path: "{{ component.key_path }}"
+        common_name: "{{ component.cn }}"
+        country_name: "{{ cert_subject.country_name }}"
+        state_or_province_name: "{{ cert_subject.state_or_province_name }}"
+        locality_name: "{{ cert_subject.locality_name }}"
+        organization_name: "{{ cert_subject.organization_name }}"
+        organizational_unit_name: "{{ cert_subject.organizational_unit_name }}"
+        subject_alt_name:
+          - "DNS:{{ inventory_hostname }}"
+          - "DNS:localhost"
+          - "IP:127.0.0.1"
+          - "IP:{{ ansible_default_ipv4.address | default('127.0.0.1') }}"
+      register: csr
+
+    - name: "{{ component_name }} - Sign certificate with CA"
+      community.crypto.x509_certificate:
+        path: "{{ component.cert_path }}"
+        csr_content: "{{ csr.csr }}"
+        privatekey_path: "{{ component.key_path }}"
+        provider: ownca
+        ownca_path: "{{ aap_base }}/tls/ca.cert"
+        ownca_privatekey_path: "{{ aap_base }}/tls/ca.key"
+        ownca_not_after: "+{{ validity_days }}d"
+        mode: '0640'
+        force: true
+
+- name: "{{ component_name }} - Get new cert expiry"
+  ansible.builtin.shell: |
+    openssl x509 -in "{{ component.cert_path }}" -noout -enddate 2>/dev/null | sed 's/notAfter=//'
+  register: new_expiry
+  changed_when: false
+
+- name: "{{ component_name }} - Verify certificate/key match"
+  ansible.builtin.shell: |
+    cert_mod=$(openssl x509 -in "{{ component.cert_path }}" -noout -modulus | md5sum | cut -d' ' -f1)
+    key_mod=$(openssl rsa -in "{{ component.key_path }}" -noout -modulus 2>/dev/null | md5sum | cut -d' ' -f1)
+    if [ "$cert_mod" = "$key_mod" ]; then echo "MATCH"; else echo "MISMATCH"; fi
+  register: cert_key_match
+  changed_when: false
+  failed_when: cert_key_match.stdout != "MATCH"
+
+# Reload services to pick up new cert
+- name: "{{ component_name }} - Check if container uses nginx"
+  ansible.builtin.shell: |
+    podman exec {{ component.container }} which nginx 2>/dev/null && echo "HAS_NGINX" || echo "NO_NGINX"
+  register: has_nginx
+  changed_when: false
+  failed_when: false
+
+- name: "{{ component_name }} - Test nginx config"
+  ansible.builtin.command: >
+    podman exec {{ component.container }} nginx -t
+  when: "'HAS_NGINX' in has_nginx.stdout"
+  register: nginx_test
+  changed_when: false
+
+- name: "{{ component_name }} - Graceful nginx reload (near-zero downtime)"
+  ansible.builtin.command: >
+    podman exec {{ component.container }} nginx -s reload
+  when:
+    - "'HAS_NGINX' in has_nginx.stdout"
+    - nginx_test.rc == 0
+
+- name: "{{ component_name }} - Restart container (no nginx)"
+  ansible.builtin.command: >
+    podman restart {{ component.container }}
+  when: "'NO_NGINX' in has_nginx.stdout"
+
+- name: "{{ component_name }} - Display result"
+  ansible.builtin.debug:
+    msg:
+      - "───────────────────────────────────────────────────────────────────"
+      - "{{ component_name | upper }}: Certificate rotated successfully"
+      - "  Old expiry: {{ current_expiry.stdout | default('N/A') }}"
+      - "  New expiry: {{ new_expiry.stdout }}"
+      - "  Cert/Key:   {{ cert_key_match.stdout }}"
+      - "  Reload:     {{ 'nginx -s reload' if 'HAS_NGINX' in has_nginx.stdout else 'container restart' }}"
+      - "───────────────────────────────────────────────────────────────────"
