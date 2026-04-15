@@ -15,7 +15,7 @@
 #   fail_on_expired: Fail playbook if certs are expired (default: true)
 
 - name: Check AAP Certificate Expiry
-  hosts: aap
+  hosts: all
   gather_facts: true
   become: false
 
