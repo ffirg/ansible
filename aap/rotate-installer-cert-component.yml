@@ -37,25 +37,8 @@
     - backup | bool
     - current_cert.stat.exists
 
-# BYO Certificate path
-- name: "{{ component_name }} - Install BYO certificate"
-  when: byo_cert | length > 0
-  block:
-    - name: "{{ component_name }} - Copy BYO certificate"
-      ansible.builtin.copy:
-        src: "{{ byo_cert }}"
-        dest: "{{ component.cert_path }}"
-        mode: '0640'
-
-    - name: "{{ component_name }} - Copy BYO private key"
-      ansible.builtin.copy:
-        src: "{{ byo_key }}"
-        dest: "{{ component.key_path }}"
-        mode: '0400'
-
-# Internal CA regeneration path
+# Regenerate certificate with internal CA
 - name: "{{ component_name }} - Regenerate certificate with internal CA"
-  when: byo_cert | length == 0
   block:
     - name: "{{ component_name }} - Generate new private key"
       community.crypto.openssl_privatekey:

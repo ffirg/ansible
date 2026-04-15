@@ -1,35 +1,47 @@
 ---
-# playbooks/rotate-aap-certs.yml
+# rotate-installer-certs.yml
 #
-# Rotate AAP certificates without full installer reinstall
-# Supports both installer-generated (internal CA) and BYO certificates
+# Rotate AAP installer-generated certificates without full reinstall
+#
+# ============================================================================
+# WARNING: UNSUPPORTED PROCEDURE
+# ============================================================================
+# This playbook regenerates certificates outside of the official AAP installer.
+# It is provided for specific use cases only:
+#
+#   - Emergency certificate rotation when installer cannot be run
+#   - Extending validity period beyond installer default (365 days)
+#   - Development/testing environments
+#
+# FOR PRODUCTION ENVIRONMENTS:
+#   The SUPPORTED approach is to rerun the AAP installer, which will
+#   regenerate certificates as needed. This ensures consistency with
+#   Red Hat's tested and supported procedures.
+#
+# USE AT YOUR OWN RISK - This approach may diverge from installer behavior
+# in future AAP versions.
+# ============================================================================
 #
 # Usage:
 #   # Rotate specific component cert (regenerate with internal CA)
-#   ansible-playbook rotate-aap-certs.yml -e "components=['gateway']"
+#   ansible-playbook rotate-installer-certs.yml -e "components=['gateway']"
 #
 #   # Rotate multiple components
-#   ansible-playbook rotate-aap-certs.yml -e "components=['gateway','controller','hub','eda']"
+#   ansible-playbook rotate-installer-certs.yml -e "components=['gateway','controller','hub','eda']"
 #
 #   # Rotate ALL component certs (not CA)
-#   ansible-playbook rotate-aap-certs.yml -e "rotate_all=true"
-#
-#   # Rotate with new BYO cert (external CA)
-#   ansible-playbook rotate-aap-certs.yml -e "components=['gateway']" \
-#     -e "byo_cert=/path/to/new.cert" -e "byo_key=/path/to/new.key"
+#   ansible-playbook rotate-installer-certs.yml -e "rotate_all=true"
 #
 #   # Extend validity period (default 365 days)
-#   ansible-playbook rotate-aap-certs.yml -e "components=['gateway']" -e "validity_days=730"
+#   ansible-playbook rotate-installer-certs.yml -e "components=['gateway']" -e "validity_days=730"
 #
 # Variables:
 #   components: List of components to rotate (gateway, controller, hub, eda, receptor, redis, postgresql)
 #   rotate_all: Rotate all component certs (default: false)
 #   validity_days: Certificate validity in days (default: 365)
-#   byo_cert: Path to BYO certificate file (optional)
-#   byo_key: Path to BYO private key file (optional)
 #   backup: Create backup of old certs (default: true)
 
-- name: Rotate AAP Certificates
+- name: Rotate AAP Installer-Generated Certificates
   hosts: all
   gather_facts: true
   become: false
@@ -40,8 +52,6 @@
     backup: true
     rotate_all: false
     components: []
-    byo_cert: ""
-    byo_key: ""
 
     # Certificate definitions matching installer paths
     cert_definitions:
@@ -96,12 +106,20 @@
       organizational_unit_name: "Ansible"
 
   tasks:
+    - name: Display warning
+      ansible.builtin.debug:
+        msg:
+          - "╔═══════════════════════════════════════════════════════════════════╗"
+          - "║ WARNING: UNSUPPORTED PROCEDURE                                    ║"
+          - "║ This regenerates certs outside the official AAP installer.       ║"
+          - "║ For production, the supported approach is to rerun the installer.║"
+          - "╚═══════════════════════════════════════════════════════════════════╝"
+
     - name: Validate inputs
       ansible.builtin.assert:
         that:
           - rotate_all | bool or components | length > 0
-          - (byo_cert | length == 0 and byo_key | length == 0) or (byo_cert | length > 0 and byo_key | length > 0)
-        fail_msg: "Must specify components=[] or rotate_all=true. BYO cert and key must both be provided or neither."
+        fail_msg: "Must specify components=[] or rotate_all=true"
 
     - name: Build component list
       ansible.builtin.set_fact:
@@ -111,11 +129,11 @@
       ansible.builtin.debug:
         msg:
           - "═══════════════════════════════════════════════════════════════════"
-          - "AAP Certificate Rotation"
+          - "AAP Installer Certificate Rotation"
           - "═══════════════════════════════════════════════════════════════════"
           - "Host: {{ inventory_hostname }}"
           - "Components: {{ target_components | join(', ') }}"
-          - "Mode: {{ 'BYO Certificate' if byo_cert else 'Regenerate with Internal CA' }}"
+          - "Mode: Regenerate with Internal CA"
           - "Validity: {{ validity_days }} days"
           - "═══════════════════════════════════════════════════════════════════"
 
@@ -123,14 +141,11 @@
       ansible.builtin.stat:
         path: "{{ aap_base }}/tls/ca.cert"
       register: ca_cert_stat
-      when: byo_cert | length == 0
 
-    - name: Fail if CA not found and not using BYO
+    - name: Fail if CA not found
       ansible.builtin.fail:
         msg: "CA certificate not found at {{ aap_base }}/tls/ca.cert. Cannot regenerate certs."
-      when:
-        - byo_cert | length == 0
-        - not ca_cert_stat.stat.exists
+      when: not ca_cert_stat.stat.exists
 
     - name: Create backup directory
       ansible.builtin.file:
@@ -140,7 +155,7 @@
       when: backup | bool
 
     - name: Process each component
-      ansible.builtin.include_tasks: rotate-component-cert.yml
+      ansible.builtin.include_tasks: rotate-installer-cert-component.yml
       loop: "{{ target_components }}"
       loop_control:
         loop_var: component_name
