@@ -1,0 +1,184 @@
+---
+# roles/check_aap_certs/tasks/kubernetes.yml
+#
+# Certificate checking for Kubernetes AAP (non-OpenShift)
+#
+# Similar to OpenShift but uses kubectl instead of oc
+
+- name: Verify kubectl connectivity
+  ansible.builtin.command: kubectl cluster-info
+  register: kubectl_info
+  changed_when: false
+  failed_when: false
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+
+- name: Fail if not connected to Kubernetes
+  ansible.builtin.fail:
+    msg: |
+      Cannot connect to Kubernetes cluster. Please check:
+        1. kubectl is configured: kubectl cluster-info
+        2. kubeconfig is valid: -e "kubeconfig=/path/to/kubeconfig"
+  when: kubectl_info.rc != 0
+
+- name: Display Kubernetes cluster info
+  ansible.builtin.debug:
+    msg: "Connected to Kubernetes cluster"
+
+# Discover AAP pods in the namespace
+- name: Discover AAP pods
+  ansible.builtin.shell: |
+    kubectl get pods -n {{ aap_namespace }} --no-headers -o custom-columns=NAME:.metadata.name 2>/dev/null | \
+      grep -E '^(automation-|aap-)' | sort -u
+  register: aap_pods
+  changed_when: false
+  failed_when: false
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+
+- name: Fail if no AAP pods found
+  ansible.builtin.fail:
+    msg: |
+      No AAP pods found in namespace '{{ aap_namespace }}'.
+
+      Check:
+        1. Correct namespace: kubectl get pods -n {{ aap_namespace }}
+        2. AAP is deployed: kubectl get deployments -n {{ aap_namespace }}
+
+      Specify different namespace:
+        -e "aap_namespace=your-aap-namespace"
+  when: aap_pods.stdout_lines | length == 0
+
+- name: Display discovered pods
+  ansible.builtin.debug:
+    msg: "Discovered {{ aap_pods.stdout_lines | length }} AAP pods in namespace {{ aap_namespace }}"
+
+# Discover TLS secrets
+- name: Discover TLS secrets
+  ansible.builtin.shell: |
+    kubectl get secrets -n {{ aap_namespace }} --no-headers -o custom-columns=NAME:.metadata.name,TYPE:.type 2>/dev/null | \
+      grep -E 'tls|cert' | awk '{print $1}'
+  register: tls_secrets
+  changed_when: false
+  failed_when: false
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+
+- name: Display discovered secrets
+  ansible.builtin.debug:
+    msg: "Found {{ tls_secrets.stdout_lines | length }} TLS-related secrets"
+
+# Build list of certificates to check from secrets
+- name: Initialize certificate list
+  ansible.builtin.set_fact:
+    certificates_to_check: []
+
+- name: Map secrets to certificate entries
+  ansible.builtin.set_fact:
+    certificates_to_check: >-
+      {{
+        certificates_to_check + [{
+          'name': item | regex_replace('-tls$', '') | regex_replace('-cert$', '') | regex_replace('-', ' ') | title,
+          'secret': item,
+          'namespace': aap_namespace,
+          'type': 'tls-secret'
+        }]
+      }}
+  loop: "{{ tls_secrets.stdout_lines }}"
+  when: item != ''
+
+- name: Display certificates to check
+  ansible.builtin.debug:
+    msg: "Will check {{ certificates_to_check | length }} certificates from secrets"
+
+# Extract and check each certificate from secrets
+- name: Extract certificate from secret
+  ansible.builtin.shell: |
+    kubectl get secret {{ item.secret }} -n {{ item.namespace }} -o jsonpath='{.data.tls\.crt}' 2>/dev/null | \
+      base64 -d | openssl x509 -noout -enddate -issuer -subject 2>/dev/null
+  loop: "{{ certificates_to_check }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: cert_info
+  changed_when: false
+  failed_when: false
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+
+- name: Calculate days remaining for each certificate
+  ansible.builtin.shell: |
+    cert_data=$(kubectl get secret {{ item.item.secret }} -n {{ item.item.namespace }} -o jsonpath='{.data.tls\.crt}' 2>/dev/null | base64 -d)
+    if [ -z "$cert_data" ]; then
+      echo "NO_CERT"
+      exit 0
+    fi
+    expiry_date=$(echo "$cert_data" | openssl x509 -noout -enddate 2>/dev/null | sed 's/notAfter=//')
+    if [ -z "$expiry_date" ]; then
+      echo "PARSE_ERROR"
+      exit 0
+    fi
+    expiry_epoch=$(date -d "$expiry_date" +%s 2>/dev/null || date -jf "%b %d %T %Y %Z" "$expiry_date" +%s 2>/dev/null)
+    now_epoch=$(date +%s)
+    echo $(( (expiry_epoch - now_epoch) / 86400 ))
+  loop: "{{ cert_info.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  register: days_remaining
+  changed_when: false
+  failed_when: false
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+
+- name: Get certificate expiry date
+  ansible.builtin.shell: |
+    kubectl get secret {{ item.item.secret }} -n {{ item.item.namespace }} -o jsonpath='{.data.tls\.crt}' 2>/dev/null | \
+      base64 -d | openssl x509 -noout -enddate 2>/dev/null | sed 's/notAfter=//'
+  loop: "{{ cert_info.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  register: cert_expiry
+  changed_when: false
+  failed_when: false
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+
+- name: Get certificate issuer
+  ansible.builtin.shell: |
+    kubectl get secret {{ item.item.secret }} -n {{ item.item.namespace }} -o jsonpath='{.data.tls\.crt}' 2>/dev/null | \
+      base64 -d | openssl x509 -noout -issuer 2>/dev/null | sed 's/issuer=//'
+  loop: "{{ cert_info.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  register: cert_issuer
+  changed_when: false
+  failed_when: false
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+
+# Build report data
+- name: Build certificate report
+  ansible.builtin.set_fact:
+    cert_report: >-
+      {{
+        cert_report | default([]) + [{
+          'name': item.0.item.name,
+          'path': 'secret/' + item.0.item.secret,
+          'type': 'tls-secret',
+          'namespace': item.0.item.namespace,
+          'exists': item.1.stdout not in ['NO_CERT', 'PARSE_ERROR', ''],
+          'days_remaining': (item.1.stdout | int) if item.1.stdout not in ['NO_CERT', 'PARSE_ERROR', ''] else none,
+          'expiry_date': item.2.stdout | default('N/A'),
+          'issuer': item.3.stdout | default('N/A'),
+          'source': 'cert-manager' if 'cert-manager' in (item.3.stdout | default('')) else 'External',
+          'status':
+            'missing' if item.1.stdout in ['NO_CERT', ''] else
+            'error' if item.1.stdout == 'PARSE_ERROR' else
+            'expired' if (item.1.stdout | int) < 0 else
+            'warning' if (item.1.stdout | int) <= warn_days else
+            'ok',
+          'platform': 'kubernetes'
+        }]
+      }}
+  loop: "{{ cert_info.results | zip(days_remaining.results, cert_expiry.results, cert_issuer.results) | list }}"
+  loop_control:
+    label: "{{ item.0.item.name }}"

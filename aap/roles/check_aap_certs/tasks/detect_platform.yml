@@ -1,0 +1,89 @@
+---
+# roles/check_aap_certs/tasks/detect_platform.yml
+#
+# Auto-detect AAP platform type based on available tools and running services
+
+- name: Check if podman is available
+  ansible.builtin.command: which podman
+  register: podman_check
+  changed_when: false
+  failed_when: false
+
+- name: Check if oc (OpenShift CLI) is available
+  ansible.builtin.command: which oc
+  register: oc_check
+  changed_when: false
+  failed_when: false
+
+- name: Check if kubectl is available
+  ansible.builtin.command: which kubectl
+  register: kubectl_check
+  changed_when: false
+  failed_when: false
+
+# Check for running AAP containers (containerized deployment)
+- name: Check for AAP containers via podman
+  ansible.builtin.shell: |
+    podman ps --format '{{ '{{' }}.Names{{ '}}' }}' 2>/dev/null | grep -E '^automation-' | head -1
+  register: podman_containers
+  changed_when: false
+  failed_when: false
+  when: podman_check.rc == 0
+
+# Check for AAP pods in OpenShift
+- name: Check for AAP pods via oc
+  ansible.builtin.shell: |
+    oc get pods -n {{ aap_namespace }} --no-headers 2>/dev/null | grep -E 'automation-|aap-' | head -1
+  register: oc_pods
+  changed_when: false
+  failed_when: false
+  when: oc_check.rc == 0
+
+# Check for AAP pods in Kubernetes
+- name: Check for AAP pods via kubectl
+  ansible.builtin.shell: |
+    kubectl get pods -n {{ aap_namespace }} --no-headers 2>/dev/null | grep -E 'automation-|aap-' | head -1
+  register: kubectl_pods
+  changed_when: false
+  failed_when: false
+  when: kubectl_check.rc == 0 and (oc_check.rc != 0 or oc_pods.stdout | default('') == '')
+
+# Determine platform based on detection results
+- name: Set platform to containerized
+  ansible.builtin.set_fact:
+    aap_platform: containerized
+  when:
+    - podman_check.rc == 0
+    - podman_containers.stdout | default('') != ''
+
+- name: Set platform to openshift
+  ansible.builtin.set_fact:
+    aap_platform: openshift
+  when:
+    - aap_platform == 'auto'
+    - oc_check.rc == 0
+    - oc_pods.stdout | default('') != ''
+
+- name: Set platform to kubernetes
+  ansible.builtin.set_fact:
+    aap_platform: kubernetes
+  when:
+    - aap_platform == 'auto'
+    - kubectl_check.rc == 0
+    - kubectl_pods.stdout | default('') != ''
+
+- name: Fail if no platform detected
+  ansible.builtin.fail:
+    msg: |
+      Could not auto-detect AAP platform. No AAP containers/pods found.
+
+      Checked:
+        - podman: {{ 'available' if podman_check.rc == 0 else 'not found' }}
+        - oc: {{ 'available' if oc_check.rc == 0 else 'not found' }}
+        - kubectl: {{ 'available' if kubectl_check.rc == 0 else 'not found' }}
+
+      Please specify platform explicitly:
+        -e "aap_platform=containerized"
+        -e "aap_platform=openshift"
+        -e "aap_platform=kubernetes"
+  when: aap_platform == 'auto'

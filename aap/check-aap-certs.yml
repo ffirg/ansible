@@ -1,320 +1,48 @@
 ---
-# playbooks/check-aap-certs.yml
+# playbooks/check-aap-certs-v2.yml
 #
-# Check AAP certificate expiry and generate report
+# Check AAP certificate expiry across all platform types
+# Supports: containerized (podman), openshift, kubernetes
 #
 # Usage:
-#   ansible-playbook check-aap-certs.yml
-#   ansible-playbook check-aap-certs.yml -e "warn_days=30"
-#   ansible-playbook check-aap-certs.yml -e "report_file=/tmp/cert-report.md"
+#   # Auto-detect platform
+#   ansible-playbook check-aap-certs-v2.yml
+#
+#   # Specify platform explicitly
+#   ansible-playbook check-aap-certs-v2.yml -e "aap_platform=containerized"
+#   ansible-playbook check-aap-certs-v2.yml -e "aap_platform=openshift"
+#   ansible-playbook check-aap-certs-v2.yml -e "aap_platform=kubernetes"
+#
+#   # Custom warning threshold
+#   ansible-playbook check-aap-certs-v2.yml -e "warn_days=30"
+#
+#   # Generate report file
+#   ansible-playbook check-aap-certs-v2.yml -e "report_file=/tmp/cert-report.md"
+#
+#   # OpenShift/Kubernetes: specify namespace
+#   ansible-playbook check-aap-certs-v2.yml -e "aap_platform=openshift" -e "aap_namespace=ansible-automation-platform"
 #
 # Variables:
+#   aap_platform: Platform type - 'auto', 'containerized', 'openshift', 'kubernetes' (default: auto)
 #   warn_days: Warning threshold in days (default: 14)
 #   report_file: Path to save markdown report (optional)
-#   fail_on_warning: Fail playbook if certs expire within warning period (default: false)
-#   fail_on_expired: Fail playbook if certs are expired (default: true)
+#   fail_on_warning: Fail if certs expire within warning period (default: false)
+#   fail_on_expired: Fail if certs are expired (default: true)
+#   aap_namespace: Kubernetes/OpenShift namespace (default: aap)
+#   aap_base: Base path for containerized AAP (default: ~/aap)
+#
+# Features:
+#   - Auto-detects platform based on available tools and running services
+#   - Dynamically discovers containers/pods (no hardcoded list)
+#   - Supports all AAP deployment types
+#   - Generates structured reports
 
-- name: Check AAP Certificate Expiry
+- name: Check AAP Certificate Expiry (Multi-Platform)
   hosts: all
   gather_facts: true
   become: false
 
-  vars:
-    warn_days: 14
-    fail_on_warning: false
-    fail_on_expired: true
-    report_file: ""
-    aap_base: "{{ ansible_env.HOME }}/aap"
-
-    # Certificate definitions - paths verified against AAP 2.6 containerized deployment
-    certificates:
-      - name: "Gateway"
-        path: "{{ aap_base }}/gateway/etc/gateway.cert"
-
-      - name: "Controller"
-        path: "{{ aap_base }}/controller/etc/tower.cert"
-
-      - name: "Hub"
-        path: "{{ aap_base }}/hub/etc/pulp.cert"
-
-      - name: "EDA"
-        path: "{{ aap_base }}/eda/etc/eda.cert"
-
-      - name: "Automation Dashboard"
-        path: "{{ aap_base }}/reporter/etc/reporter.cert"
-
-      - name: "AnsibleMCP"
-        path: "{{ aap_base }}/ansiblemcp/etc/ansiblemcp.cert"
-
-      - name: "CA Certificate"
-        path: "{{ aap_base }}/tls/ca.cert"
-
-      - name: "PostgreSQL"
-        path: "{{ aap_base }}/postgresql/server.crt"
-
-      - name: "Redis"
-        path: "{{ aap_base }}/redis/server.crt"
-
-      - name: "Receptor"
-        path: "{{ aap_base }}/receptor/etc/receptor.crt"
-
-      - name: "Receptor Mesh CA"
-        path: "{{ aap_base }}/receptor/etc/mesh-CA.crt"
-
-      - name: "Gateway Redis Client"
-        path: "{{ aap_base }}/gateway/etc/redis.cert"
-
-  tasks:
-    - name: Check if certificate files exist
-      ansible.builtin.stat:
-        path: "{{ item.path }}"
-      loop: "{{ certificates }}"
-      loop_control:
-        label: "{{ item.name }}"
-      register: cert_files
-
-    - name: Get certificate information
-      ansible.builtin.shell: |
-        openssl x509 -in "{{ item.item.path }}" -noout \
-          -subject -issuer -dates -serial \
-          -checkend {{ warn_days * 86400 }} 2>/dev/null
-        echo "EXIT_CODE=$?"
-      loop: "{{ cert_files.results }}"
-      loop_control:
-        label: "{{ item.item.name }}"
-      when: item.stat.exists
-      register: cert_info
-      changed_when: false
-      failed_when: false
-
-    - name: Get certificate expiry dates
-      ansible.builtin.shell: |
-        openssl x509 -in "{{ item.item.path }}" -noout -enddate 2>/dev/null | \
-          sed 's/notAfter=//'
-      loop: "{{ cert_files.results }}"
-      loop_control:
-        label: "{{ item.item.name }}"
-      when: item.stat.exists
-      register: cert_expiry
-      changed_when: false
-      failed_when: false
-
-    - name: Calculate days remaining for each certificate
-      ansible.builtin.shell: |
-        expiry_date=$(openssl x509 -in "{{ item.item.path }}" -noout -enddate 2>/dev/null | sed 's/notAfter=//')
-        expiry_epoch=$(date -d "$expiry_date" +%s 2>/dev/null || date -jf "%b %d %T %Y %Z" "$expiry_date" +%s 2>/dev/null)
-        now_epoch=$(date +%s)
-        echo $(( (expiry_epoch - now_epoch) / 86400 ))
-      loop: "{{ cert_files.results }}"
-      loop_control:
-        label: "{{ item.item.name }}"
-      when: item.stat.exists
-      register: days_remaining
-      changed_when: false
-      failed_when: false
-
-    - name: Get certificate CN
-      ansible.builtin.shell: |
-        openssl x509 -in "{{ item.item.path }}" -noout -subject 2>/dev/null | \
-          sed 's/.*CN *= *//' | cut -d',' -f1 | cut -d'/' -f1
-      loop: "{{ cert_files.results }}"
-      loop_control:
-        label: "{{ item.item.name }}"
-      when: item.stat.exists
-      register: cert_cn
-      changed_when: false
-      failed_when: false
-
-    - name: Get local CA subject (for BYO detection)
-      ansible.builtin.shell: |
-        openssl x509 -in "{{ aap_base }}/tls/ca.cert" -noout -subject 2>/dev/null | \
-          sed 's/subject=//'
-      register: ca_subject
-      changed_when: false
-      failed_when: false
-
-    - name: Detect if CA is installer-generated or custom
-      ansible.builtin.set_fact:
-        # Installer CA typically contains "Red Hat" or "Ansible" in subject
-        ca_is_installer: "{{ 'Red Hat' in ca_subject.stdout or 'Ansible' in ca_subject.stdout }}"
-
-    - name: Get certificate issuer
-      ansible.builtin.shell: |
-        openssl x509 -in "{{ item.item.path }}" -noout -issuer 2>/dev/null | \
-          sed 's/issuer=//'
-      loop: "{{ cert_files.results }}"
-      loop_control:
-        label: "{{ item.item.name }}"
-      when: item.stat.exists
-      register: cert_issuer
-      changed_when: false
-      failed_when: false
-
-    - name: Build certificate report data
-      ansible.builtin.set_fact:
-        cert_report: >-
-          {{
-            cert_report | default([]) + [{
-              'name': item.0.item.name,
-              'path': item.0.item.path,
-              'exists': item.0.stat.exists,
-              'days_remaining': (item.1.stdout | int) if item.0.stat.exists else none,
-              'expiry_date': item.2.stdout if item.0.stat.exists else 'N/A',
-              'cn': item.3.stdout if item.0.stat.exists else 'N/A',
-              'issuer': item.4.stdout | default('N/A') if item.0.stat.exists else 'N/A',
-              'source':
-                'N/A' if not item.0.stat.exists else
-                'Installer CA' if item.0.item.name == 'CA Certificate' and ca_is_installer else
-                'Custom CA' if item.0.item.name == 'CA Certificate' and not ca_is_installer else
-                'Installer' if (item.4.stdout | default('')) == (ca_subject.stdout | default('NO_MATCH')) and ca_is_installer else
-                'Custom CA' if (item.4.stdout | default('')) == (ca_subject.stdout | default('NO_MATCH')) and not ca_is_installer else
-                'External',
-              'status':
-                'missing' if not item.0.stat.exists else
-                'expired' if (item.1.stdout | int) < 0 else
-                'warning' if (item.1.stdout | int) <= warn_days else
-                'ok'
-            }]
-          }}
-      loop: "{{ cert_files.results | zip(days_remaining.results, cert_expiry.results, cert_cn.results, cert_issuer.results) | list }}"
-      loop_control:
-        label: "{{ item.0.item.name }}"
-
-    - name: Sort report by days remaining
-      ansible.builtin.set_fact:
-        # Missing/error certs first, then sort existing by days remaining
-        cert_report_sorted: >-
-          {{
-            (cert_report | selectattr('status', 'in', ['missing', 'expired', 'warning']) | list) +
-            (cert_report | selectattr('status', 'eq', 'ok') | sort(attribute='days_remaining') | list)
-          }}
-
-    - name: Calculate summary statistics
-      ansible.builtin.set_fact:
-        cert_summary:
-          total: "{{ cert_report | length }}"
-          ok: "{{ cert_report | selectattr('status', 'eq', 'ok') | list | length }}"
-          warning: "{{ cert_report | selectattr('status', 'eq', 'warning') | list | length }}"
-          expired: "{{ cert_report | selectattr('status', 'eq', 'expired') | list | length }}"
-          missing: "{{ cert_report | selectattr('status', 'eq', 'missing') | list | length }}"
-
-    - name: Display report header
-      ansible.builtin.debug:
-        msg:
-          - "═══════════════════════════════════════════════════════════════════════════════════════"
-          - "AAP Certificate Expiry Report"
-          - "═══════════════════════════════════════════════════════════════════════════════════════"
-          - "Host: {{ inventory_hostname }}"
-          - "AAP Base: {{ aap_base }}"
-          - "Check Date: {{ ansible_date_time.iso8601 }}"
-          - "Warning Threshold: {{ warn_days }} days"
-          - "───────────────────────────────────────────────────────────────────────────────────────"
-
-    - name: Display certificate table header
-      ansible.builtin.debug:
-        msg: "{{ '%-22s' | format('CERTIFICATE') }} {{ '%-10s' | format('STATUS') }} {{ '%-10s' | format('SOURCE') }} {{ '%-12s' | format('EXPIRES') }} {{ '%6s' | format('DAYS') }}  PATH"
-
-    - name: Display certificate status
-      ansible.builtin.debug:
-        msg: "{{ '%-22s' | format(item.name) }} {{ '%-10s' | format('[' + item.status | upper + ']') }} {{ '%-10s' | format(item.source) }} {{ '%-12s' | format(item.expiry_date[:12] if item.expiry_date != 'N/A' else 'N/A') }} {{ '%6s' | format(item.days_remaining | default('N/A')) }}  {{ item.path }}"
-      loop: "{{ cert_report_sorted }}"
-      loop_control:
-        label: "{{ item.name }}"
-
-    - name: Display summary
-      ansible.builtin.debug:
-        msg:
-          - "───────────────────────────────────────────────────────────────────────────────────────"
-          - "SUMMARY: Total={{ cert_summary.total }} | OK={{ cert_summary.ok }} | Warning={{ cert_summary.warning }} | Expired={{ cert_summary.expired }} | Missing={{ cert_summary.missing }}"
-          - "───────────────────────────────────────────────────────────────────────────────────────"
-
-    - name: Display CRITICAL alert
-      ansible.builtin.debug:
-        msg: "*** CRITICAL: {{ cert_summary.expired }} certificate(s) have EXPIRED! ***"
-      when: cert_summary.expired | int > 0
-
-    - name: Display WARNING alert
-      ansible.builtin.debug:
-        msg: "*** WARNING: {{ cert_summary.warning }} certificate(s) expire within {{ warn_days }} days ***"
-      when: cert_summary.warning | int > 0
-
-    - name: Display OK status
-      ansible.builtin.debug:
-        msg: "*** All certificates OK ***"
-      when: cert_summary.expired | int == 0 and cert_summary.warning | int == 0 and cert_summary.missing | int == 0
-
-    - name: Generate markdown report
-      ansible.builtin.copy:
-        content: |
-          # AAP Certificate Expiry Report
-
-          **Host:** {{ inventory_hostname }}
-          **Check Date:** {{ ansible_date_time.iso8601 }}
-          **Warning Threshold:** {{ warn_days }} days
-
-          ## Summary
-
-          | Status | Count |
-          |--------|-------|
-          | OK | {{ cert_summary.ok }} |
-          | Warning | {{ cert_summary.warning }} |
-          | Expired | {{ cert_summary.expired }} |
-          | Missing | {{ cert_summary.missing }} |
-          | **Total** | **{{ cert_summary.total }}** |
-
-          {% if cert_summary.expired | int > 0 %}
-          > **CRITICAL:** {{ cert_summary.expired }} certificate(s) have **EXPIRED**!
-          {% endif %}
-          {% if cert_summary.warning | int > 0 %}
-          > **WARNING:** {{ cert_summary.warning }} certificate(s) expire within {{ warn_days }} days
-          {% endif %}
-
-          ## Certificate Details
-
-          | Certificate | Status | Source | Expires | Days Left | Path |
-          |-------------|--------|--------|---------|-----------|------|
-          {% for cert in cert_report_sorted %}
-          | {{ cert.name }} | {% if cert.status == 'expired' %}**EXPIRED**{% elif cert.status == 'warning' %}**WARNING**{% elif cert.status == 'missing' %}MISSING{% else %}OK{% endif %} | {{ cert.source }} | {{ cert.expiry_date }} | {{ cert.days_remaining | default('N/A') }} | `{{ cert.path }}` |
-          {% endfor %}
-
-          ## Certificates Requiring Attention
-
-          {% if cert_report | selectattr('status', 'in', ['expired', 'warning']) | list | length > 0 %}
-          {% for cert in cert_report_sorted if cert.status in ['expired', 'warning'] %}
-          ### {{ cert.name }} ({{ cert.status | upper }})
-
-          - **Path:** `{{ cert.path }}`
-          - **Source:** {{ cert.source }}
-          - **Expires:** {{ cert.expiry_date }}
-          - **Days Remaining:** {{ cert.days_remaining }}
-          - **Action Required:** {% if cert.source == 'Installer' %}Regenerate using AAP installer{% elif cert.source == 'Custom CA' %}Regenerate using your CA (openssl or custom process){% elif cert.source == 'External' %}Obtain new certificate from external CA/ACME provider{% else %}Check certificate configuration{% endif %}
-
-          {% endfor %}
-          {% else %}
-          No certificates require immediate attention.
-          {% endif %}
-
-          ---
-          *Report generated by check-aap-certs.yml playbook*
-        dest: "{{ report_file }}"
-        mode: '0644'
-      when: report_file | length > 0
-
-    - name: Report file location
-      ansible.builtin.debug:
-        msg: "Report saved to: {{ report_file }}"
-      when: report_file | length > 0
-
-    - name: Fail if certificates are expired
-      ansible.builtin.fail:
-        msg: "{{ cert_summary.expired }} certificate(s) have expired!"
-      when:
-        - fail_on_expired | bool
-        - cert_summary.expired | int > 0
-
-    - name: Fail if certificates are expiring soon
-      ansible.builtin.fail:
-        msg: "{{ cert_summary.warning }} certificate(s) expire within {{ warn_days }} days!"
-      when:
-        - fail_on_warning | bool
-        - cert_summary.warning | int > 0
+  roles:
+    - role: check_aap_certs
+      # Variables are set in roles/check_aap_certs/defaults/main.yml
+      # Override via command line: -e "aap_platform=openshift" -e "warn_days=30"

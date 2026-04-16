@@ -1,0 +1,164 @@
+---
+# roles/check_aap_certs/tasks/containerized.yml
+#
+# Certificate checking for containerized AAP (podman-based)
+
+- name: Discover running AAP containers
+  ansible.builtin.shell: |
+    podman ps --format '{{ '{{' }}.Names{{ '}}' }}' 2>/dev/null | grep -E '^(automation-|postgresql|redis|receptor)' | sort -u
+  register: running_containers
+  changed_when: false
+
+- name: Display discovered containers
+  ansible.builtin.debug:
+    msg: "Discovered {{ running_containers.stdout_lines | length }} AAP containers: {{ running_containers.stdout_lines | join(', ') }}"
+
+- name: Build certificate list from discovered containers
+  ansible.builtin.set_fact:
+    discovered_certs: []
+
+# Map discovered containers to certificate paths with clean naming
+- name: Map containers to certificates
+  ansible.builtin.set_fact:
+    discovered_certs: >-
+      {{
+        discovered_certs + [{
+          'name': (
+            'Gateway' if 'gateway' in item and 'proxy' not in item else
+            'Gateway Proxy' if 'gateway-proxy' in item else
+            'Controller' if 'controller' in item else
+            'Hub' if 'hub' in item else
+            'EDA' if 'eda' in item else
+            'Automation Dashboard' if 'reporter' in item else
+            'Receptor' if item == 'receptor' else
+            'PostgreSQL' if item == 'postgresql' or 'postgresql' in item else
+            'Redis' if 'redis' in item else
+            item | regex_replace('^automation-', '') | title
+          ),
+          'container': item,
+          'path': (
+            aap_base + '/gateway/etc/gateway.cert' if 'gateway' in item else
+            aap_base + '/controller/etc/tower.cert' if 'controller' in item else
+            aap_base + '/hub/etc/pulp.cert' if 'hub' in item else
+            aap_base + '/eda/etc/eda.cert' if 'eda' in item else
+            aap_base + '/reporter/etc/reporter.cert' if 'reporter' in item else
+            aap_base + '/receptor/etc/receptor.crt' if item == 'receptor' else
+            aap_base + '/postgresql/server.crt' if item == 'postgresql' or 'postgresql' in item else
+            aap_base + '/redis/server.crt' if 'redis' in item else
+            ''
+          ),
+          'type': 'component'
+        }]
+      }}
+  loop: "{{ running_containers.stdout_lines }}"
+  when: item != ''
+
+# Add infrastructure certs that aren't tied to a specific container
+- name: Add infrastructure certificates
+  ansible.builtin.set_fact:
+    discovered_certs: >-
+      {{
+        discovered_certs + [
+          {'name': 'CA Certificate', 'path': aap_base + '/tls/ca.cert', 'type': 'ca'},
+          {'name': 'Receptor Mesh CA', 'path': aap_base + '/receptor/etc/mesh-CA.crt', 'type': 'ca'},
+          {'name': 'Gateway Redis Client', 'path': aap_base + '/gateway/etc/redis.cert', 'type': 'client'}
+        ]
+      }}
+
+# Remove duplicates and empty paths
+- name: Filter valid certificates
+  ansible.builtin.set_fact:
+    certificates_to_check: "{{ discovered_certs | selectattr('path', 'ne', '') | list | unique(attribute='path') }}"
+
+- name: Display certificates to check
+  ansible.builtin.debug:
+    msg: "Will check {{ certificates_to_check | length }} certificates"
+
+# Check each certificate
+- name: Check if certificate files exist
+  ansible.builtin.stat:
+    path: "{{ item.path }}"
+  loop: "{{ certificates_to_check }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: cert_files
+
+- name: Get certificate expiry information
+  ansible.builtin.shell: |
+    openssl x509 -in "{{ item.item.path }}" -noout -enddate 2>/dev/null | sed 's/notAfter=//'
+  loop: "{{ cert_files.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  when: item.stat.exists
+  register: cert_expiry
+  changed_when: false
+  failed_when: false
+
+- name: Calculate days remaining
+  ansible.builtin.shell: |
+    expiry_date=$(openssl x509 -in "{{ item.item.path }}" -noout -enddate 2>/dev/null | sed 's/notAfter=//')
+    expiry_epoch=$(date -d "$expiry_date" +%s 2>/dev/null || date -jf "%b %d %T %Y %Z" "$expiry_date" +%s 2>/dev/null)
+    now_epoch=$(date +%s)
+    echo $(( (expiry_epoch - now_epoch) / 86400 ))
+  loop: "{{ cert_files.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  when: item.stat.exists
+  register: days_remaining
+  changed_when: false
+  failed_when: false
+
+- name: Get certificate issuer
+  ansible.builtin.shell: |
+    openssl x509 -in "{{ item.item.path }}" -noout -issuer 2>/dev/null | sed 's/issuer=//'
+  loop: "{{ cert_files.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  when: item.stat.exists
+  register: cert_issuer
+  changed_when: false
+  failed_when: false
+
+- name: Get local CA subject for source detection
+  ansible.builtin.shell: |
+    openssl x509 -in "{{ aap_base }}/tls/ca.cert" -noout -subject 2>/dev/null | sed 's/subject=//'
+  register: ca_subject
+  changed_when: false
+  failed_when: false
+
+- name: Detect if CA is installer-generated
+  ansible.builtin.set_fact:
+    ca_is_installer: "{{ 'Red Hat' in ca_subject.stdout or 'Ansible' in ca_subject.stdout }}"
+
+# Build report data
+- name: Build certificate report
+  ansible.builtin.set_fact:
+    cert_report: >-
+      {{
+        cert_report | default([]) + [{
+          'name': item.0.item.name,
+          'path': item.0.item.path,
+          'type': item.0.item.type | default('component'),
+          'container': item.0.item.container | default('N/A'),
+          'exists': item.0.stat.exists,
+          'days_remaining': (item.1.stdout | int) if item.0.stat.exists else none,
+          'expiry_date': item.2.stdout if item.0.stat.exists else 'N/A',
+          'issuer': item.3.stdout | default('N/A') if item.0.stat.exists else 'N/A',
+          'source':
+            'N/A' if not item.0.stat.exists else
+            'Installer CA' if item.0.item.name == 'CA Certificate' and ca_is_installer else
+            'Custom CA' if item.0.item.name == 'CA Certificate' and not ca_is_installer else
+            'Installer' if (item.3.stdout | default('')) == (ca_subject.stdout | default('NO_MATCH')) and ca_is_installer else
+            'Custom CA' if (item.3.stdout | default('')) == (ca_subject.stdout | default('NO_MATCH')) and not ca_is_installer else
+            'External',
+          'status':
+            'missing' if not item.0.stat.exists else
+            'expired' if (item.1.stdout | int) < 0 else
+            'warning' if (item.1.stdout | int) <= warn_days else
+            'ok',
+          'platform': 'containerized'
+        }]
+      }}
+  loop: "{{ cert_files.results | zip(days_remaining.results, cert_expiry.results, cert_issuer.results) | list }}"
+  loop_control:
+    label: "{{ item.0.item.name }}"

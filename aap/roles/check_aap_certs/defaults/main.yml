@@ -1,0 +1,77 @@
+---
+# roles/check_aap_certs/defaults/main.yml
+#
+# Default variables for check_aap_certs role
+
+# Platform type: containerized, openshift, kubernetes
+# Set to 'auto' for automatic detection
+aap_platform: auto
+
+# Warning threshold in days before expiry
+warn_days: 14
+
+# Fail conditions
+fail_on_expired: true
+fail_on_warning: false
+
+# Report generation
+report_file: ""
+
+# Containerized-specific defaults
+aap_base: "{{ ansible_env.HOME }}/aap"
+
+# OpenShift/Kubernetes-specific defaults
+aap_namespace: "aap"
+kubeconfig: "{{ ansible_env.HOME }}/.kube/config"
+
+# Certificate path patterns per component type
+# Used for dynamic discovery mapping
+cert_patterns:
+  containerized:
+    gateway:
+      container_pattern: "automation-gateway"
+      cert_path: "{{ aap_base }}/gateway/etc/gateway.cert"
+      key_path: "{{ aap_base }}/gateway/etc/gateway.key"
+    controller:
+      container_pattern: "automation-controller"
+      cert_path: "{{ aap_base }}/controller/etc/tower.cert"
+      key_path: "{{ aap_base }}/controller/etc/tower.key"
+    hub:
+      container_pattern: "automation-hub"
+      cert_path: "{{ aap_base }}/hub/etc/pulp.cert"
+      key_path: "{{ aap_base }}/hub/etc/pulp.key"
+    eda:
+      container_pattern: "automation-eda"
+      cert_path: "{{ aap_base }}/eda/etc/eda.cert"
+      key_path: "{{ aap_base }}/eda/etc/eda.key"
+    reporter:
+      container_pattern: "automation-reporter"
+      cert_path: "{{ aap_base }}/reporter/etc/reporter.cert"
+      key_path: "{{ aap_base }}/reporter/etc/reporter.key"
+    receptor:
+      container_pattern: "receptor"
+      cert_path: "{{ aap_base }}/receptor/etc/receptor.crt"
+      key_path: "{{ aap_base }}/receptor/etc/receptor.key"
+    postgresql:
+      container_pattern: "postgresql"
+      cert_path: "{{ aap_base }}/postgresql/server.crt"
+      key_path: "{{ aap_base }}/postgresql/server.key"
+    redis:
+      container_pattern: "redis"
+      cert_path: "{{ aap_base }}/redis/server.crt"
+      key_path: "{{ aap_base }}/redis/server.key"
+
+  openshift:
+    # OpenShift uses cert-manager secrets
+    gateway:
+      secret_pattern: "automation-gateway.*tls"
+      cert_key: "tls.crt"
+    controller:
+      secret_pattern: "automation-controller.*tls"
+      cert_key: "tls.crt"
+    hub:
+      secret_pattern: "automation-hub.*tls"
+      cert_key: "tls.crt"
+    eda:
+      secret_pattern: "automation-eda.*tls"
+      cert_key: "tls.crt"

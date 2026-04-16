@@ -1,0 +1,35 @@
+---
+# roles/check_aap_certs/tasks/main.yml
+#
+# Main entry point - detects platform and dispatches to appropriate handler
+
+- name: Auto-detect platform type
+  ansible.builtin.include_tasks: detect_platform.yml
+  when: aap_platform == 'auto'
+
+- name: Display platform detection result
+  ansible.builtin.debug:
+    msg: "Platform detected: {{ aap_platform }}"
+
+- name: Fail if platform not supported
+  ansible.builtin.fail:
+    msg: "Unsupported platform: {{ aap_platform }}. Supported: containerized, openshift, kubernetes"
+  when: aap_platform not in ['containerized', 'openshift', 'kubernetes']
+
+# Dispatch to platform-specific discovery and checking
+- name: Run containerized certificate checks
+  ansible.builtin.include_tasks: containerized.yml
+  when: aap_platform == 'containerized'
+
+- name: Run OpenShift certificate checks
+  ansible.builtin.include_tasks: openshift.yml
+  when: aap_platform == 'openshift'
+
+- name: Run Kubernetes certificate checks
+  ansible.builtin.include_tasks: kubernetes.yml
+  when: aap_platform == 'kubernetes'
+
+# Common reporting (after platform-specific discovery populates cert_report)
+- name: Generate summary report
+  ansible.builtin.include_tasks: report.yml
+  when: cert_report is defined and cert_report | length > 0
