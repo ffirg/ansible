@@ -119,6 +119,46 @@
   changed_when: false
   failed_when: false
 
+- name: Get signature algorithm
+  ansible.builtin.shell: |
+    openssl x509 -in "{{ item.item.path }}" -noout -text 2>/dev/null | grep -m1 "Signature Algorithm:" | sed 's/.*Signature Algorithm: //'
+  loop: "{{ cert_files.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  when: item.stat.exists
+  register: cert_sig_alg
+  changed_when: false
+  failed_when: false
+
+- name: Get public key algorithm and size
+  ansible.builtin.shell: |
+    key_info=$(openssl x509 -in "{{ item.item.path }}" -noout -text 2>/dev/null)
+    key_alg=$(echo "$key_info" | grep "Public Key Algorithm:" | sed 's/.*Public Key Algorithm: //')
+    key_size=$(echo "$key_info" | grep "Public-Key:" | sed 's/.*(\([0-9]*\) bit).*/\1/')
+    if [ -z "$key_size" ]; then
+      # For EC keys, extract curve name
+      key_size=$(echo "$key_info" | grep "ASN1 OID:" | sed 's/.*ASN1 OID: //')
+    fi
+    echo "${key_alg}:${key_size}"
+  loop: "{{ cert_files.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  when: item.stat.exists
+  register: cert_key_info
+  changed_when: false
+  failed_when: false
+
+- name: Get Subject Alternative Names
+  ansible.builtin.shell: |
+    openssl x509 -in "{{ item.item.path }}" -noout -ext subjectAltName 2>/dev/null | grep -v "Subject Alternative Name:" | tr ',' '\n' | sed 's/^ *//' | head -5 | tr '\n' ',' | sed 's/,$//'
+  loop: "{{ cert_files.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  when: item.stat.exists
+  register: cert_san
+  changed_when: false
+  failed_when: false
+
 - name: Get local CA subject for source detection
   ansible.builtin.shell: |
     openssl x509 -in "{{ aap_base }}/tls/ca.cert" -noout -subject 2>/dev/null | sed 's/subject=//'
@@ -144,6 +184,10 @@
           'days_remaining': (item.1.stdout | int) if item.0.stat.exists else none,
           'expiry_date': item.2.stdout if item.0.stat.exists else 'N/A',
           'issuer': item.3.stdout | default('N/A') if item.0.stat.exists else 'N/A',
+          'sig_algorithm': item.4.stdout | default('N/A') if item.0.stat.exists else 'N/A',
+          'key_algorithm': (item.5.stdout | default('N/A')).split(':')[0] if item.0.stat.exists else 'N/A',
+          'key_size': (item.5.stdout | default('N/A')).split(':')[1] | default('N/A') if item.0.stat.exists else 'N/A',
+          'san': item.6.stdout | default('') if item.0.stat.exists else '',
           'source':
             'N/A' if not item.0.stat.exists else
             'Installer CA' if item.0.item.name == 'CA Certificate' and ca_is_installer else
@@ -159,6 +203,6 @@
           'platform': 'containerized'
         }]
       }}
-  loop: "{{ cert_files.results | zip(days_remaining.results, cert_expiry.results, cert_issuer.results) | list }}"
+  loop: "{{ cert_files.results | zip(days_remaining.results, cert_expiry.results, cert_issuer.results, cert_sig_alg.results, cert_key_info.results, cert_san.results) | list }}"
   loop_control:
     label: "{{ item.0.item.name }}"

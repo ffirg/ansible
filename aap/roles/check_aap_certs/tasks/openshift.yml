@@ -143,6 +143,45 @@
   changed_when: false
   failed_when: false
 
+- name: Get signature algorithm
+  ansible.builtin.shell: |
+    oc get secret {{ item.item.secret }} -n {{ item.item.namespace }} -o jsonpath='{.data.tls\.crt}' 2>/dev/null | \
+      base64 -d | openssl x509 -noout -text 2>/dev/null | grep -m1 "Signature Algorithm:" | sed 's/.*Signature Algorithm: //'
+  loop: "{{ cert_info.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  register: cert_sig_alg
+  changed_when: false
+  failed_when: false
+
+- name: Get public key algorithm and size
+  ansible.builtin.shell: |
+    cert_data=$(oc get secret {{ item.item.secret }} -n {{ item.item.namespace }} -o jsonpath='{.data.tls\.crt}' 2>/dev/null | base64 -d)
+    key_info=$(echo "$cert_data" | openssl x509 -noout -text 2>/dev/null)
+    key_alg=$(echo "$key_info" | grep "Public Key Algorithm:" | sed 's/.*Public Key Algorithm: //')
+    key_size=$(echo "$key_info" | grep "Public-Key:" | sed 's/.*(\([0-9]*\) bit).*/\1/')
+    if [ -z "$key_size" ]; then
+      key_size=$(echo "$key_info" | grep "ASN1 OID:" | sed 's/.*ASN1 OID: //')
+    fi
+    echo "${key_alg}:${key_size}"
+  loop: "{{ cert_info.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  register: cert_key_info
+  changed_when: false
+  failed_when: false
+
+- name: Get Subject Alternative Names
+  ansible.builtin.shell: |
+    oc get secret {{ item.item.secret }} -n {{ item.item.namespace }} -o jsonpath='{.data.tls\.crt}' 2>/dev/null | \
+      base64 -d | openssl x509 -noout -ext subjectAltName 2>/dev/null | grep -v "Subject Alternative Name:" | tr ',' '\n' | sed 's/^ *//' | head -5 | tr '\n' ',' | sed 's/,$//'
+  loop: "{{ cert_info.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  register: cert_san
+  changed_when: false
+  failed_when: false
+
 # Build report data
 - name: Build certificate report
   ansible.builtin.set_fact:
@@ -157,6 +196,10 @@
           'days_remaining': (item.1.stdout | int) if item.1.stdout not in ['NO_CERT', 'PARSE_ERROR', ''] else none,
           'expiry_date': item.2.stdout | default('N/A'),
           'issuer': item.3.stdout | default('N/A'),
+          'sig_algorithm': item.4.stdout | default('N/A'),
+          'key_algorithm': (item.5.stdout | default('N/A')).split(':')[0],
+          'key_size': (item.5.stdout | default('N/A')).split(':')[1] | default('N/A'),
+          'san': item.6.stdout | default(''),
           'source': 'cert-manager' if 'cert-manager' in (item.3.stdout | default('')) else 'External',
           'status':
             'missing' if item.1.stdout in ['NO_CERT', ''] else
@@ -167,7 +210,7 @@
           'platform': 'openshift'
         }]
       }}
-  loop: "{{ cert_info.results | zip(days_remaining.results, cert_expiry.results, cert_issuer.results) | list }}"
+  loop: "{{ cert_info.results | zip(days_remaining.results, cert_expiry.results, cert_issuer.results, cert_sig_alg.results, cert_key_info.results, cert_san.results) | list }}"
   loop_control:
     label: "{{ item.0.item.name }}"
 

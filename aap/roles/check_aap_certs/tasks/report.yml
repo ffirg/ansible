@@ -58,12 +58,12 @@
 # Display table header
 - name: Display table header
   ansible.builtin.debug:
-    msg: "{{ '%-22s' | format('CERTIFICATE') }} {{ '%-10s' | format('STATUS') }} {{ '%-10s' | format('SOURCE') }} {{ '%-12s' | format('EXPIRES') }} {{ '%6s' | format('DAYS') }}  PATH"
+    msg: "{{ '%-22s' | format('CERTIFICATE') }} {{ '%-10s' | format('STATUS') }} {{ '%-10s' | format('SOURCE') }} {{ '%-12s' | format('EXPIRES') }} {{ '%6s' | format('DAYS') }}  {{ '%-12s' | format('KEY') }} {{ '%-20s' | format('SIGNATURE') }}{{ '  ' + '%-40s' | format('PATH') if show_paths else '' }}"
 
 # Display each certificate
 - name: Display certificate status
   ansible.builtin.debug:
-    msg: "{{ '%-22s' | format(item.name[:22]) }} {{ '%-10s' | format('[' + item.status | upper + ']') }} {{ '%-10s' | format(item.source[:10]) }} {{ '%-12s' | format((item.expiry_date[:12]) if item.expiry_date != 'N/A' else 'N/A') }} {{ '%6s' | format(item.days_remaining | default('N/A') | string) }}  {{ item.path }}"
+    msg: "{{ '%-22s' | format(item.name[:22]) }} {{ '%-10s' | format('[' + item.status | upper + ']') }} {{ '%-10s' | format(item.source[:10]) }} {{ '%-12s' | format((item.expiry_date[:12]) if item.expiry_date != 'N/A' else 'N/A') }} {{ '%6s' | format(item.days_remaining | default('N/A') | string) }}  {{ '%-12s' | format((item.key_algorithm | default('') + ' ' + item.key_size | default(''))[:12]) }} {{ item.sig_algorithm | default('N/A') }}{{ '  ' + item.path if show_paths else '' }}"
   loop: "{{ cert_report_sorted }}"
   loop_control:
     label: "{{ item.name }}"
@@ -128,10 +128,13 @@
 
       ## Certificate Details
 
-      | Certificate | Status | Source | Expires | Days Left | Path |
-      |-------------|--------|--------|---------|-----------|------|
+      | Certificate | Status | Source | Expires | Days Left | Key Type | Key Size | Signature |{% if show_paths %} Path |{% endif %}
+
+      |-------------|--------|--------|---------|-----------|----------|----------|-----------|{% if show_paths %}------|{% endif %}
+
       {% for cert in cert_report_sorted %}
-      | {{ cert.name }} | {% if cert.status == 'expired' %}**EXPIRED**{% elif cert.status == 'warning' %}**WARNING**{% elif cert.status == 'missing' %}MISSING{% elif cert.status == 'error' %}ERROR{% else %}OK{% endif %} | {{ cert.source }} | {{ cert.expiry_date }} | {{ cert.days_remaining | default('N/A') }} | `{{ cert.path }}` |
+      | {{ cert.name }} | {% if cert.status == 'expired' %}**EXPIRED**{% elif cert.status == 'warning' %}**WARNING**{% elif cert.status == 'missing' %}MISSING{% elif cert.status == 'error' %}ERROR{% else %}OK{% endif %} | {{ cert.source }} | {{ cert.expiry_date }} | {{ cert.days_remaining | default('N/A') }} | {{ cert.key_algorithm | default('N/A') }} | {{ cert.key_size | default('N/A') }} | {{ cert.sig_algorithm | default('N/A') }} |{% if show_paths %} `{{ cert.path }}` |{% endif %}
+
       {% endfor %}
 
       ## Certificates Requiring Attention
@@ -140,11 +143,15 @@
       {% for cert in cert_report_sorted if cert.status in ['expired', 'warning'] %}
       ### {{ cert.name }} ({{ cert.status | upper }})
 
-      - **Path:** `{{ cert.path }}`
-      - **Source:** {{ cert.source }}
+      {% if show_paths %}- **Path:** `{{ cert.path }}`
+      {% endif %}- **Source:** {{ cert.source }}
       - **Expires:** {{ cert.expiry_date }}
       - **Days Remaining:** {{ cert.days_remaining }}
-      - **Platform:** {{ cert.platform }}
+      - **Key Type:** {{ cert.key_algorithm | default('N/A') }}
+      - **Key Size:** {{ cert.key_size | default('N/A') }}
+      - **Signature Algorithm:** {{ cert.sig_algorithm | default('N/A') }}
+      {% if cert.san | default('') | length > 0 %}- **Subject Alt Names:** {{ cert.san }}
+      {% endif %}- **Platform:** {{ cert.platform }}
       {% if cert.platform == 'containerized' %}
       - **Action Required:** {% if cert.source == 'Installer' %}Regenerate using AAP installer or rotate-installer-certs.yml{% elif cert.source == 'Custom CA' %}Regenerate using your CA{% elif cert.source == 'External' %}Obtain new certificate from external CA/ACME provider{% else %}Check certificate configuration{% endif %}
       {% else %}
@@ -155,6 +162,66 @@
       {% else %}
       No certificates require immediate attention.
       {% endif %}
+
+      ## Cryptographic Summary
+
+      | Algorithm | Count | Notes |
+      |-----------|-------|-------|
+      {% set rsa_certs = cert_report | selectattr('key_algorithm', 'defined') | selectattr('key_algorithm', 'search', 'rsa') | list %}
+      {% set ec_certs = cert_report | selectattr('key_algorithm', 'defined') | selectattr('key_algorithm', 'search', 'id-ecPublicKey') | list %}
+      {% set sha256_certs = cert_report | selectattr('sig_algorithm', 'defined') | selectattr('sig_algorithm', 'search', 'sha256') | list %}
+      {% set sha384_certs = cert_report | selectattr('sig_algorithm', 'defined') | selectattr('sig_algorithm', 'search', 'sha384') | list %}
+      {% set sha1_certs = cert_report | selectattr('sig_algorithm', 'defined') | selectattr('sig_algorithm', 'search', 'sha1') | list %}
+      {% set weak_rsa = cert_report | selectattr('key_algorithm', 'defined') | selectattr('key_algorithm', 'search', 'rsa') | selectattr('key_size', 'defined') | selectattr('key_size', 'lt', '3072') | list %}
+      | RSA Keys | {{ rsa_certs | length }} | {% if rsa_certs | selectattr('key_size', 'lt', '2048') | list | length > 0 %}**Warning: Some keys < 2048 bits**{% else %}All keys >= 2048 bits{% endif %} |
+      | EC Keys | {{ ec_certs | length }} | Modern elliptic curve keys |
+      | SHA-256 Signatures | {{ sha256_certs | length }} | Current standard |
+      | SHA-384 Signatures | {{ sha384_certs | length }} | Higher security |
+      {% if sha1_certs | length > 0 %}| SHA-1 Signatures | {{ sha1_certs | length }} | **DEPRECATED - Replace immediately** |
+      {% endif %}
+
+      ## Recommendations
+
+      Based on industry best practices, CA/Browser Forum requirements, and post-quantum cryptography (PQC) preparedness:
+
+      ### Certificate Lifetime
+
+      | Finding | Recommendation |
+      |---------|----------------|
+      {% set long_lived_certs = cert_report | selectattr('days_remaining', 'defined') | selectattr('days_remaining', 'gt', 90) | list %}
+      {% if long_lived_certs | length > 0 %}| {{ long_lived_certs | length }} cert(s) have >90 day lifetime | **Consider shorter rotation.** Apple/Google propose 47-day max for public TLS certs (effective 2028). Shorter lifetimes reduce exposure window if keys are compromised. |
+      {% endif %}{% set very_long_certs = cert_report | selectattr('days_remaining', 'defined') | selectattr('days_remaining', 'gt', 398) | list %}
+      {% if very_long_certs | length > 0 %}| {{ very_long_certs | length }} cert(s) exceed 398-day CA/B limit | Current CA/Browser Forum maximum for public TLS is 398 days. While internal CAs aren't bound by this, aligning reduces operational risk. |
+      {% endif %}{% if long_lived_certs | length == 0 %}| All certs within 90-day window | Excellent - aligned with short-lived certificate best practices. |
+      {% endif %}
+
+      ### Post-Quantum Cryptography (PQC) Preparedness
+
+      | Current State | Recommendation |
+      |---------------|----------------|
+      {% if rsa_certs | length > 0 and ec_certs | length == 0 %}| All certificates use RSA | **Migrate to ECDSA (P-384) or Ed25519.** RSA is more vulnerable to quantum attacks. NIST recommends transitioning to quantum-resistant algorithms by 2030. EC provides equivalent security with smaller keys. |
+      {% elif ec_certs | length > 0 and rsa_certs | length > 0 %}| Mixed RSA/EC environment | Good progress. Continue migrating remaining RSA certificates to ECDSA P-384 or Ed25519 for PQC resilience. |
+      {% elif ec_certs | length > 0 and rsa_certs | length == 0 %}| All certificates use EC | Excellent - well positioned for post-quantum transition. |
+      {% endif %}{% if weak_rsa | length > 0 %}| {{ weak_rsa | length }} RSA cert(s) use <3072-bit keys | **Upgrade to RSA-3072 minimum** if staying with RSA. NIST SP 800-57 recommends 3072-bit RSA for security through 2030+. |
+      {% endif %}{% if sha1_certs | length > 0 %}| {{ sha1_certs | length }} cert(s) use SHA-1 | **Critical: Replace immediately.** SHA-1 is cryptographically broken and rejected by all major browsers. |
+      {% endif %}
+
+      ### Recommended Target Configuration
+
+      | Component | Current Best Practice | PQC-Ready Target |
+      |-----------|----------------------|------------------|
+      | Key Algorithm | ECDSA P-384 or RSA-3072 | ML-DSA (Dilithium) hybrid certificates |
+      | Signature | SHA-384 or SHA-512 | SHA-384 minimum |
+      | Certificate Lifetime | 90 days (internal), 47 days (public) | Automated renewal via ACME/cert-manager |
+      | Key Rotation | Annual | Continuous (short-lived certs) |
+
+      ### Action Items
+
+      {% if rsa_certs | length > 0 %}1. **Plan EC migration**: Evaluate ECDSA P-384 for component certificates to reduce key sizes and improve PQC resilience
+      {% endif %}{% if long_lived_certs | length > 0 %}2. **Implement automated renewal**: Deploy cert-manager or ACME protocol for automated short-lived certificate rotation
+      {% endif %}{% if weak_rsa | length > 0 %}3. **Upgrade RSA key sizes**: Increase RSA keys from 2048-bit to 3072-bit minimum for continued use
+      {% endif %}4. **Monitor PQC standards**: Track NIST PQC standardization (ML-KEM, ML-DSA) for future hybrid certificate deployment
+      5. **Document crypto inventory**: Maintain certificate crypto audit for compliance and transition planning
 
       ---
       *Report generated by check-aap-certs role (platform: {{ cert_summary.platform }})*

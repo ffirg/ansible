@@ -17,6 +17,9 @@ fail_on_warning: false
 # Report generation
 report_file: ""
 
+# Show certificate file paths in report (may contain sensitive info)
+show_paths: false
+
 # Containerized-specific defaults
 aap_base: "{{ ansible_env.HOME }}/aap"
 
