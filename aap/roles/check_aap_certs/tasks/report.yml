@@ -58,12 +58,12 @@
 # Display table header
 - name: Display table header
   ansible.builtin.debug:
-    msg: "{{ '%-22s' | format('CERTIFICATE') }} {{ '%-10s' | format('STATUS') }} {{ '%-10s' | format('SOURCE') }} {{ '%-12s' | format('EXPIRES') }} {{ '%6s' | format('DAYS') }}  {{ '%-12s' | format('KEY') }} {{ '%-20s' | format('SIGNATURE') }}{{ '  ' + '%-40s' | format('PATH') if show_paths else '' }}"
+    msg: "{{ '%-22s' | format('CERTIFICATE') }} {{ '%-10s' | format('STATUS') }} {{ '%-10s' | format('SOURCE') }} {{ '%-12s' | format('EXPIRES') }} {{ '%6s' | format('DAYS') }}  {{ '%-12s' | format('KEY') }} {{ '%-20s' | format('SIGNATURE') }}{{ '  ' + '%-40s' | format('PATH') if show_paths | bool else '' }}"
 
 # Display each certificate
 - name: Display certificate status
   ansible.builtin.debug:
-    msg: "{{ '%-22s' | format(item.name[:22]) }} {{ '%-10s' | format('[' + item.status | upper + ']') }} {{ '%-10s' | format(item.source[:10]) }} {{ '%-12s' | format((item.expiry_date[:12]) if item.expiry_date != 'N/A' else 'N/A') }} {{ '%6s' | format(item.days_remaining | default('N/A') | string) }}  {{ '%-12s' | format((item.key_algorithm | default('') + ' ' + item.key_size | default(''))[:12]) }} {{ item.sig_algorithm | default('N/A') }}{{ '  ' + item.path if show_paths else '' }}"
+    msg: "{{ '%-22s' | format(item.name[:22]) }} {{ '%-10s' | format('[' + item.status | upper + ']') }} {{ '%-10s' | format(item.source[:10]) }} {{ '%-12s' | format((item.expiry_date[:12]) if item.expiry_date != 'N/A' else 'N/A') }} {{ '%6s' | format(item.days_remaining | default('N/A') | string) }}  {{ '%-12s' | format((item.key_algorithm | default('') + ' ' + item.key_size | default(''))[:12]) }} {{ item.sig_algorithm | default('N/A') }}{{ '  ' + item.path if show_paths | bool else '' }}"
   loop: "{{ cert_report_sorted }}"
   loop_control:
     label: "{{ item.name }}"
@@ -128,12 +128,12 @@
 
       ## Certificate Details
 
-      | Certificate | Status | Source | Expires | Days Left | Key Type | Key Size | Signature |{% if show_paths %} Path |{% endif %}
+      | Certificate | Status | Source | Expires | Days Left | Key Type | Key Size | Signature |{% if show_paths | bool %} Path |{% endif %}
 
-      |-------------|--------|--------|---------|-----------|----------|----------|-----------|{% if show_paths %}------|{% endif %}
+      |-------------|--------|--------|---------|-----------|----------|----------|-----------|{% if show_paths | bool %}------|{% endif %}
 
       {% for cert in cert_report_sorted %}
-      | {{ cert.name }} | {% if cert.status == 'expired' %}**EXPIRED**{% elif cert.status == 'warning' %}**WARNING**{% elif cert.status == 'missing' %}MISSING{% elif cert.status == 'error' %}ERROR{% else %}OK{% endif %} | {{ cert.source }} | {{ cert.expiry_date }} | {{ cert.days_remaining | default('N/A') }} | {{ cert.key_algorithm | default('N/A') }} | {{ cert.key_size | default('N/A') }} | {{ cert.sig_algorithm | default('N/A') }} |{% if show_paths %} `{{ cert.path }}` |{% endif %}
+      | {{ cert.name }} | {% if cert.status == 'expired' %}**EXPIRED**{% elif cert.status == 'warning' %}**WARNING**{% elif cert.status == 'missing' %}MISSING{% elif cert.status == 'error' %}ERROR{% else %}OK{% endif %} | {{ cert.source }} | {{ cert.expiry_date }} | {{ cert.days_remaining | default('N/A') }} | {{ cert.key_algorithm | default('N/A') }} | {{ cert.key_size | default('N/A') }} | {{ cert.sig_algorithm | default('N/A') }} |{% if show_paths | bool %} `{{ cert.path }}` |{% endif %}
 
       {% endfor %}
 
@@ -143,7 +143,7 @@
       {% for cert in cert_report_sorted if cert.status in ['expired', 'warning'] %}
       ### {{ cert.name }} ({{ cert.status | upper }})
 
-      {% if show_paths %}- **Path:** `{{ cert.path }}`
+      {% if show_paths | bool %}- **Path:** `{{ cert.path }}`
       {% endif %}- **Source:** {{ cert.source }}
       - **Expires:** {{ cert.expiry_date }}
       - **Days Remaining:** {{ cert.days_remaining }}
