@@ -8,7 +8,7 @@
 aap_platform: auto
 
 # Warning threshold in days before expiry
-warn_days: 14
+warn_days: 60
 
 # Fail conditions
 fail_on_expired: true
