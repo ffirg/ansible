@@ -1,14 +1,13 @@
 ---
 # playbooks/check-aap-certs.yml
 #
-# Check AAP certificate expiry with configurable thresholds
+# Discover and report AAP certificate expiry status
 #
 # Usage:
 #   ansible-playbook check-aap-certs.yml
-#   ansible-playbook check-aap-certs.yml -e "max_cert_lifetime=47 high_water_mark=10 critical_water_mark=5"
+#   ansible-playbook check-aap-certs.yml -e "high_water_mark=14 critical_water_mark=7"
 #
 # Thresholds (days):
-#   max_cert_lifetime: Maximum recommended cert validity (default: 47, per browser consortium)
 #   high_water_mark: Warning threshold (default: 10)
 #   critical_water_mark: Critical threshold (default: 5)
 #
@@ -16,22 +15,17 @@
 #   expired: Certificate has expired (days < 0)
 #   critical: Days remaining <= critical_water_mark
 #   warning: Days remaining <= high_water_mark
-#   ok: Certificate is valid and within acceptable lifetime
+#   ok: Certificate is valid
 
-- name: Check AAP Certificate Expiry
+- name: Discover AAP Certificate Status
   hosts: all
   gather_facts: true
   become: false
 
   vars:
     # Threshold defaults (in days)
-    max_cert_lifetime: 47      # Browser consortium recommendation
     high_water_mark: 10        # Warning level
     critical_water_mark: 5     # Critical level
-
-    # Behavior options
-    fail_on_critical: false
-    fail_on_expired: true
 
     # AAP installation base path
     aap_base: "{{ ansible_env.HOME }}/aap"
@@ -194,55 +188,75 @@
           expired: "{{ cert_report | selectattr('status', 'eq', 'expired') | list | length }}"
           missing: "{{ cert_report | selectattr('status', 'eq', 'missing') | list | length }}"
 
+    - name: Build action required lists
+      ansible.builtin.set_fact:
+        certs_expired: "{{ cert_report | selectattr('status', 'eq', 'expired') | list }}"
+        certs_critical: "{{ cert_report | selectattr('status', 'eq', 'critical') | list }}"
+        certs_warning: "{{ cert_report | selectattr('status', 'eq', 'warning') | list }}"
+
     - name: Display report header
       ansible.builtin.debug:
         msg:
           - "═══════════════════════════════════════════════════════════════════════════════════════"
-          - "AAP Certificate Expiry Report"
+          - "AAP Certificate Discovery Report"
           - "═══════════════════════════════════════════════════════════════════════════════════════"
           - "Host: {{ inventory_hostname }}"
           - "Check Date: {{ ansible_date_time.iso8601 }}"
-          - "───────────────────────────────────────────────────────────────────────────────────────"
-          - "Thresholds: Max Lifetime={{ max_cert_lifetime }}d | Warning={{ high_water_mark }}d | Critical={{ critical_water_mark }}d"
+          - "Thresholds: Warning={{ high_water_mark }} days | Critical={{ critical_water_mark }} days"
           - "───────────────────────────────────────────────────────────────────────────────────────"
 
     - name: Display certificate table header
       ansible.builtin.debug:
-        msg: "{{ '%-22s' | format('CERTIFICATE') }} {{ '%-10s' | format('STATUS') }} {{ '%8s' | format('DAYS') }} {{ '%-10s' | format('SOURCE') }} {{ '%-20s' | format('EXPIRES') }}"
+        msg: "{{ '%-22s' | format('CERTIFICATE') }} {{ '%-10s' | format('STATUS') }} {{ '%8s' | format('DAYS') }} {{ '%-10s' | format('SOURCE') }} {{ '%-24s' | format('EXPIRES') }}"
 
     - name: Display certificate status
       ansible.builtin.debug:
-        msg: "{{ '%-22s' | format(item.name) }} {{ '%-10s' | format('[' + item.status | upper + ']') }} {{ '%8s' | format(item.days_remaining | default('N/A')) }} {{ '%-10s' | format(item.source) }} {{ item.expiry_date[:20] if item.expiry_date != 'N/A' else 'N/A' }}"
+        msg: "{{ '%-22s' | format(item.name) }} {{ '%-10s' | format('[' + item.status | upper + ']') }} {{ '%8s' | format(item.days_remaining | default('N/A')) }} {{ '%-10s' | format(item.source) }} {{ item.expiry_date if item.expiry_date != 'N/A' else 'N/A' }}"
       loop: "{{ cert_report_sorted }}"
       loop_control:
         label: "{{ item.name }}"
 
-    - name: Display summary
+    - name: Display summary counts
       ansible.builtin.debug:
         msg:
           - "───────────────────────────────────────────────────────────────────────────────────────"
           - "SUMMARY: Total={{ cert_summary.total }} | OK={{ cert_summary.ok }} | Warning={{ cert_summary.warning }} | Critical={{ cert_summary.critical }} | Expired={{ cert_summary.expired }} | Missing={{ cert_summary.missing }}"
           - "───────────────────────────────────────────────────────────────────────────────────────"
 
-    - name: Display EXPIRED alert
+    # Action Required Section
+    - name: Display expired certificates requiring immediate action
       ansible.builtin.debug:
-        msg: "*** EXPIRED: {{ cert_summary.expired }} certificate(s) have EXPIRED! ***"
-      when: cert_summary.expired | int > 0
+        msg:
+          - ""
+          - "🚨 EXPIRED CERTIFICATES - IMMEDIATE ACTION REQUIRED:"
+          - "{% for cert in certs_expired %}  • {{ cert.name }}: Expired {{ cert.days_remaining | abs }} days ago ({{ cert.expiry_date }}) - Source: {{ cert.source }}"
+          - "{% endfor %}"
+      when: certs_expired | length > 0
 
-    - name: Display CRITICAL alert
+    - name: Display critical certificates
       ansible.builtin.debug:
-        msg: "*** CRITICAL: {{ cert_summary.critical }} certificate(s) expire within {{ critical_water_mark }} days ***"
-      when: cert_summary.critical | int > 0
+        msg:
+          - ""
+          - "⚠️  CRITICAL - Expiring within {{ critical_water_mark }} days:"
+          - "{% for cert in certs_critical %}  • {{ cert.name }}: {{ cert.days_remaining }} days remaining ({{ cert.expiry_date }}) - Source: {{ cert.source }}"
+          - "{% endfor %}"
+      when: certs_critical | length > 0
 
-    - name: Display WARNING alert
+    - name: Display warning certificates
       ansible.builtin.debug:
-        msg: "*** WARNING: {{ cert_summary.warning }} certificate(s) expire within {{ high_water_mark }} days ***"
-      when: cert_summary.warning | int > 0
+        msg:
+          - ""
+          - "⏰ WARNING - Expiring within {{ high_water_mark }} days:"
+          - "{% for cert in certs_warning %}  • {{ cert.name }}: {{ cert.days_remaining }} days remaining ({{ cert.expiry_date }}) - Source: {{ cert.source }}"
+          - "{% endfor %}"
+      when: certs_warning | length > 0
 
-    - name: Display OK status
+    - name: Display all clear
       ansible.builtin.debug:
-        msg: "*** All certificates OK ***"
-      when: cert_summary.expired | int == 0 and cert_summary.critical | int == 0 and cert_summary.warning | int == 0 and cert_summary.missing | int == 0
+        msg:
+          - ""
+          - "✅ All certificates are healthy - no action required"
+      when: certs_expired | length == 0 and certs_critical | length == 0 and certs_warning | length == 0
 
     # JSON output for portal/API consumption
     - name: Output JSON report for portal
@@ -252,24 +266,14 @@
             'host': inventory_hostname,
             'checkDate': ansible_date_time.iso8601,
             'thresholds': {
-              'maxCertLifetime': max_cert_lifetime,
               'highWaterMark': high_water_mark,
               'criticalWaterMark': critical_water_mark
             },
             'summary': cert_summary,
-            'certificates': cert_report_sorted
+            'certificates': cert_report_sorted,
+            'actionRequired': {
+              'expired': certs_expired,
+              'critical': certs_critical,
+              'warning': certs_warning
+            }
           } | to_json }}
-
-    - name: Fail if certificates are expired
-      ansible.builtin.fail:
-        msg: "{{ cert_summary.expired }} certificate(s) have expired!"
-      when:
-        - fail_on_expired | bool
-        - cert_summary.expired | int > 0
-
-    - name: Fail if certificates are critical
-      ansible.builtin.fail:
-        msg: "{{ cert_summary.critical }} certificate(s) expire within {{ critical_water_mark }} days!"
-      when:
-        - fail_on_critical | bool
-        - cert_summary.critical | int > 0
