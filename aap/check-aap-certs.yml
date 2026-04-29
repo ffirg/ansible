@@ -27,6 +27,9 @@
     high_water_mark: 10        # Warning level
     critical_water_mark: 5     # Critical level
 
+    # Output control
+    show_human_report: true    # Set to false to hide formatted table output
+
     # AAP installation base path
     aap_base: "{{ ansible_env.HOME }}/aap"
 
@@ -195,6 +198,7 @@
         certs_warning: "{{ cert_report | selectattr('status', 'eq', 'warning') | list }}"
 
     - name: Display formatted report
+      when: show_human_report | default(true) | bool
       ansible.builtin.debug:
         msg: |
 
