@@ -5,7 +5,7 @@
 
 - name: Discover running AAP containers
   ansible.builtin.shell: |
-    podman ps --format '{{ '{{' }}.Names{{ '}}' }}' 2>/dev/null | grep -E '^(automation-|postgresql|redis|receptor)' | sort -u
+    podman ps --format '{{ '{{' }}.Names{{ '}}' }}' 2>/dev/null | grep -E '^(automation-|postgresql|redis|receptor|ansiblemcp)' | sort -u
   register: running_containers
   changed_when: false
 
@@ -29,7 +29,8 @@
             'Controller' if 'controller' in item else
             'Hub' if 'hub' in item else
             'EDA' if 'eda' in item else
-            'Automation Dashboard' if 'reporter' in item else
+            'Automation Dashboard' if 'reporter' in item or 'dashboard' in item else
+            'AnsibleMCP' if 'ansiblemcp' in item or 'mcp' in item else
             'Receptor' if item == 'receptor' else
             'PostgreSQL' if item == 'postgresql' or 'postgresql' in item else
             'Redis' if 'redis' in item else
@@ -41,7 +42,8 @@
             aap_base + '/controller/etc/tower.cert' if 'controller' in item else
             aap_base + '/hub/etc/pulp.cert' if 'hub' in item else
             aap_base + '/eda/etc/eda.cert' if 'eda' in item else
-            aap_base + '/reporter/etc/reporter.cert' if 'reporter' in item else
+            aap_base + '/reporter/etc/reporter.cert' if 'reporter' in item or 'dashboard' in item else
+            aap_base + '/ansiblemcp/etc/ansiblemcp.cert' if 'ansiblemcp' in item or 'mcp' in item else
             aap_base + '/receptor/etc/receptor.crt' if item == 'receptor' else
             aap_base + '/postgresql/server.crt' if item == 'postgresql' or 'postgresql' in item else
             aap_base + '/redis/server.crt' if 'redis' in item else
@@ -54,6 +56,7 @@
   when: item != ''
 
 # Add infrastructure certs that aren't tied to a specific container
+# These are checked even if their container isn't running
 - name: Add infrastructure certificates
   ansible.builtin.set_fact:
     discovered_certs: >-
@@ -61,7 +64,9 @@
         discovered_certs + [
           {'name': 'CA Certificate', 'path': aap_base + '/tls/ca.cert', 'type': 'ca'},
           {'name': 'Receptor Mesh CA', 'path': aap_base + '/receptor/etc/mesh-CA.crt', 'type': 'ca'},
-          {'name': 'Gateway Redis Client', 'path': aap_base + '/gateway/etc/redis.cert', 'type': 'client'}
+          {'name': 'Gateway Redis Client', 'path': aap_base + '/gateway/etc/redis.cert', 'type': 'client'},
+          {'name': 'Automation Dashboard', 'path': aap_base + '/reporter/etc/reporter.cert', 'type': 'component'},
+          {'name': 'AnsibleMCP', 'path': aap_base + '/ansiblemcp/etc/ansiblemcp.cert', 'type': 'component'}
         ]
       }}
 
