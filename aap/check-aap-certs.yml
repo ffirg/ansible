@@ -1,15 +1,19 @@
 ---
 # playbooks/check-aap-certs.yml
 #
-# Discover and report AAP certificate expiry status
+# Discover and report AAP certificate expiry status using the check_aap_certs role
 #
 # Usage:
 #   ansible-playbook check-aap-certs.yml
 #   ansible-playbook check-aap-certs.yml -e "high_water_mark=14 critical_water_mark=7"
+#   ansible-playbook check-aap-certs.yml -e "aap_platform=openshift aap_namespace=aap"
 #
 # Thresholds (days):
-#   high_water_mark: Warning threshold (default: 10)
+#   high_water_mark: Warning threshold (default: 47)
 #   critical_water_mark: Critical threshold (default: 5)
+#
+# Platform detection:
+#   aap_platform: auto (default) | containerized | openshift | kubernetes
 #
 # Status levels:
 #   expired: Certificate has expired (days < 0)
@@ -24,181 +28,87 @@
 
   vars:
     # Threshold defaults (in days)
-    high_water_mark: 10        # Warning level
+    high_water_mark: 47        # Warning level
     critical_water_mark: 5     # Critical level
 
     # Output control
     show_human_report: true    # Set to false to hide formatted table output
 
-    # AAP installation base path
-    aap_base: "{{ ansible_env.HOME }}/aap"
-
-    # Certificate definitions - AAP 2.6 containerized deployment paths
-    certificates:
-      - name: "Gateway"
-        path: "{{ aap_base }}/gateway/etc/gateway.cert"
-
-      - name: "Controller"
-        path: "{{ aap_base }}/controller/etc/tower.cert"
-
-      - name: "Hub"
-        path: "{{ aap_base }}/hub/etc/pulp.cert"
-
-      - name: "EDA"
-        path: "{{ aap_base }}/eda/etc/eda.cert"
-
-      - name: "Automation Dashboard"
-        path: "{{ aap_base }}/reporter/etc/reporter.cert"
-
-      - name: "AnsibleMCP"
-        path: "{{ aap_base }}/ansiblemcp/etc/ansiblemcp.cert"
-
-      - name: "CA Certificate"
-        path: "{{ aap_base }}/tls/ca.cert"
-
-      - name: "PostgreSQL"
-        path: "{{ aap_base }}/postgresql/server.crt"
-
-      - name: "Redis"
-        path: "{{ aap_base }}/redis/server.crt"
-
-      - name: "Receptor"
-        path: "{{ aap_base }}/receptor/etc/receptor.crt"
-
-      - name: "Receptor Mesh CA"
-        path: "{{ aap_base }}/receptor/etc/mesh-CA.crt"
-
-      - name: "Gateway Redis Client"
-        path: "{{ aap_base }}/gateway/etc/redis.cert"
+    # Platform detection - auto, containerized, openshift, kubernetes
+    aap_platform: auto
 
   tasks:
-    - name: Check if certificate files exist
-      ansible.builtin.stat:
-        path: "{{ item.path }}"
-      loop: "{{ certificates }}"
+    # Run the role to discover and check certificates
+    - name: Run certificate discovery role
+      ansible.builtin.include_role:
+        name: check_aap_certs
+      vars:
+        warn_days: "{{ high_water_mark }}"
+        fail_on_expired: false
+        fail_on_warning: false
+
+    # Post-process role output to add critical status (role only has ok/warning/expired)
+    - name: Update certificate status with critical threshold
+      ansible.builtin.set_fact:
+        cert_report_updated: []
+
+    - name: Recalculate status for each certificate
+      ansible.builtin.set_fact:
+        cert_report_updated: >-
+          {{ cert_report_updated + [
+            item | combine({
+              'status':
+                'missing' if not item.exists | default(true) else
+                'error' if item.status | default('') == 'error' else
+                'expired' if (item.days_remaining | default(999) | int) < 0 else
+                'critical' if (item.days_remaining | default(999) | int) <= (critical_water_mark | int) else
+                'warning' if (item.days_remaining | default(999) | int) <= (high_water_mark | int) else
+                'ok'
+            })
+          ] }}
+      loop: "{{ cert_report | default([]) }}"
       loop_control:
         label: "{{ item.name }}"
-      register: cert_files
+      when: cert_report is defined
 
-    - name: Get certificate expiry dates
-      ansible.builtin.shell: |
-        openssl x509 -in "{{ item.item.path }}" -noout -enddate 2>/dev/null | \
-          sed 's/notAfter=//'
-      loop: "{{ cert_files.results }}"
-      loop_control:
-        label: "{{ item.item.name }}"
-      when: item.stat.exists
-      register: cert_expiry
-      changed_when: false
-      failed_when: false
-
-    - name: Calculate days remaining for each certificate
-      ansible.builtin.shell: |
-        expiry_date=$(openssl x509 -in "{{ item.item.path }}" -noout -enddate 2>/dev/null | sed 's/notAfter=//')
-        expiry_epoch=$(date -d "$expiry_date" +%s 2>/dev/null || date -jf "%b %d %T %Y %Z" "$expiry_date" +%s 2>/dev/null)
-        now_epoch=$(date +%s)
-        echo $(( (expiry_epoch - now_epoch) / 86400 ))
-      loop: "{{ cert_files.results }}"
-      loop_control:
-        label: "{{ item.item.name }}"
-      when: item.stat.exists
-      register: days_remaining
-      changed_when: false
-      failed_when: false
-
-    - name: Get certificate CN
-      ansible.builtin.shell: |
-        openssl x509 -in "{{ item.item.path }}" -noout -subject 2>/dev/null | \
-          sed 's/.*CN *= *//' | cut -d',' -f1 | cut -d'/' -f1
-      loop: "{{ cert_files.results }}"
-      loop_control:
-        label: "{{ item.item.name }}"
-      when: item.stat.exists
-      register: cert_cn
-      changed_when: false
-      failed_when: false
-
-    - name: Get local CA subject (for source detection)
-      ansible.builtin.shell: |
-        openssl x509 -in "{{ aap_base }}/tls/ca.cert" -noout -subject 2>/dev/null | \
-          sed 's/subject=//'
-      register: ca_subject
-      changed_when: false
-      failed_when: false
-
-    - name: Detect if CA is installer-generated or custom
+    - name: Replace cert_report with updated statuses
       ansible.builtin.set_fact:
-        ca_is_installer: "{{ 'Red Hat' in ca_subject.stdout or 'Ansible' in ca_subject.stdout }}"
-
-    - name: Get certificate issuer
-      ansible.builtin.shell: |
-        openssl x509 -in "{{ item.item.path }}" -noout -issuer 2>/dev/null | \
-          sed 's/issuer=//'
-      loop: "{{ cert_files.results }}"
-      loop_control:
-        label: "{{ item.item.name }}"
-      when: item.stat.exists
-      register: cert_issuer
-      changed_when: false
-      failed_when: false
-
-    - name: Build certificate report data
-      ansible.builtin.set_fact:
-        cert_report: >-
-          {{
-            cert_report | default([]) + [{
-              'name': item.0.item.name,
-              'path': item.0.item.path,
-              'exists': item.0.stat.exists,
-              'days_remaining': (item.1.stdout | int) if item.0.stat.exists else none,
-              'expiry_date': item.2.stdout if item.0.stat.exists else 'N/A',
-              'cn': item.3.stdout if item.0.stat.exists else 'N/A',
-              'issuer': item.4.stdout | default('N/A') if item.0.stat.exists else 'N/A',
-              'source':
-                'N/A' if not item.0.stat.exists else
-                'Installer CA' if item.0.item.name == 'CA Certificate' and ca_is_installer else
-                'Custom CA' if item.0.item.name == 'CA Certificate' and not ca_is_installer else
-                'Installer' if (item.4.stdout | default('')) == (ca_subject.stdout | default('NO_MATCH')) and ca_is_installer else
-                'Custom CA' if (item.4.stdout | default('')) == (ca_subject.stdout | default('NO_MATCH')) and not ca_is_installer else
-                'External',
-              'status':
-                'missing' if not item.0.stat.exists else
-                'expired' if (item.1.stdout | int) < 0 else
-                'critical' if (item.1.stdout | int) <= critical_water_mark else
-                'warning' if (item.1.stdout | int) <= high_water_mark else
-                'ok'
-            }]
-          }}
-      loop: "{{ cert_files.results | zip(days_remaining.results, cert_expiry.results, cert_cn.results, cert_issuer.results) | list }}"
-      loop_control:
-        label: "{{ item.0.item.name }}"
+        cert_report: "{{ cert_report_updated }}"
+      when: cert_report_updated | length > 0
 
     - name: Sort report by days remaining (most urgent first)
       ansible.builtin.set_fact:
         cert_report_sorted: >-
           {{
-            (cert_report | selectattr('status', 'in', ['missing', 'expired', 'critical', 'warning']) | sort(attribute='days_remaining') | list) +
-            (cert_report | selectattr('status', 'eq', 'ok') | sort(attribute='days_remaining') | list)
+            (cert_report | default([]) | selectattr('status', 'in', ['missing', 'error', 'expired', 'critical', 'warning']) | sort(attribute='days_remaining') | list) +
+            (cert_report | default([]) | selectattr('status', 'eq', 'ok') | sort(attribute='days_remaining') | list)
           }}
+      when: cert_report is defined
 
     - name: Calculate summary statistics
       ansible.builtin.set_fact:
         cert_summary:
-          total: "{{ cert_report | length }}"
-          ok: "{{ cert_report | selectattr('status', 'eq', 'ok') | list | length }}"
-          warning: "{{ cert_report | selectattr('status', 'eq', 'warning') | list | length }}"
-          critical: "{{ cert_report | selectattr('status', 'eq', 'critical') | list | length }}"
-          expired: "{{ cert_report | selectattr('status', 'eq', 'expired') | list | length }}"
-          missing: "{{ cert_report | selectattr('status', 'eq', 'missing') | list | length }}"
+          total: "{{ cert_report | default([]) | length }}"
+          ok: "{{ cert_report | default([]) | selectattr('status', 'eq', 'ok') | list | length }}"
+          warning: "{{ cert_report | default([]) | selectattr('status', 'eq', 'warning') | list | length }}"
+          critical: "{{ cert_report | default([]) | selectattr('status', 'eq', 'critical') | list | length }}"
+          expired: "{{ cert_report | default([]) | selectattr('status', 'eq', 'expired') | list | length }}"
+          missing: "{{ cert_report | default([]) | selectattr('status', 'eq', 'missing') | list | length }}"
+          platform: "{{ aap_platform }}"
+      when: cert_report is defined
 
     - name: Build action required lists
       ansible.builtin.set_fact:
-        certs_expired: "{{ cert_report | selectattr('status', 'eq', 'expired') | list }}"
-        certs_critical: "{{ cert_report | selectattr('status', 'eq', 'critical') | list }}"
-        certs_warning: "{{ cert_report | selectattr('status', 'eq', 'warning') | list }}"
+        certs_expired: "{{ cert_report | default([]) | selectattr('status', 'eq', 'expired') | list }}"
+        certs_critical: "{{ cert_report | default([]) | selectattr('status', 'eq', 'critical') | list }}"
+        certs_warning: "{{ cert_report | default([]) | selectattr('status', 'eq', 'warning') | list }}"
+      when: cert_report is defined
 
     - name: Display formatted report
-      when: show_human_report | default(true) | bool
+      when:
+        - show_human_report | default(true) | bool
+        - cert_report is defined
+        - cert_report | length > 0
       ansible.builtin.debug:
         msg: |
 
@@ -206,6 +116,7 @@
           ║                           AAP Certificate Discovery Report                            ║
           ╠═══════════════════════════════════════════════════════════════════════════════════════╣
           ║ Host: {{ '%-75s' | format(inventory_hostname) }} ║
+          ║ Platform: {{ '%-71s' | format(aap_platform) }} ║
           ║ Check Date: {{ '%-69s' | format(ansible_date_time.iso8601) }} ║
           ║ Thresholds: Warning={{ high_water_mark }} days | Critical={{ critical_water_mark }} days{{ ' ' * (56 - (high_water_mark | string | length) - (critical_water_mark | string | length)) }}║
           ╚═══════════════════════════════════════════════════════════════════════════════════════╝
@@ -253,10 +164,12 @@
 
     # JSON output for portal/API consumption
     - name: Output JSON report for portal
+      when: cert_report is defined
       ansible.builtin.debug:
         msg: >-
           CERT_REPORT_JSON:{{ {
             'host': inventory_hostname,
+            'platform': aap_platform,
             'checkDate': ansible_date_time.iso8601,
             'thresholds': {
               'highWaterMark': high_water_mark,
