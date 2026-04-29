@@ -7,18 +7,33 @@
 # Set to 'auto' for automatic detection
 aap_platform: auto
 
-# Warning threshold in days before expiry
-warn_days: 60
+# Certificate thresholds (in days)
+#
+# cert_warning_days: Proactive renewal planning threshold
+#   Certs expiring within this period should be scheduled for renewal
+#   based on your internal certificate management timelines
+cert_warning_days: 60
+
+# cert_critical_days: Urgent action required threshold
+#   Certs expiring within this period need immediate attention
+#   to prevent service disruption
+cert_critical_days: 14
+
+# cert_lifetime_days: Recommended maximum certificate lifetime
+#   Certs valid for longer than this are flagged as non-compliant
+#   with your organization's security policy (e.g., 398 days per CA/B Forum)
+cert_lifetime_days: 398
 
 # Fail conditions
 fail_on_expired: true
 fail_on_warning: false
 
-# Report generation
-report_file: ""
+# Show certificate file paths in report
+cert_show_paths: true
 
-# Show certificate file paths in report (may contain sensitive info)
-show_paths: false
+# Optional: Generate markdown report file (leave empty to skip)
+# report_file: "/tmp/cert-report.md"
+report_file: ""
 
 # Containerized-specific defaults
 aap_base: "{{ ansible_env.HOME }}/aap"

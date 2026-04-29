@@ -5,21 +5,22 @@
 #
 # Usage:
 #   ansible-playbook check-aap-certs.yml
-#   ansible-playbook check-aap-certs.yml -e "high_water_mark=14 critical_water_mark=7"
+#   ansible-playbook check-aap-certs.yml -e "cert_warning_days=30 cert_critical_days=7"
 #   ansible-playbook check-aap-certs.yml -e "aap_platform=openshift aap_namespace=aap"
 #
 # Thresholds (days):
-#   high_water_mark: Warning threshold (default: 47)
-#   critical_water_mark: Critical threshold (default: 5)
+#   cert_warning_days: Proactive renewal planning - schedule certs for renewal (default: 60)
+#   cert_critical_days: Urgent action required - prevent service disruption (default: 14)
+#   cert_lifetime_days: Maximum recommended cert lifetime for compliance (default: 398)
 #
 # Platform detection:
 #   aap_platform: auto (default) | containerized | openshift | kubernetes
 #
 # Status levels:
-#   expired: Certificate has expired (days < 0)
-#   critical: Days remaining <= critical_water_mark
-#   warning: Days remaining <= high_water_mark
-#   ok: Certificate is valid
+#   expired: Certificate has expired (days < 0) - cert_expired=true
+#   critical: Days remaining <= cert_critical_days - urgent action
+#   warning: Days remaining <= cert_warning_days - schedule renewal
+#   ok: Certificate is valid and within policy
 
 - name: Discover AAP Certificate Status
   hosts: all
@@ -27,12 +28,19 @@
   become: false
 
   vars:
-    # Threshold defaults (in days)
-    high_water_mark: 47        # Warning level
-    critical_water_mark: 5     # Critical level
+    # Certificate threshold defaults (in days)
+    # cert_warning_days: Kickstart internal renewal process based on your timelines
+    cert_warning_days: 60
+
+    # cert_critical_days: Urgent call to action before certs expire
+    cert_critical_days: 14
+
+    # cert_lifetime_days: Recommended max lifetime (398 = CA/B Forum public TLS limit)
+    cert_lifetime_days: 398
 
     # Output control
     show_human_report: true    # Set to false to hide formatted table output
+    cert_show_paths: true      # Show certificate file paths in output
 
     # Platform detection - auto, containerized, openshift, kubernetes
     aap_platform: auto
@@ -43,38 +51,8 @@
       ansible.builtin.include_role:
         name: check_aap_certs
       vars:
-        warn_days: "{{ high_water_mark }}"
         fail_on_expired: false
         fail_on_warning: false
-
-    # Post-process role output to add critical status (role only has ok/warning/expired)
-    - name: Update certificate status with critical threshold
-      ansible.builtin.set_fact:
-        cert_report_updated: []
-
-    - name: Recalculate status for each certificate
-      ansible.builtin.set_fact:
-        cert_report_updated: >-
-          {{ cert_report_updated + [
-            item | combine({
-              'status':
-                'missing' if not item.exists | default(true) else
-                'error' if item.status | default('') == 'error' else
-                'expired' if (item.days_remaining | default(999) | int) < 0 else
-                'critical' if (item.days_remaining | default(999) | int) <= (critical_water_mark | int) else
-                'warning' if (item.days_remaining | default(999) | int) <= (high_water_mark | int) else
-                'ok'
-            })
-          ] }}
-      loop: "{{ cert_report | default([]) }}"
-      loop_control:
-        label: "{{ item.name }}"
-      when: cert_report is defined
-
-    - name: Replace cert_report with updated statuses
-      ansible.builtin.set_fact:
-        cert_report: "{{ cert_report_updated }}"
-      when: cert_report_updated | length > 0
 
     - name: Sort report by days remaining (most urgent first)
       ansible.builtin.set_fact:
@@ -102,6 +80,12 @@
         certs_expired: "{{ cert_report | default([]) | selectattr('status', 'eq', 'expired') | list }}"
         certs_critical: "{{ cert_report | default([]) | selectattr('status', 'eq', 'critical') | list }}"
         certs_warning: "{{ cert_report | default([]) | selectattr('status', 'eq', 'warning') | list }}"
+        certs_over_lifetime: "{{ cert_report | default([]) | selectattr('days_remaining', 'defined') | selectattr('days_remaining', 'gt', (cert_lifetime_days | int)) | list }}"
+      when: cert_report is defined
+
+    - name: Set cert_expired flag
+      ansible.builtin.set_fact:
+        cert_expired: "{{ (certs_expired | length) > 0 }}"
       when: cert_report is defined
 
     - name: Display formatted report
@@ -118,7 +102,7 @@
           ║ Host: {{ '%-75s' | format(inventory_hostname) }} ║
           ║ Platform: {{ '%-71s' | format(aap_platform) }} ║
           ║ Check Date: {{ '%-69s' | format(ansible_date_time.iso8601) }} ║
-          ║ Thresholds: Warning={{ high_water_mark }} days | Critical={{ critical_water_mark }} days{{ ' ' * (56 - (high_water_mark | string | length) - (critical_water_mark | string | length)) }}║
+          ║ Thresholds: Warning={{ cert_warning_days }} days | Critical={{ cert_critical_days }} days | Max={{ cert_lifetime_days }} days{{ ' ' * (37 - (cert_warning_days | string | length) - (cert_critical_days | string | length) - (cert_lifetime_days | string | length)) }}║
           ╚═══════════════════════════════════════════════════════════════════════════════════════╝
 
           ┌─────────────────────────────────────────────────────────────────────────────────────────┐
@@ -145,16 +129,23 @@
           {% endif %}
           {% if certs_critical | length > 0 %}
 
-          ⚠️  CRITICAL - Expiring within {{ critical_water_mark }} days:
+          ⚠️  CRITICAL - Expiring within {{ cert_critical_days }} days:
           {% for cert in certs_critical %}
              • {{ cert.name }}: {{ cert.days_remaining }} days remaining - Source: {{ cert.source }}
           {% endfor %}
           {% endif %}
           {% if certs_warning | length > 0 %}
 
-          ⏰ WARNING - Expiring within {{ high_water_mark }} days:
+          ⏰ WARNING - Schedule renewal (within {{ cert_warning_days }} days):
           {% for cert in certs_warning %}
              • {{ cert.name }}: {{ cert.days_remaining }} days remaining - Source: {{ cert.source }}
+          {% endfor %}
+          {% endif %}
+          {% if certs_over_lifetime | length > 0 %}
+
+          📋 POLICY - Certs exceeding {{ cert_lifetime_days }}-day recommended lifetime:
+          {% for cert in certs_over_lifetime %}
+             • {{ cert.name }}: {{ cert.days_remaining }} days remaining (exceeds {{ cert_lifetime_days }}-day policy)
           {% endfor %}
           {% endif %}
           {% if certs_expired | length == 0 and certs_critical | length == 0 and certs_warning | length == 0 %}
@@ -172,14 +163,17 @@
             'platform': aap_platform,
             'checkDate': ansible_date_time.iso8601,
             'thresholds': {
-              'highWaterMark': high_water_mark,
-              'criticalWaterMark': critical_water_mark
+              'warningDays': cert_warning_days,
+              'criticalDays': cert_critical_days,
+              'lifetimeDays': cert_lifetime_days
             },
+            'certExpired': cert_expired | default(false),
             'summary': cert_summary,
             'certificates': cert_report_sorted,
             'actionRequired': {
               'expired': certs_expired,
               'critical': certs_critical,
-              'warning': certs_warning
+              'warning': certs_warning,
+              'overLifetime': certs_over_lifetime
             }
           } | to_json }}

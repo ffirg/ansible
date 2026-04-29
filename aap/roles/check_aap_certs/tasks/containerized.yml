@@ -198,7 +198,8 @@
           'status':
             'missing' if not item.0.stat.exists else
             'expired' if (item.1.stdout | int) < 0 else
-            'warning' if (item.1.stdout | int) <= warn_days else
+            'critical' if (item.1.stdout | int) <= (cert_critical_days | int) else
+            'warning' if (item.1.stdout | int) <= (cert_warning_days | int) else
             'ok',
           'platform': 'containerized'
         }]
