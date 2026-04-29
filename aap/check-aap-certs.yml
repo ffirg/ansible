@@ -226,29 +226,32 @@
     # Action Required Section
     - name: Display expired certificates requiring immediate action
       ansible.builtin.debug:
-        msg:
-          - ""
-          - "🚨 EXPIRED CERTIFICATES - IMMEDIATE ACTION REQUIRED:"
-          - "{% for cert in certs_expired %}  • {{ cert.name }}: Expired {{ cert.days_remaining | abs }} days ago ({{ cert.expiry_date }}) - Source: {{ cert.source }}"
-          - "{% endfor %}"
+        msg: |
+
+          🚨 EXPIRED CERTIFICATES - IMMEDIATE ACTION REQUIRED:
+          {% for cert in certs_expired %}
+            • {{ cert.name }}: Expired {{ cert.days_remaining | abs }} days ago ({{ cert.expiry_date }}) - Source: {{ cert.source }}
+          {% endfor %}
       when: certs_expired | length > 0
 
     - name: Display critical certificates
       ansible.builtin.debug:
-        msg:
-          - ""
-          - "⚠️  CRITICAL - Expiring within {{ critical_water_mark }} days:"
-          - "{% for cert in certs_critical %}  • {{ cert.name }}: {{ cert.days_remaining }} days remaining ({{ cert.expiry_date }}) - Source: {{ cert.source }}"
-          - "{% endfor %}"
+        msg: |
+
+          ⚠️  CRITICAL - Expiring within {{ critical_water_mark }} days:
+          {% for cert in certs_critical %}
+            • {{ cert.name }}: {{ cert.days_remaining }} days remaining ({{ cert.expiry_date }}) - Source: {{ cert.source }}
+          {% endfor %}
       when: certs_critical | length > 0
 
     - name: Display warning certificates
       ansible.builtin.debug:
-        msg:
-          - ""
-          - "⏰ WARNING - Expiring within {{ high_water_mark }} days:"
-          - "{% for cert in certs_warning %}  • {{ cert.name }}: {{ cert.days_remaining }} days remaining ({{ cert.expiry_date }}) - Source: {{ cert.source }}"
-          - "{% endfor %}"
+        msg: |
+
+          ⏰ WARNING - Expiring within {{ high_water_mark }} days:
+          {% for cert in certs_warning %}
+            • {{ cert.name }}: {{ cert.days_remaining }} days remaining ({{ cert.expiry_date }}) - Source: {{ cert.source }}
+          {% endfor %}
       when: certs_warning | length > 0
 
     - name: Display all clear
